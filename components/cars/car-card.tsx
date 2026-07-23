@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Car } from "@/data/cars";
 import { formatKm, formatKwh, formatKw, formatNok } from "@/lib/format";
 import Badge from "@/components/ui/badge";
+import CarImage from "./car-image";
 import SpecRow from "./spec-row";
 
 type CarCardProps = {
@@ -28,8 +29,8 @@ export default function CarCard({ car, variant = "full" }: CarCardProps) {
   return (
     <Link className="carCard" href={`/modeller/${car.slug}`}>
       <div className="carCardTop">
-        <div className="carVisual" aria-hidden="true">
-          <span>{car.brand.slice(0, 1)}</span>
+        <div className="carVisual">
+          <CarImage car={car} variant="card" />
         </div>
         <Badge>{car.drive}</Badge>
       </div>

@@ -4,10 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navLinks, primaryNavLinks } from "@/config/site";
+import LogoutButton from "@/components/auth/logout-button";
 
-export default function SiteHeader() {
+type SiteHeaderProps = {
+  userEmail?: string | null;
+};
+
+export default function SiteHeader({ userEmail = null }: SiteHeaderProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isLoggedIn = Boolean(userEmail);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -59,6 +65,22 @@ export default function SiteHeader() {
         </nav>
 
         <div className="headerActions">
+          {isLoggedIn ? (
+            <div className="headerAuth">
+              <Link
+                href="/min-side"
+                className={isActive("/min-side") ? "navLink active headerAuthLink" : "navLink headerAuthLink"}
+                aria-current={isActive("/min-side") ? "page" : undefined}
+              >
+                Min side
+              </Link>
+              <LogoutButton className="button secondary buttonSm headerAuthLogout" />
+            </div>
+          ) : (
+            <Link href="/login" className="navLink headerAuthLink">
+              Logg inn
+            </Link>
+          )}
           <Link href="/modeller" className="button buttonSm primary headerCta">
             Se modeller
           </Link>
@@ -93,6 +115,24 @@ export default function SiteHeader() {
               {label}
             </Link>
           ))}
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/min-side"
+                className={isActive("/min-side") ? "mobileNavLink active" : "mobileNavLink"}
+                aria-current={isActive("/min-side") ? "page" : undefined}
+              >
+                Min side
+              </Link>
+              <div className="mobileAuthAction">
+                <LogoutButton className="button secondary mobileLogout" />
+              </div>
+            </>
+          ) : (
+            <Link href="/login" className="mobileNavLink">
+              Logg inn
+            </Link>
+          )}
         </nav>
       </div>
 
