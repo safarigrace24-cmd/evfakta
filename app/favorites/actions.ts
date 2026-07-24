@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cars } from "@/data/cars";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { publishedCarExists } from "@/lib/cars/get-published-cars";
 import { FAVORITE_MESSAGES } from "@/lib/favorites/messages";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -10,10 +10,6 @@ import { createClient } from "@/lib/supabase/server";
 export type FavoriteActionResult =
   | { ok: true; message: string; isFavorite: boolean }
   | { ok: false; error: string };
-
-function carExists(carSlug: string): boolean {
-  return cars.some((car) => car.slug === carSlug);
-}
 
 function revalidateFavoritePaths(carSlug: string) {
   revalidatePath("/min-side");
@@ -27,7 +23,7 @@ export async function addFavorite(carSlug: string): Promise<FavoriteActionResult
     return { ok: false, error: FAVORITE_MESSAGES.invalidCar };
   }
 
-  if (!carExists(carSlug)) {
+  if (!(await publishedCarExists(carSlug))) {
     return { ok: false, error: FAVORITE_MESSAGES.invalidCar };
   }
 
@@ -74,10 +70,6 @@ export async function addFavorite(carSlug: string): Promise<FavoriteActionResult
 
 export async function removeFavorite(carSlug: string): Promise<FavoriteActionResult> {
   if (!carSlug || typeof carSlug !== "string") {
-    return { ok: false, error: FAVORITE_MESSAGES.invalidCar };
-  }
-
-  if (!carExists(carSlug)) {
     return { ok: false, error: FAVORITE_MESSAGES.invalidCar };
   }
 

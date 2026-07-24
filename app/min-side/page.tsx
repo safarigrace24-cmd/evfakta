@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import LogoutButton from "@/components/auth/logout-button";
 import FavoriteCarsList from "@/components/favorites/favorite-cars-list";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getFavoriteCars } from "@/lib/favorites/get-favorites";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +18,7 @@ export default async function AccountPage() {
   }
 
   const favoriteCars = await getFavoriteCars();
+  const isAdmin = isAdminEmail(user.email);
 
   return (
     <section className="section">
@@ -27,6 +30,11 @@ export default async function AccountPage() {
             Du er innlogget som <strong>{user.email}</strong>.
           </p>
           <div className="accountActions">
+            {isAdmin && (
+              <Link href="/admin" className="button primary buttonSm">
+                Admin
+              </Link>
+            )}
             <LogoutButton />
           </div>
         </div>

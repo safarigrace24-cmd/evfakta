@@ -1,6 +1,6 @@
 import ModelsClient from "./models-client";
-import { cars } from "@/data/cars";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { getPublishedCars } from "@/lib/cars/get-published-cars";
 import { getFavoriteSlugs } from "@/lib/favorites/get-favorites";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,11 @@ export const metadata = {
 };
 
 export default async function ModelsPage() {
-  const [user, favoriteSlugs] = await Promise.all([getAuthUser(), getFavoriteSlugs()]);
+  const [user, favoriteSlugs, cars] = await Promise.all([
+    getAuthUser(),
+    getFavoriteSlugs(),
+    getPublishedCars(),
+  ]);
 
   return (
     <ModelsClient

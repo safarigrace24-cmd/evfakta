@@ -8,9 +8,10 @@ import LogoutButton from "@/components/auth/logout-button";
 
 type SiteHeaderProps = {
   userEmail?: string | null;
+  isAdmin?: boolean;
 };
 
-export default function SiteHeader({ userEmail = null }: SiteHeaderProps) {
+export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHeaderProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = Boolean(userEmail);
@@ -50,6 +51,15 @@ export default function SiteHeader({ userEmail = null }: SiteHeaderProps) {
               {label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={isActive("/admin") ? "navLink active" : "navLink"}
+              aria-current={isActive("/admin") ? "page" : undefined}
+            >
+              Admin
+            </Link>
+          )}
           <details className="navMore">
             <summary>Mer</summary>
             <div className="navMoreMenu">
@@ -115,6 +125,15 @@ export default function SiteHeader({ userEmail = null }: SiteHeaderProps) {
               {label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={isActive("/admin") ? "mobileNavLink active" : "mobileNavLink"}
+              aria-current={isActive("/admin") ? "page" : undefined}
+            >
+              Admin
+            </Link>
+          )}
           {isLoggedIn ? (
             <>
               <Link

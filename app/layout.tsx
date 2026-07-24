@@ -4,6 +4,7 @@ import "./globals.css";
 import SiteHeader from "@/components/layout/site-header";
 import SiteFooter from "@/components/layout/site-footer";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { isAdminEmail } from "@/lib/auth/is-admin";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const user = await getAuthUser();
+  const isAdmin = isAdminEmail(user?.email);
 
   return (
     <html lang="nb" className={dmSans.variable}>
@@ -29,7 +31,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <a href="#main-content" className="skipLink">
           Hopp til innhold
         </a>
-        <SiteHeader userEmail={user?.email ?? null} />
+        <SiteHeader userEmail={user?.email ?? null} isAdmin={isAdmin} />
         <main id="main-content">{children}</main>
         <SiteFooter />
       </body>

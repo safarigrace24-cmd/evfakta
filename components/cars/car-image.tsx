@@ -16,6 +16,8 @@ export default function CarImage({
   priority = false,
 }: CarImageProps) {
   const [failed, setFailed] = useState(false);
+  const src = car.imageUrl?.trim() || `/images/cars/${car.slug}.webp`;
+  const isRemote = src.startsWith("http://") || src.startsWith("https://");
 
   if (failed) {
     return (
@@ -30,7 +32,7 @@ export default function CarImage({
 
   return (
     <Image
-      src={`/images/cars/${car.slug}.webp`}
+      src={src}
       alt={`${car.brand} ${car.model}`}
       fill
       sizes={
@@ -39,6 +41,7 @@ export default function CarImage({
           : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       }
       priority={priority}
+      unoptimized={isRemote}
       className={variant === "hero" ? "carImageHero" : "carImageCard"}
       onError={() => setFailed(true)}
     />

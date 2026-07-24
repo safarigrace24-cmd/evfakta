@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getSupabaseEnv } from "./env";
 
 export async function updateSession(request: NextRequest) {
@@ -39,10 +40,17 @@ export async function updateSession(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
-    if (!user && pathname.startsWith("/min-side")) {
+    if (!user && (pathname.startsWith("/min-side") || pathname.startsWith("/admin"))) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       url.searchParams.set("next", pathname);
+      return NextResponse.redirect(url);
+    }
+
+    if (user && pathname.startsWith("/admin") && !isAdminEmail(user.email)) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/min-side";
+      url.search = "";
       return NextResponse.redirect(url);
     }
   } catch {

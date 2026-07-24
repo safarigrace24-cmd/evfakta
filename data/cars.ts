@@ -10,6 +10,8 @@ export type Car = {
   drive: "Forhjulsdrift" | "Bakhjulsdrift" | "Firehjulsdrift";
   description: string;
   updated: string;
+  /** Optional image from Supabase; falls back to /images/cars/{slug}.webp */
+  imageUrl?: string | null;
 };
 
 export const cars: Car[] = [

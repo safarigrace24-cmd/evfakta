@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cars } from "@/data/cars";
 import { formatKm, formatKwh, formatKw, formatNok } from "@/lib/format";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
@@ -9,17 +8,14 @@ import FavoriteButton from "@/components/favorites/favorite-button";
 import CarHero from "@/components/cars/car-hero";
 import FactGrid from "@/components/cars/fact-grid";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { getPublishedCarBySlug } from "@/lib/cars/get-published-cars";
 import { isFavoriteSlug } from "@/lib/favorites/get-favorites";
 
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return cars.map((car) => ({ slug: car.slug }));
-}
-
 export default async function CarPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const car = cars.find((item) => item.slug === slug);
+  const car = await getPublishedCarBySlug(slug);
   if (!car) notFound();
 
   const [user, isFavorite] = await Promise.all([getAuthUser(), isFavoriteSlug(car.slug)]);

@@ -1,7 +1,8 @@
-import { cars } from "@/data/cars";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { getPublishedCars } from "@/lib/cars/get-published-cars";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
+import type { Car } from "@/data/cars";
 
 export type FavoriteRow = {
   car_slug: string;
@@ -37,17 +38,19 @@ export async function getFavoriteSlugs(): Promise<string[]> {
   }
 }
 
-/** Favorite cars that still exist in data/cars.ts (skips deleted slugs). */
-export async function getFavoriteCars() {
+/** Favorite cars that still exist as published models (skips missing/unpublished slugs). */
+export async function getFavoriteCars(): Promise<Car[]> {
   const slugs = await getFavoriteSlugs();
   if (slugs.length === 0) {
     return [];
   }
 
-  const bySlug = new Map(cars.map((car) => [car.slug, car]));
+  const published = await getPublishedCars();
+  const bySlug = new Map(published.map((car) => [car.slug, car]));
+
   return slugs
     .map((slug) => bySlug.get(slug))
-    .filter((car): car is (typeof cars)[number] => Boolean(car));
+    .filter((car): car is Car => Boolean(car));
 }
 
 export async function isFavoriteSlug(carSlug: string): Promise<boolean> {
