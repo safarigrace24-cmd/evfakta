@@ -36,22 +36,40 @@ export default function LoginForm({ nextPath = "/min-side", initialError }: Logi
     setPending(true);
     setError(null);
 
+    const isDev = process.env.NODE_ENV === "development";
+
     try {
       const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const response = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
 
+      console.log("[login] signInWithPassword response:", response);
+
+      const { error: signInError } = response;
+
       if (signInError) {
-        setError(mapAuthError(signInError));
+        console.log("[login] signInWithPassword error:", signInError);
+        setError(
+          isDev
+            ? signInError.message || JSON.stringify(signInError)
+            : mapAuthError(signInError),
+        );
         return;
       }
 
       router.push(nextPath);
       router.refresh();
     } catch (err) {
-      setError(mapAuthError(err));
+      console.error("[login] caught exception:", err);
+      setError(
+        isDev
+          ? err instanceof Error
+            ? err.message
+            : String(err)
+          : mapAuthError(err),
+      );
     } finally {
       setPending(false);
     }

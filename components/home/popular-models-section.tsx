@@ -5,9 +5,15 @@ import SectionHeading from "@/components/ui/section-heading";
 
 type PopularModelsSectionProps = {
   cars: Car[];
+  isLoggedIn?: boolean;
+  favoriteSlugs?: string[];
 };
 
-export default function PopularModelsSection({ cars }: PopularModelsSectionProps) {
+export default function PopularModelsSection({
+  cars,
+  isLoggedIn = false,
+  favoriteSlugs = [],
+}: PopularModelsSectionProps) {
   return (
     <section className="section">
       <Container>
@@ -16,7 +22,12 @@ export default function PopularModelsSection({ cars }: PopularModelsSectionProps
           title="Start sammenligningen"
           href="/modeller"
         />
-        <CarGrid cars={cars} variant="compact" />
+        <CarGrid
+          cars={cars}
+          variant="compact"
+          isLoggedIn={isLoggedIn}
+          favoriteSlugs={favoriteSlugs}
+        />
       </Container>
     </section>
   );

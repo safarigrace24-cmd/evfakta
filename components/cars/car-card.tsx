@@ -2,15 +2,23 @@ import Link from "next/link";
 import type { Car } from "@/data/cars";
 import { formatKm, formatKwh, formatKw, formatNok } from "@/lib/format";
 import Badge from "@/components/ui/badge";
+import FavoriteButton from "@/components/favorites/favorite-button";
 import CarImage from "./car-image";
 import SpecRow from "./spec-row";
 
 type CarCardProps = {
   car: Car;
   variant?: "compact" | "full";
+  isLoggedIn?: boolean;
+  isFavorite?: boolean;
 };
 
-export default function CarCard({ car, variant = "full" }: CarCardProps) {
+export default function CarCard({
+  car,
+  variant = "full",
+  isLoggedIn = false,
+  isFavorite = false,
+}: CarCardProps) {
   const specs =
     variant === "compact"
       ? [
@@ -27,24 +35,32 @@ export default function CarCard({ car, variant = "full" }: CarCardProps) {
   const Heading = variant === "compact" ? "h3" : "h2";
 
   return (
-    <Link className="carCard" href={`/modeller/${car.slug}`}>
-      <div className="carCardTop">
-        <div className="carVisual">
-          <CarImage car={car} variant="card" />
+    <article className="carCard">
+      <FavoriteButton
+        carSlug={car.slug}
+        initialIsFavorite={isFavorite}
+        isLoggedIn={isLoggedIn}
+        variant="icon"
+      />
+      <Link className="carCardLink" href={`/modeller/${car.slug}`}>
+        <div className="carCardTop">
+          <div className="carVisual">
+            <CarImage car={car} variant="card" />
+          </div>
+          <Badge>{car.drive}</Badge>
         </div>
-        <Badge>{car.drive}</Badge>
-      </div>
-      <div className="carCardBody">
-        <span className="carBrand">{car.brand}</span>
-        <Heading>{car.model}</Heading>
-        <SpecRow items={specs} />
-        {variant === "full" && (
-          <strong className="carPrice">Fra {formatNok(car.priceNok)}</strong>
-        )}
-      </div>
-      <span className="carCardArrow" aria-hidden="true">
-        →
-      </span>
-    </Link>
+        <div className="carCardBody">
+          <span className="carBrand">{car.brand}</span>
+          <Heading>{car.model}</Heading>
+          <SpecRow items={specs} />
+          {variant === "full" && (
+            <strong className="carPrice">Fra {formatNok(car.priceNok)}</strong>
+          )}
+        </div>
+        <span className="carCardArrow" aria-hidden="true">
+          →
+        </span>
+      </Link>
+    </article>
   );
 }

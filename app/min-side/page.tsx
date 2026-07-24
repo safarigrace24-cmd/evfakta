@@ -2,7 +2,9 @@ import { redirect } from "next/navigation";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import LogoutButton from "@/components/auth/logout-button";
+import FavoriteCarsList from "@/components/favorites/favorite-cars-list";
 import { getAuthUser } from "@/lib/auth/get-user";
+import { getFavoriteCars } from "@/lib/favorites/get-favorites";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +14,8 @@ export default async function AccountPage() {
   if (!user) {
     redirect("/login?next=/min-side");
   }
+
+  const favoriteCars = await getFavoriteCars();
 
   return (
     <section className="section">
@@ -28,12 +32,9 @@ export default async function AccountPage() {
         </div>
 
         <div className="accountGrid">
-          <section className="accountCard">
+          <section className="accountCard accountCardWide">
             <h2>Favorittbiler</h2>
-            <p>
-              Her kan du snart lagre elbiler du følger med på. Funksjonen kommer i en senere
-              versjon.
-            </p>
+            <FavoriteCarsList cars={favoriteCars} />
           </section>
 
           <section className="accountCard">

@@ -5,8 +5,13 @@ import { formatKm, formatKwh, formatKw, formatNok } from "@/lib/format";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import Button from "@/components/ui/button";
+import FavoriteButton from "@/components/favorites/favorite-button";
 import CarHero from "@/components/cars/car-hero";
 import FactGrid from "@/components/cars/fact-grid";
+import { getAuthUser } from "@/lib/auth/get-user";
+import { isFavoriteSlug } from "@/lib/favorites/get-favorites";
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return cars.map((car) => ({ slug: car.slug }));
@@ -16,6 +21,8 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
   const { slug } = await params;
   const car = cars.find((item) => item.slug === slug);
   if (!car) notFound();
+
+  const [user, isFavorite] = await Promise.all([getAuthUser(), isFavoriteSlug(car.slug)]);
 
   const facts = [
     { label: "Pris fra", value: formatNok(car.priceNok), highlight: true },
@@ -34,13 +41,21 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
           <span>/</span>
           <Link href="/modeller">Modeller</Link>
           <span>/</span>
-          <span aria-current="page">{car.brand} {car.model}</span>
+          <span aria-current="page">
+            {car.brand} {car.model}
+          </span>
         </nav>
 
         <div className="detailHeader">
           <Eyebrow>{car.brand}</Eyebrow>
           <h1>{car.model}</h1>
           <p className="lead narrow">{car.description}</p>
+          <FavoriteButton
+            carSlug={car.slug}
+            initialIsFavorite={isFavorite}
+            isLoggedIn={Boolean(user)}
+            variant="labeled"
+          />
         </div>
 
         <div className="detailGrid">
@@ -60,7 +75,8 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
         <div className="sourceBox">
           <strong>Kilder og oppdatering</strong>
           <p>
-            Sist oppdatert: {car.updated}. Kontroller data mot norske produsentkilder før publisering.
+            Sist oppdatert: {car.updated}. Kontroller data mot norske produsentkilder før
+            publisering.
           </p>
         </div>
       </Container>

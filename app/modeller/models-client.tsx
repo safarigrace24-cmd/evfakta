@@ -6,7 +6,17 @@ import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import CarGrid from "@/components/cars/car-grid";
 
-export default function ModelsClient({ initialCars }: { initialCars: Car[] }) {
+type ModelsClientProps = {
+  initialCars: Car[];
+  isLoggedIn?: boolean;
+  favoriteSlugs?: string[];
+};
+
+export default function ModelsClient({
+  initialCars,
+  isLoggedIn = false,
+  favoriteSlugs = [],
+}: ModelsClientProps) {
   const [query, setQuery] = useState("");
   const [drive, setDrive] = useState("Alle");
 
@@ -46,7 +56,12 @@ export default function ModelsClient({ initialCars }: { initialCars: Car[] }) {
         <p className="resultCount">{filtered.length} modeller funnet</p>
 
         {filtered.length > 0 ? (
-          <CarGrid cars={filtered} variant="full" />
+          <CarGrid
+            cars={filtered}
+            variant="full"
+            isLoggedIn={isLoggedIn}
+            favoriteSlugs={favoriteSlugs}
+          />
         ) : (
           <div className="noResults">
             <p>Ingen modeller matcher søket ditt. Prøv et annet søkeord eller filter.</p>
