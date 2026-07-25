@@ -1,7 +1,8 @@
 import Container from "@/components/layout/container";
 import CompareClient from "@/components/compare/compare-client";
 import { getPublishedCars } from "@/lib/cars/get-published-cars";
-import { parseCompareSlugs } from "@/lib/compare/comparison";
+import { parseCompareSelections } from "@/lib/compare/comparison";
+import { resolveVariantSlug } from "@/lib/cars/variants";
 
 export const dynamic = "force-dynamic";
 
@@ -24,19 +25,28 @@ export default async function ComparePage({
   searchParams: Promise<{ biler?: string }>;
 }) {
   const params = await searchParams;
-  const [cars, initialSlugs] = await Promise.all([
+  const [cars, initialSelections] = await Promise.all([
     getPublishedCars(),
-    Promise.resolve(parseCompareSlugs(params.biler)),
+    Promise.resolve(parseCompareSelections(params.biler)),
   ]);
 
-  const validInitial = initialSlugs.filter((slug) =>
-    cars.some((car) => car.slug === slug),
-  );
+  const validInitial = initialSelections
+    .map((selection) => {
+      const car = cars.find((item) => item.slug === selection.slug);
+      if (!car) return null;
+      return {
+        slug: selection.slug,
+        variantSlug: resolveVariantSlug(car, selection.variantSlug),
+      };
+    })
+    .filter((item): item is { slug: string; variantSlug: string | null } =>
+      Boolean(item),
+    );
 
   return (
     <section className="section">
       <Container>
-        <CompareClient cars={cars} initialSlugs={validInitial} />
+        <CompareClient cars={cars} initialSelections={validInitial} />
       </Container>
     </section>
   );

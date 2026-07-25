@@ -8,45 +8,63 @@ import type { Car } from "@/data/cars";
 import {
   buildCompareHref,
   buildComparisonRows,
+  resolveCompareCars,
+  selectionKey,
+  type CompareSelection,
 } from "@/lib/compare/comparison";
+import { getDefaultVariant } from "@/lib/cars/variants";
 import Eyebrow from "@/components/ui/eyebrow";
 
 type CompareClientProps = {
   cars: Car[];
-  initialSlugs: string[];
+  initialSelections: CompareSelection[];
 };
 
 function carLabel(car: Car) {
   return `${car.brand} ${car.model}`;
 }
 
-export default function CompareClient({ cars, initialSlugs }: CompareClientProps) {
+function defaultSelectionForCar(car: Car): CompareSelection {
+  return {
+    slug: car.slug,
+    variantSlug: getDefaultVariant(car)?.slug ?? null,
+  };
+}
+
+export default function CompareClient({
+  cars,
+  initialSelections,
+}: CompareClientProps) {
   const router = useRouter();
-  const [selected, setSelected] = useState<string[]>(initialSlugs.slice(0, 3));
+  const [selected, setSelected] = useState<CompareSelection[]>(
+    initialSelections.slice(0, 3),
+  );
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const selectedCars = useMemo(
-    () =>
-      selected
-        .map((slug) => cars.find((car) => car.slug === slug))
-        .filter((car): car is Car => Boolean(car)),
+    () => resolveCompareCars(cars, selected),
     [cars, selected],
   );
 
   const rows = useMemo(() => buildComparisonRows(selectedCars), [selectedCars]);
 
-  function syncUrl(next: string[]) {
+  function syncUrl(next: CompareSelection[]) {
     startTransition(() => {
       router.replace(buildCompareHref(next), { scroll: false });
     });
   }
 
-  function toggleSlug(slug: string) {
+  function carHasAnySelection(slug: string) {
+    return selected.some((item) => item.slug === slug);
+  }
+
+  function toggleCar(car: Car) {
     setError(null);
+    const selection = defaultSelectionForCar(car);
     setSelected((current) => {
-      if (current.includes(slug)) {
-        const next = current.filter((item) => item !== slug);
+      if (carHasAnySelection(car.slug)) {
+        const next = current.filter((item) => item.slug !== car.slug);
         syncUrl(next);
         return next;
       }
@@ -54,7 +72,17 @@ export default function CompareClient({ cars, initialSlugs }: CompareClientProps
         setError("Du kan sammenligne maksimalt tre biler.");
         return current;
       }
-      const next = [...current, slug];
+      const next = [...current, selection];
+      syncUrl(next);
+      return next;
+    });
+  }
+
+  function setVariantForSlot(index: number, variantSlug: string) {
+    setSelected((current) => {
+      const next = current.map((item, i) =>
+        i === index ? { ...item, variantSlug: variantSlug || null } : item,
+      );
       syncUrl(next);
       return next;
     });
@@ -86,6 +114,7 @@ export default function CompareClient({ cars, initialSlugs }: CompareClientProps
         <h1>Sammenlign elbiler</h1>
         <p className="lead narrow">
           Velg 2–3 publiserte modeller. Lenken oppdateres automatisk og kan deles.
+          Har en bil flere varianter, velger du trim under tabellen.
         </p>
       </div>
 
@@ -104,14 +133,14 @@ export default function CompareClient({ cars, initialSlugs }: CompareClientProps
 
         <ul className="compareChipList">
           {cars.map((car) => {
-            const active = selected.includes(car.slug);
+            const active = carHasAnySelection(car.slug);
             return (
               <li key={car.slug}>
                 <button
                   type="button"
                   className={active ? "compareChip active" : "compareChip"}
                   aria-pressed={active}
-                  onClick={() => toggleSlug(car.slug)}
+                  onClick={() => toggleCar(car)}
                 >
                   {carLabel(car)}
                 </button>
@@ -145,30 +174,65 @@ export default function CompareClient({ cars, initialSlugs }: CompareClientProps
             <thead>
               <tr>
                 <th scope="col">Spesifikasjon</th>
-                {selectedCars.map((car) => (
-                  <th key={car.slug} scope="col">
-                    <Link href={`/modeller/${car.slug}`} className="compareCarHead">
-                      <span className="compareCarThumb">
-                        {car.imageUrl ? (
-                          <Image
-                            src={car.imageUrl}
-                            alt=""
-                            width={72}
-                            height={48}
-                            unoptimized
-                          />
-                        ) : (
-                          <span aria-hidden="true">{car.brand.slice(0, 1)}</span>
-                        )}
-                      </span>
-                      <span>
-                        {car.brand}
-                        <br />
-                        <strong>{car.model}</strong>
-                      </span>
-                    </Link>
-                  </th>
-                ))}
+                {selectedCars.map((car, index) => {
+                  const selection = selected[index];
+                  const base = cars.find((item) => item.slug === car.slug);
+                  const variants = base?.variants ?? [];
+                  return (
+                    <th key={selectionKey(selection)} scope="col">
+                      <Link
+                        href={
+                          selection.variantSlug
+                            ? `/modeller/${car.slug}?variant=${encodeURIComponent(selection.variantSlug)}`
+                            : `/modeller/${car.slug}`
+                        }
+                        className="compareCarHead"
+                      >
+                        <span className="compareCarThumb">
+                          {car.imageUrl ? (
+                            <Image
+                              src={car.imageUrl}
+                              alt=""
+                              width={72}
+                              height={48}
+                              unoptimized
+                            />
+                          ) : (
+                            <span aria-hidden="true">{car.brand.slice(0, 1)}</span>
+                          )}
+                        </span>
+                        <span>
+                          {car.brand}
+                          <br />
+                          <strong>{car.model}</strong>
+                          {car.variant ? (
+                            <>
+                              <br />
+                              <span className="compareVariantLabel">{car.variant}</span>
+                            </>
+                          ) : null}
+                        </span>
+                      </Link>
+                      {variants.length > 0 && (
+                        <label className="compareVariantPick">
+                          <span className="srOnly">Variant for {car.model}</span>
+                          <select
+                            value={selection.variantSlug ?? ""}
+                            onChange={(event) =>
+                              setVariantForSlot(index, event.target.value)
+                            }
+                          >
+                            {variants.map((variant) => (
+                              <option key={variant.id} value={variant.slug}>
+                                {variant.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>

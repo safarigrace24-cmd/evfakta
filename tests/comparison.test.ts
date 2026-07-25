@@ -4,6 +4,7 @@ import type { Car } from "../data/cars";
 import {
   buildCompareHref,
   buildComparisonRows,
+  parseCompareSelections,
   parseCompareSlugs,
 } from "../lib/compare/comparison";
 
@@ -33,6 +34,16 @@ describe("parseCompareSlugs", () => {
 describe("buildCompareHref", () => {
   it("builds shareable URL", () => {
     assert.equal(buildCompareHref(["tesla-model-y", "vw-id4"]), "/sammenlign?biler=tesla-model-y%2Cvw-id4");
+  });
+
+  it("supports variant tokens", () => {
+    assert.deepEqual(
+      parseCompareSelections("tesla-model-y:performance,vw-id4"),
+      [
+        { slug: "tesla-model-y", variantSlug: "performance" },
+        { slug: "vw-id4", variantSlug: null },
+      ],
+    );
   });
 });
 

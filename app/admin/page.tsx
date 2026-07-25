@@ -74,11 +74,17 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="adminQuickActions">
-          <Link href="/admin/biler/ny" className="button primary">
+          <Link href="/admin/import/ny" className="button primary">
+            Ny import
+          </Link>
+          <Link href="/admin/biler/ny" className="button secondary">
             Legg til bil
           </Link>
           <Link href="/admin/biler" className="button secondary">
-            Se alle biler
+            Se katalog
+          </Link>
+          <Link href="/admin/import" className="button secondary">
+            Import-dashboard
           </Link>
           <Link href="/admin/merker" className="button secondary">
             Administrer merker

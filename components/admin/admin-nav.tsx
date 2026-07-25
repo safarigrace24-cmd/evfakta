@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type AdminNavProps = {
-  current?: "dashboard" | "cars" | "new" | "brands";
+  current?: "dashboard" | "cars" | "new" | "brands" | "import";
 };
 
 export default function AdminNav({ current = "dashboard" }: AdminNavProps) {
@@ -13,6 +13,13 @@ export default function AdminNav({ current = "dashboard" }: AdminNavProps) {
         aria-current={current === "dashboard" ? "page" : undefined}
       >
         Oversikt
+      </Link>
+      <Link
+        href="/admin/import"
+        className={current === "import" ? "adminNavLink active" : "adminNavLink"}
+        aria-current={current === "import" ? "page" : undefined}
+      >
+        Import
       </Link>
       <Link
         href="/admin/merker"

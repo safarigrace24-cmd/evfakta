@@ -6,10 +6,12 @@ import AdminNav from "@/components/admin/admin-nav";
 import AdminCarForm from "@/components/admin/admin-car-form";
 import AdminCarGallery from "@/components/admin/admin-car-gallery";
 import AdminCarReviewPanel from "@/components/admin/admin-car-review-panel";
+import AdminCarVariantsPanel from "@/components/admin/admin-car-variants-panel";
 import { requireAdminUser } from "@/lib/auth/require-admin";
 import { getAdminCarById } from "@/lib/admin/cars";
 import { listAdminCarImages } from "@/lib/admin/car-images";
 import { listAdminBrands } from "@/lib/admin/brands";
+import { listAdminCarVariants } from "@/lib/admin/variants";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +32,10 @@ export default async function AdminEditCarPage({
     notFound();
   }
 
-  const images = await listAdminCarImages(car.id);
+  const [images, variants] = await Promise.all([
+    listAdminCarImages(car.id),
+    listAdminCarVariants(car.id),
+  ]);
 
   return (
     <section className="section">
@@ -51,6 +56,7 @@ export default async function AdminEditCarPage({
         <AdminNav current="cars" />
         <AdminCarReviewPanel car={car} />
         <AdminCarGallery carId={car.id} carSlug={car.slug} initialImages={images} />
+        <AdminCarVariantsPanel carId={car.id} initialVariants={variants} />
         <AdminCarForm mode="edit" car={car} brands={brands} />
       </Container>
     </section>

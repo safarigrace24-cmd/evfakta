@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Car } from "@/data/cars";
+import { withDefaultVariantSpecs } from "@/lib/cars/variants";
 import { formatKm, formatKwh, formatKw, formatNok } from "@/lib/format";
 import Badge from "@/components/ui/badge";
 import FavoriteButton from "@/components/favorites/favorite-button";
@@ -19,17 +20,18 @@ export default function CarCard({
   isLoggedIn = false,
   isFavorite = false,
 }: CarCardProps) {
+  const display = withDefaultVariantSpecs(car);
   const specs =
     variant === "compact"
       ? [
-          { value: formatKm(car.rangeKm), label: "WLTP" },
-          { value: formatKw(car.dcKw), label: "DC-lading" },
-          { value: formatNok(car.priceNok), label: "Fra pris" },
+          { value: formatKm(display.rangeKm), label: "WLTP" },
+          { value: formatKw(display.dcKw), label: "DC-lading" },
+          { value: formatNok(display.priceNok), label: "Fra pris" },
         ]
       : [
-          { value: formatKm(car.rangeKm), label: "WLTP" },
-          { value: formatKwh(car.batteryKwh), label: "Batteri" },
-          { value: formatKw(car.dcKw), label: "DC-lading" },
+          { value: formatKm(display.rangeKm), label: "WLTP" },
+          { value: formatKwh(display.batteryKwh), label: "Batteri" },
+          { value: formatKw(display.dcKw), label: "DC-lading" },
         ];
 
   const Heading = variant === "compact" ? "h3" : "h2";
@@ -47,14 +49,14 @@ export default function CarCard({
           <div className="carVisual">
             <CarImage car={car} variant="card" />
           </div>
-          <Badge>{car.drive}</Badge>
+          <Badge>{display.drive}</Badge>
         </div>
         <div className="carCardBody">
           <span className="carBrand">{car.brand}</span>
           <Heading>{car.model}</Heading>
           <SpecRow items={specs} />
           {variant === "full" && (
-            <strong className="carPrice">Fra {formatNok(car.priceNok)}</strong>
+            <strong className="carPrice">Fra {formatNok(display.priceNok)}</strong>
           )}
         </div>
         <span className="carCardArrow" aria-hidden="true">

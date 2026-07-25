@@ -2613,3 +2613,253 @@ h3 {
   }
 
 }
+
+/* ── Catalog import / bulk catalog ── */
+
+.adminImportLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.adminImportSection {
+  margin-top: 36px;
+}
+
+.adminImportSection h2 {
+  margin: 0 0 14px;
+  font-size: 1.25rem;
+}
+
+.adminMethodList {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.adminMethodList strong {
+  color: var(--text);
+}
+
+.adminHint {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.adminSuccess {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  font-weight: 600;
+}
+
+.adminImportDetails {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+}
+
+.adminImportDetails summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.adminImportDetails ul {
+  margin: 12px 0 0;
+  padding-left: 1.2rem;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.adminStatusBadge.decision-import,
+.adminStatusBadge.decision-update,
+.adminStatusBadge.status-completed {
+  background: var(--brand-light);
+  color: var(--brand-dark);
+}
+
+.adminStatusBadge.decision-skip,
+.adminStatusBadge.status-preview {
+  background: var(--bg-alt);
+  color: var(--muted);
+}
+
+.adminStatusBadge.decision-error,
+.adminStatusBadge.status-failed {
+  background: #fde8e8;
+  color: #9b1c1c;
+}
+
+.adminStatusBadge.decision-warning,
+.adminStatusBadge.decision-image,
+.adminStatusBadge.status-running {
+  background: #fff4e5;
+  color: #9a5b00;
+}
+
+.adminBulkBar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+}
+
+.adminBulkActions,
+.adminBulkAssign {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.adminBulkAssign input,
+.adminBulkAssign select {
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text);
+}
+
+/* ── Model variants ── */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.variantSelector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 18px 0 4px;
+}
+
+.variantSelectorLabel {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.variantSelect,
+.compareVariantPick select {
+  min-height: 42px;
+  min-width: min(100%, 280px);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+  padding: 8px 12px;
+  font: inherit;
+  color: var(--text);
+}
+
+.compareVariantPick {
+  display: block;
+  margin-top: 10px;
+}
+
+.compareVariantLabel {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.adminVariantsPanel {
+  margin: 28px 0;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+}
+
+.adminVariantsPanel h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.adminVariantsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.adminVariantRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+}
+
+.adminVariantMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.adminVariantMeta strong {
+  margin-right: 4px;
+}
+
+.adminVariantActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.adminVariantForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.adminVariantForm .adminFormFull {
+  grid-column: 1 / -1;
+}
+
+.adminVariantFormChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.adminVariantFormChecks label {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .adminVariantForm {
+    grid-template-columns: 1fr;
+  }
+}

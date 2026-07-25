@@ -7,6 +7,37 @@ export type CarGalleryImage = {
   isPrimary: boolean;
 };
 
+export type CarVariant = {
+  id: string;
+  slug: string;
+  name: string;
+  trimLevel: string | null;
+  modelYear: number | null;
+  priceNok: number | null;
+  batteryTotalKwh: number | null;
+  batteryUsableKwh: number | null;
+  rangeKm: number | null;
+  winterRangeKm: number | null;
+  realWorldRangeKm: number | null;
+  consumptionKwh100km: number | null;
+  acKw: number | null;
+  dcKw: number | null;
+  chargeTime1080Minutes: number | null;
+  drive: "Forhjulsdrift" | "Bakhjulsdrift" | "Firehjulsdrift" | null;
+  powerHp: number | null;
+  torqueNm: number | null;
+  acceleration0100: number | null;
+  topSpeedKmh: number | null;
+  towingKg: number | null;
+  curbWeightKg: number | null;
+  isDefault: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  sourceName: string | null;
+  sourceUrl: string | null;
+  dataLastCheckedAt: string | null;
+};
+
 export type Car = {
   slug: string;
   brand: string;
@@ -23,6 +54,10 @@ export type Car = {
   imageUrl?: string | null;
   /** Multi-image gallery from public.car_images (optional) */
   images?: CarGalleryImage[];
+  /** Active variants from public.car_variants (optional). */
+  variants?: CarVariant[];
+  /** Currently selected variant slug when specs are overlaid. */
+  selectedVariantSlug?: string | null;
   year?: number | null;
   sourceName?: string | null;
   sourceUrl?: string | null;
@@ -39,6 +74,35 @@ export type Car = {
   warranty?: string | null;
   vehicleType?: string | null;
   bodyStyle?: string | null;
+  variant?: string | null;
+  trimLevel?: string | null;
+  modelGeneration?: string | null;
+  batteryTotalKwh?: number | null;
+  batteryUsableKwh?: number | null;
+  batteryChemistry?: string | null;
+  winterRangeKm?: number | null;
+  realWorldRangeKm?: number | null;
+  chargeTime1080Minutes?: number | null;
+  chargingConnectorAc?: string | null;
+  chargingConnectorDc?: string | null;
+  lengthMm?: number | null;
+  widthMm?: number | null;
+  heightMm?: number | null;
+  wheelbaseMm?: number | null;
+  curbWeightKg?: number | null;
+  grossWeightKg?: number | null;
+  frunkL?: number | null;
+  heatPump?: boolean | null;
+  v2l?: boolean | null;
+  v2g?: boolean | null;
+  appleCarplay?: boolean | null;
+  androidAuto?: boolean | null;
+  headUpDisplay?: boolean | null;
+  panoramicRoof?: boolean | null;
+  otaUpdates?: boolean | null;
+  pros?: string[] | null;
+  cons?: string[] | null;
+  suitableFor?: string[] | null;
   /** Manual EVFAKTA scores (0–10). Never auto-generated. */
   rangeScore?: number | null;
   chargingScore?: number | null;

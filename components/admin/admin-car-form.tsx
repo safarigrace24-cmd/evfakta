@@ -9,6 +9,7 @@ import {
 } from "@/app/admin/actions";
 import AdminCarImageField from "@/components/admin/admin-car-image-field";
 import type { AdminBrand } from "@/lib/admin/brand-types";
+import { boolToInput, textListToInput } from "@/lib/admin/field-parsers";
 import {
   BODY_STYLE_OPTIONS,
   DRIVETRAIN_OPTIONS,
@@ -45,11 +46,22 @@ function toFormState(car?: AdminCar): AdminCarInput {
     brand_id: car?.brand_id ?? "",
     model: car?.model ?? "",
     slug: car?.slug ?? "",
+    variant: car?.variant ?? "",
+    trim_level: car?.trim_level ?? "",
+    model_generation: car?.model_generation ?? "",
     year: numToInput(car?.year),
     price_nok: numToInput(car?.price_nok),
     range_km: numToInput(car?.range_km),
     battery_kwh: numToInput(car?.battery_kwh),
+    battery_total_kwh: numToInput(car?.battery_total_kwh),
+    battery_usable_kwh: numToInput(car?.battery_usable_kwh),
+    battery_chemistry: car?.battery_chemistry ?? "",
+    winter_range_km: numToInput(car?.winter_range_km),
+    real_world_range_km: numToInput(car?.real_world_range_km),
     dc_charging_kw: numToInput(car?.dc_charging_kw),
+    charge_time_10_80_minutes: numToInput(car?.charge_time_10_80_minutes),
+    charging_connector_ac: car?.charging_connector_ac ?? "",
+    charging_connector_dc: car?.charging_connector_dc ?? "",
     drivetrain: car?.drivetrain ?? "",
     image_url: car?.image_url ?? "",
     description: car?.description ?? "",
@@ -66,6 +78,24 @@ function toFormState(car?: AdminCar): AdminCarInput {
     ac_charging_kw: numToInput(car?.ac_charging_kw),
     vehicle_type: car?.vehicle_type ?? "",
     body_style: car?.body_style ?? "",
+    length_mm: numToInput(car?.length_mm),
+    width_mm: numToInput(car?.width_mm),
+    height_mm: numToInput(car?.height_mm),
+    wheelbase_mm: numToInput(car?.wheelbase_mm),
+    curb_weight_kg: numToInput(car?.curb_weight_kg),
+    gross_weight_kg: numToInput(car?.gross_weight_kg),
+    frunk_l: numToInput(car?.frunk_l),
+    heat_pump: boolToInput(car?.heat_pump),
+    v2l: boolToInput(car?.v2l),
+    v2g: boolToInput(car?.v2g),
+    apple_carplay: boolToInput(car?.apple_carplay),
+    android_auto: boolToInput(car?.android_auto),
+    head_up_display: boolToInput(car?.head_up_display),
+    panoramic_roof: boolToInput(car?.panoramic_roof),
+    ota_updates: boolToInput(car?.ota_updates),
+    pros: textListToInput(car?.pros),
+    cons: textListToInput(car?.cons),
+    suitable_for: textListToInput(car?.suitable_for),
     source_url: car?.source_url ?? "",
     source_name: car?.source_name ?? "",
     source_updated_at: dateToInput(car?.source_updated_at),
@@ -83,6 +113,29 @@ function toFormState(car?: AdminCar): AdminCarInput {
     score_notes: car?.score_notes ?? "",
     score_methodology: car?.score_methodology ?? "",
   };
+}
+
+function BoolSelect({
+  label,
+  value,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  disabled: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="authField">
+      <span>{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}>
+        <option value="">Ukjent</option>
+        <option value="true">Ja</option>
+        <option value="false">Nei</option>
+      </select>
+    </label>
+  );
 }
 
 function slugify(value: string): string {
@@ -246,6 +299,35 @@ export default function AdminCarForm({ mode, car, brands = [] }: AdminCarFormPro
           </label>
 
           <label className="authField">
+            <span>Variant</span>
+            <input
+              value={form.variant}
+              onChange={(e) => updateField("variant", e.target.value)}
+              disabled={isPending}
+              placeholder="Long Range AWD"
+            />
+          </label>
+
+          <label className="authField">
+            <span>Trim</span>
+            <input
+              value={form.trim_level}
+              onChange={(e) => updateField("trim_level", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Generasjon</span>
+            <input
+              value={form.model_generation}
+              onChange={(e) => updateField("model_generation", e.target.value)}
+              disabled={isPending}
+              placeholder="Juniper / MEB"
+            />
+          </label>
+
+          <label className="authField">
             <span>Slug *</span>
             <input
               value={form.slug}
@@ -322,11 +404,61 @@ export default function AdminCarForm({ mode, car, brands = [] }: AdminCarFormPro
           </label>
 
           <label className="authField">
-            <span>Batteri (kWh)</span>
+            <span>Batteri (kWh, legacy)</span>
             <input
               inputMode="decimal"
               value={form.battery_kwh}
               onChange={(e) => updateField("battery_kwh", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Batteri totalt (kWh)</span>
+            <input
+              inputMode="decimal"
+              value={form.battery_total_kwh}
+              onChange={(e) => updateField("battery_total_kwh", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Batteri brukbart (kWh)</span>
+            <input
+              inputMode="decimal"
+              value={form.battery_usable_kwh}
+              onChange={(e) => updateField("battery_usable_kwh", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Batterikjemi</span>
+            <input
+              value={form.battery_chemistry}
+              onChange={(e) => updateField("battery_chemistry", e.target.value)}
+              disabled={isPending}
+              placeholder="NMC / LFP"
+            />
+          </label>
+
+          <label className="authField">
+            <span>Vinterrekkevidde (km)</span>
+            <input
+              inputMode="numeric"
+              value={form.winter_range_km}
+              onChange={(e) => updateField("winter_range_km", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Real-world rekkevidde (km)</span>
+            <input
+              inputMode="numeric"
+              value={form.real_world_range_km}
+              onChange={(e) => updateField("real_world_range_km", e.target.value)}
               disabled={isPending}
             />
           </label>
@@ -358,6 +490,36 @@ export default function AdminCarForm({ mode, car, brands = [] }: AdminCarFormPro
               value={form.ac_charging_kw}
               onChange={(e) => updateField("ac_charging_kw", e.target.value)}
               disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Ladetid 10–80 % (min)</span>
+            <input
+              inputMode="numeric"
+              value={form.charge_time_10_80_minutes}
+              onChange={(e) => updateField("charge_time_10_80_minutes", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>AC-kontakt</span>
+            <input
+              value={form.charging_connector_ac}
+              onChange={(e) => updateField("charging_connector_ac", e.target.value)}
+              disabled={isPending}
+              placeholder="Type 2"
+            />
+          </label>
+
+          <label className="authField">
+            <span>DC-kontakt</span>
+            <input
+              value={form.charging_connector_dc}
+              onChange={(e) => updateField("charging_connector_dc", e.target.value)}
+              disabled={isPending}
+              placeholder="CCS2 / NACS"
             />
           </label>
 
@@ -448,12 +610,162 @@ export default function AdminCarForm({ mode, car, brands = [] }: AdminCarFormPro
           </label>
 
           <label className="authField">
+            <span>Frunk (l)</span>
+            <input
+              inputMode="numeric"
+              value={form.frunk_l}
+              onChange={(e) => updateField("frunk_l", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Lengde (mm)</span>
+            <input
+              inputMode="numeric"
+              value={form.length_mm}
+              onChange={(e) => updateField("length_mm", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Bredde (mm)</span>
+            <input
+              inputMode="numeric"
+              value={form.width_mm}
+              onChange={(e) => updateField("width_mm", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Høyde (mm)</span>
+            <input
+              inputMode="numeric"
+              value={form.height_mm}
+              onChange={(e) => updateField("height_mm", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Akselavstand (mm)</span>
+            <input
+              inputMode="numeric"
+              value={form.wheelbase_mm}
+              onChange={(e) => updateField("wheelbase_mm", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Egenvekt (kg)</span>
+            <input
+              inputMode="numeric"
+              value={form.curb_weight_kg}
+              onChange={(e) => updateField("curb_weight_kg", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField">
+            <span>Totalvekt (kg)</span>
+            <input
+              inputMode="numeric"
+              value={form.gross_weight_kg}
+              onChange={(e) => updateField("gross_weight_kg", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <BoolSelect
+            label="Varmepumpe"
+            value={form.heat_pump}
+            disabled={isPending}
+            onChange={(value) => updateField("heat_pump", value)}
+          />
+          <BoolSelect
+            label="V2L"
+            value={form.v2l}
+            disabled={isPending}
+            onChange={(value) => updateField("v2l", value)}
+          />
+          <BoolSelect
+            label="V2G"
+            value={form.v2g}
+            disabled={isPending}
+            onChange={(value) => updateField("v2g", value)}
+          />
+          <BoolSelect
+            label="Apple CarPlay"
+            value={form.apple_carplay}
+            disabled={isPending}
+            onChange={(value) => updateField("apple_carplay", value)}
+          />
+          <BoolSelect
+            label="Android Auto"
+            value={form.android_auto}
+            disabled={isPending}
+            onChange={(value) => updateField("android_auto", value)}
+          />
+          <BoolSelect
+            label="Head-up display"
+            value={form.head_up_display}
+            disabled={isPending}
+            onChange={(value) => updateField("head_up_display", value)}
+          />
+          <BoolSelect
+            label="Panoramatak"
+            value={form.panoramic_roof}
+            disabled={isPending}
+            onChange={(value) => updateField("panoramic_roof", value)}
+          />
+          <BoolSelect
+            label="OTA-oppdateringer"
+            value={form.ota_updates}
+            disabled={isPending}
+            onChange={(value) => updateField("ota_updates", value)}
+          />
+
+          <label className="authField">
             <span>Garanti</span>
             <input
               value={form.warranty}
               onChange={(e) => updateField("warranty", e.target.value)}
               disabled={isPending}
               placeholder="f.eks. 5 år / 100 000 km"
+            />
+          </label>
+
+          <label className="authField adminFormFull">
+            <span>Fordeler (én per linje)</span>
+            <textarea
+              rows={3}
+              value={form.pros}
+              onChange={(e) => updateField("pros", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField adminFormFull">
+            <span>Ulemper (én per linje)</span>
+            <textarea
+              rows={3}
+              value={form.cons}
+              onChange={(e) => updateField("cons", e.target.value)}
+              disabled={isPending}
+            />
+          </label>
+
+          <label className="authField adminFormFull">
+            <span>Passer for (én per linje)</span>
+            <textarea
+              rows={2}
+              value={form.suitable_for}
+              onChange={(e) => updateField("suitable_for", e.target.value)}
+              disabled={isPending}
+              placeholder="Familie&#10;Pendling&#10;Tilhenger"
             />
           </label>
 

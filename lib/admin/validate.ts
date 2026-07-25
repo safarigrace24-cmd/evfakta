@@ -1,4 +1,9 @@
 import {
+  emptyToNull,
+  parseOptionalBoolean,
+  parseTextList,
+} from "@/lib/admin/field-parsers";
+import {
   ADMIN_MESSAGES,
   BODY_STYLE_OPTIONS,
   DRIVETRAIN_OPTIONS,
@@ -9,11 +14,6 @@ import {
   type AdminCarWrite,
   type ImportStatus,
 } from "@/lib/admin/types";
-
-function emptyToNull(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed ? trimmed : null;
-}
 
 function parseOptionalInt(value: string, label: string): { ok: true; value: number | null } | { ok: false; error: string } {
   const trimmed = value.trim();
@@ -99,6 +99,21 @@ export function validateAdminCarInput(
   const battery = parseOptionalNumber(input.battery_kwh, "Batteri");
   if (!battery.ok) return battery;
 
+  const batteryTotal = parseOptionalNumber(input.battery_total_kwh, "Batteri totalt");
+  if (!batteryTotal.ok) return batteryTotal;
+
+  const batteryUsable = parseOptionalNumber(input.battery_usable_kwh, "Batteri brukbart");
+  if (!batteryUsable.ok) return batteryUsable;
+
+  const winterRange = parseOptionalInt(input.winter_range_km, "Vinterrekkevidde");
+  if (!winterRange.ok) return winterRange;
+
+  const realWorldRange = parseOptionalInt(input.real_world_range_km, "Real-world rekkevidde");
+  if (!realWorldRange.ok) return realWorldRange;
+
+  const charge1080 = parseOptionalInt(input.charge_time_10_80_minutes, "Ladetid 10–80");
+  if (!charge1080.ok) return charge1080;
+
   const dc = parseOptionalInt(input.dc_charging_kw, "DC-lading");
   if (!dc.ok) return dc;
 
@@ -128,6 +143,38 @@ export function validateAdminCarInput(
 
   const ac = parseOptionalNumber(input.ac_charging_kw, "AC-lading");
   if (!ac.ok) return ac;
+
+  const lengthMm = parseOptionalInt(input.length_mm, "Lengde");
+  if (!lengthMm.ok) return lengthMm;
+  const widthMm = parseOptionalInt(input.width_mm, "Bredde");
+  if (!widthMm.ok) return widthMm;
+  const heightMm = parseOptionalInt(input.height_mm, "Høyde");
+  if (!heightMm.ok) return heightMm;
+  const wheelbaseMm = parseOptionalInt(input.wheelbase_mm, "Akselavstand");
+  if (!wheelbaseMm.ok) return wheelbaseMm;
+  const curbWeight = parseOptionalInt(input.curb_weight_kg, "Egenvekt");
+  if (!curbWeight.ok) return curbWeight;
+  const grossWeight = parseOptionalInt(input.gross_weight_kg, "Totalvekt");
+  if (!grossWeight.ok) return grossWeight;
+  const frunk = parseOptionalInt(input.frunk_l, "Frunk");
+  if (!frunk.ok) return frunk;
+
+  const heatPump = parseOptionalBoolean(input.heat_pump, "Varmepumpe");
+  if (!heatPump.ok) return heatPump;
+  const v2l = parseOptionalBoolean(input.v2l, "V2L");
+  if (!v2l.ok) return v2l;
+  const v2g = parseOptionalBoolean(input.v2g, "V2G");
+  if (!v2g.ok) return v2g;
+  const appleCarplay = parseOptionalBoolean(input.apple_carplay, "Apple CarPlay");
+  if (!appleCarplay.ok) return appleCarplay;
+  const androidAuto = parseOptionalBoolean(input.android_auto, "Android Auto");
+  if (!androidAuto.ok) return androidAuto;
+  const headUpDisplay = parseOptionalBoolean(input.head_up_display, "Head-up display");
+  if (!headUpDisplay.ok) return headUpDisplay;
+  const panoramicRoof = parseOptionalBoolean(input.panoramic_roof, "Panoramatak");
+  if (!panoramicRoof.ok) return panoramicRoof;
+  const otaUpdates = parseOptionalBoolean(input.ota_updates, "OTA-oppdateringer");
+  if (!otaUpdates.ok) return otaUpdates;
 
   const sourceUpdated = parseOptionalTimestamptz(input.source_updated_at, "Kilde oppdatert");
   if (!sourceUpdated.ok) return sourceUpdated;
@@ -219,11 +266,22 @@ export function validateAdminCarInput(
       brand_id,
       model,
       slug,
+      variant: emptyToNull(input.variant),
+      trim_level: emptyToNull(input.trim_level),
+      model_generation: emptyToNull(input.model_generation),
       year: year.value,
       price_nok: price.value,
       range_km: range.value,
       battery_kwh: battery.value,
+      battery_total_kwh: batteryTotal.value,
+      battery_usable_kwh: batteryUsable.value,
+      battery_chemistry: emptyToNull(input.battery_chemistry),
+      winter_range_km: winterRange.value,
+      real_world_range_km: realWorldRange.value,
       dc_charging_kw: dc.value,
+      charge_time_10_80_minutes: charge1080.value,
+      charging_connector_ac: emptyToNull(input.charging_connector_ac),
+      charging_connector_dc: emptyToNull(input.charging_connector_dc),
       drivetrain,
       image_url: imageUrl,
       description: emptyToNull(input.description),
@@ -240,6 +298,24 @@ export function validateAdminCarInput(
       ac_charging_kw: ac.value,
       vehicle_type: vehicleType,
       body_style: bodyStyle,
+      length_mm: lengthMm.value,
+      width_mm: widthMm.value,
+      height_mm: heightMm.value,
+      wheelbase_mm: wheelbaseMm.value,
+      curb_weight_kg: curbWeight.value,
+      gross_weight_kg: grossWeight.value,
+      frunk_l: frunk.value,
+      heat_pump: heatPump.value,
+      v2l: v2l.value,
+      v2g: v2g.value,
+      apple_carplay: appleCarplay.value,
+      android_auto: androidAuto.value,
+      head_up_display: headUpDisplay.value,
+      panoramic_roof: panoramicRoof.value,
+      ota_updates: otaUpdates.value,
+      pros: parseTextList(input.pros),
+      cons: parseTextList(input.cons),
+      suitable_for: parseTextList(input.suitable_for),
       source_url: sourceUrl,
       source_name: emptyToNull(input.source_name),
       source_updated_at: sourceUpdated.value,

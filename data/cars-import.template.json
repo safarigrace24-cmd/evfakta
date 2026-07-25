@@ -1,0 +1,35 @@
+{
+  "source_name": "Eksempelkilde",
+  "source_url": "https://example.com",
+  "cars": [
+    {
+      "slug": "tesla-model-y",
+      "brand": "Tesla",
+      "model": "Model Y",
+      "year": 2025,
+      "price_nok": 499990,
+      "range_km": 568,
+      "battery_kwh": 75,
+      "dc_charging_kw": 250,
+      "drivetrain": "Firehjulsdrift",
+      "image_url": "/images/cars/tesla-model-y.webp",
+      "description": "Eksempelbeskrivelse – fyll med verifiserte tall.",
+      "is_published": false,
+      "country": "NO",
+      "body_style": "SUV",
+      "vehicle_type": "SUV",
+      "source_name": "Tesla Norge",
+      "source_url": "https://www.tesla.com/no_NO",
+      "data_last_checked_at": "2026-07-25",
+      "import_status": "needs_review",
+      "import_notes": "Importert via JSON-mal",
+      "gallery_images": [
+        {
+          "url": "https://example.com/tesla-model-y-front.jpg",
+          "image_type": "front",
+          "is_primary": true
+        }
+      ]
+    }
+  ]
+}
