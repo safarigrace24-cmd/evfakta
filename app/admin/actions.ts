@@ -51,9 +51,14 @@ export async function createAdminCarAction(
 
   try {
     const supabase = createAdminClient();
+    // Manual/admin creates stay unpublished unless explicitly checked;
+    // imported cars should also arrive with is_published=false + draft/needs_review.
     const { data, error } = await supabase
       .from("cars")
-      .insert(validated.data)
+      .insert({
+        ...validated.data,
+        import_status: validated.data.import_status || "draft",
+      })
       .select("id")
       .single();
 
@@ -160,6 +165,69 @@ export async function setAdminCarPublishedAction(
     console.error("[admin] setAdminCarPublishedAction exception:", error);
     return { ok: false, error: ADMIN_MESSAGES.unavailable };
   }
+}
+
+async function setAdminCarImportStatusAction(
+  id: string,
+  importStatus: "draft" | "needs_review" | "approved",
+  successMessage: string,
+): Promise<AdminActionResult> {
+  const auth = await assertAdmin();
+  if (!auth.ok) return auth;
+
+  if (!id) {
+    return { ok: false, error: ADMIN_MESSAGES.notFound };
+  }
+
+  if (!adminDbReady()) {
+    return { ok: false, error: ADMIN_MESSAGES.unavailable };
+  }
+
+  try {
+    const supabase = createAdminClient();
+    // Approval must never publish — only import_status changes here.
+    const { data, error } = await supabase
+      .from("cars")
+      .update({ import_status: importStatus })
+      .eq("id", id)
+      .select("id, slug")
+      .maybeSingle();
+
+    if (error) {
+      return { ok: false, error: mapAdminDbError(error) };
+    }
+
+    if (!data) {
+      return { ok: false, error: ADMIN_MESSAGES.notFound };
+    }
+
+    revalidateAdminPaths(data.slug as string);
+    return { ok: true, message: successMessage, id };
+  } catch (error) {
+    console.error("[admin] setAdminCarImportStatusAction exception:", error);
+    return { ok: false, error: ADMIN_MESSAGES.unavailable };
+  }
+}
+
+/** Mark car for manual review. Does not publish. */
+export async function markAdminCarNeedsReviewAction(
+  id: string,
+): Promise<AdminActionResult> {
+  return setAdminCarImportStatusAction(
+    id,
+    "needs_review",
+    ADMIN_MESSAGES.needsReviewSuccess,
+  );
+}
+
+/** Approve car data after review. Does not publish. */
+export async function approveAdminCarAction(id: string): Promise<AdminActionResult> {
+  return setAdminCarImportStatusAction(id, "approved", ADMIN_MESSAGES.approveSuccess);
+}
+
+/** Publish to public site. Separate from approval. */
+export async function publishAdminCarAction(id: string): Promise<AdminActionResult> {
+  return setAdminCarPublishedAction(id, true);
 }
 
 export async function deleteAdminCarAction(id: string): Promise<AdminActionResult> {

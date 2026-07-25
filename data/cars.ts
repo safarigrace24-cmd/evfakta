@@ -1,3 +1,12 @@
+export type CarGalleryImage = {
+  id: string;
+  imageUrl: string;
+  imageType: "front" | "rear" | "side" | "interior" | "cargo" | "detail" | "other";
+  altText: string | null;
+  sortOrder: number;
+  isPrimary: boolean;
+};
+
 export type Car = {
   slug: string;
   brand: string;
@@ -10,8 +19,22 @@ export type Car = {
   drive: "Forhjulsdrift" | "Bakhjulsdrift" | "Firehjulsdrift";
   description: string;
   updated: string;
-  /** Optional image from Supabase; falls back to /images/cars/{slug}.webp */
+  /** Primary / legacy image; falls back to /images/cars/{slug}.webp */
   imageUrl?: string | null;
+  /** Multi-image gallery from public.car_images (optional) */
+  images?: CarGalleryImage[];
+  /** Extended EV fields from public.cars (optional for backwards compatibility) */
+  consumptionKwh100km?: number | null;
+  powerHp?: number | null;
+  torqueNm?: number | null;
+  acceleration0100?: number | null;
+  topSpeedKmh?: number | null;
+  seats?: number | null;
+  cargoL?: number | null;
+  towingKg?: number | null;
+  warranty?: string | null;
+  vehicleType?: string | null;
+  bodyStyle?: string | null;
 };
 
 export const cars: Car[] = [

@@ -4,8 +4,11 @@ import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import AdminNav from "@/components/admin/admin-nav";
 import AdminCarForm from "@/components/admin/admin-car-form";
+import AdminCarGallery from "@/components/admin/admin-car-gallery";
+import AdminCarReviewPanel from "@/components/admin/admin-car-review-panel";
 import { requireAdminUser } from "@/lib/auth/require-admin";
 import { getAdminCarById } from "@/lib/admin/cars";
+import { listAdminCarImages } from "@/lib/admin/car-images";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +29,8 @@ export default async function AdminEditCarPage({
     notFound();
   }
 
+  const images = await listAdminCarImages(car.id);
+
   return (
     <section className="section">
       <Container>
@@ -43,6 +48,8 @@ export default async function AdminEditCarPage({
         </div>
 
         <AdminNav current="cars" />
+        <AdminCarReviewPanel car={car} />
+        <AdminCarGallery carId={car.id} carSlug={car.slug} initialImages={images} />
         <AdminCarForm mode="edit" car={car} />
       </Container>
     </section>

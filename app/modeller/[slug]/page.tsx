@@ -5,7 +5,7 @@ import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import Button from "@/components/ui/button";
 import FavoriteButton from "@/components/favorites/favorite-button";
-import CarHero from "@/components/cars/car-hero";
+import CarGallery from "@/components/cars/car-gallery";
 import FactGrid from "@/components/cars/fact-grid";
 import { getAuthUser } from "@/lib/auth/get-user";
 import { getPublishedCarBySlug } from "@/lib/cars/get-published-cars";
@@ -55,7 +55,7 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
         </div>
 
         <div className="detailGrid">
-          <CarHero car={car} />
+          <CarGallery car={car} />
           <FactGrid facts={facts} />
         </div>
 

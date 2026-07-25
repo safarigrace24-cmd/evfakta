@@ -1,3 +1,5 @@
+export type ImportStatus = "draft" | "needs_review" | "approved";
+
 export type AdminCar = {
   id: string;
   slug: string;
@@ -12,6 +14,24 @@ export type AdminCar = {
   image_url: string | null;
   description: string | null;
   is_published: boolean;
+  consumption_kwh_100km: number | null;
+  power_hp: number | null;
+  torque_nm: number | null;
+  acceleration_0_100: number | null;
+  top_speed_kmh: number | null;
+  seats: number | null;
+  cargo_l: number | null;
+  towing_kg: number | null;
+  warranty: string | null;
+  ac_charging_kw: number | null;
+  vehicle_type: string | null;
+  body_style: string | null;
+  source_url: string | null;
+  source_name: string | null;
+  source_updated_at: string | null;
+  data_last_checked_at: string | null;
+  import_status: ImportStatus | null;
+  import_notes: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -29,6 +49,24 @@ export type AdminCarInput = {
   image_url: string;
   description: string;
   is_published: boolean;
+  consumption_kwh_100km: string;
+  power_hp: string;
+  torque_nm: string;
+  acceleration_0_100: string;
+  top_speed_kmh: string;
+  seats: string;
+  cargo_l: string;
+  towing_kg: string;
+  warranty: string;
+  ac_charging_kw: string;
+  vehicle_type: string;
+  body_style: string;
+  source_url: string;
+  source_name: string;
+  source_updated_at: string;
+  data_last_checked_at: string;
+  import_status: string;
+  import_notes: string;
 };
 
 export type AdminCarWrite = {
@@ -44,6 +82,24 @@ export type AdminCarWrite = {
   image_url: string | null;
   description: string | null;
   is_published: boolean;
+  consumption_kwh_100km: number | null;
+  power_hp: number | null;
+  torque_nm: number | null;
+  acceleration_0_100: number | null;
+  top_speed_kmh: number | null;
+  seats: number | null;
+  cargo_l: number | null;
+  towing_kg: number | null;
+  warranty: string | null;
+  ac_charging_kw: number | null;
+  vehicle_type: string | null;
+  body_style: string | null;
+  source_url: string | null;
+  source_name: string | null;
+  source_updated_at: string | null;
+  data_last_checked_at: string | null;
+  import_status: ImportStatus;
+  import_notes: string | null;
 };
 
 export const DRIVETRAIN_OPTIONS = [
@@ -51,6 +107,37 @@ export const DRIVETRAIN_OPTIONS = [
   "Bakhjulsdrift",
   "Firehjulsdrift",
 ] as const;
+
+export const VEHICLE_TYPE_OPTIONS = [
+  "Personbil",
+  "SUV",
+  "Pickup",
+  "Varebil",
+] as const;
+
+export const BODY_STYLE_OPTIONS = [
+  "Sedan",
+  "Hatchback",
+  "Stasjonsvogn",
+  "SUV",
+  "Crossover",
+  "Coupe",
+  "MPV",
+  "Pickup",
+  "Varebil",
+] as const;
+
+export const IMPORT_STATUS_OPTIONS = [
+  "draft",
+  "needs_review",
+  "approved",
+] as const;
+
+export const IMPORT_STATUS_LABELS: Record<ImportStatus, string> = {
+  draft: "Utkast",
+  needs_review: "Trenger gjennomgang",
+  approved: "Godkjent",
+};
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -63,6 +150,8 @@ export const ADMIN_MESSAGES = {
   deleteSuccess: "Bilen er slettet.",
   publishSuccess: "Bilen er publisert.",
   unpublishSuccess: "Bilen er avpublisert.",
+  needsReviewSuccess: "Bilen er merket for gjennomgang.",
+  approveSuccess: "Bilen er godkjent. Publisering er fortsatt en egen handling.",
   slugTaken: "Slug er allerede i bruk. Velg en unik slug.",
   genericError: "Noe gikk galt. Prøv igjen.",
 } as const;
