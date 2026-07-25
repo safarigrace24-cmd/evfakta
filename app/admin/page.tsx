@@ -24,16 +24,16 @@ export default async function AdminDashboardPage() {
           <Eyebrow>Adminpanel</Eyebrow>
           <h1>Oversikt</h1>
           <p className="lead narrow">
-            Administrer elbiler i databasen. Publiserte biler vises på /modeller og
-            modellsidene.
+            Kvalitetsoversikt for katalog, gjennomgang og publisering. Godkjenning og
+            publisering er separate handlinger.
           </p>
         </div>
 
         <AdminNav current="dashboard" />
 
         <div className="adminNotice" role="note">
-          <strong>Merk:</strong> Bare biler merket som publisert vises på de offentlige sidene.
-          Utkast forblir kun synlige her i adminpanelet.
+          <strong>Merk:</strong> Bare biler merket som publisert vises offentlig. Publisering
+          krever godkjent status, bilde, kilde og sist sjekket-dato.
         </div>
 
         {!dbConfigured && (
@@ -42,9 +42,9 @@ export default async function AdminDashboardPage() {
           </p>
         )}
 
-        <div className="adminStatsGrid">
+        <div className="adminStatsGrid adminStatsGridWide">
           <article className="adminStatCard">
-            <span>Totalt i databasen</span>
+            <span>Totalt</span>
             <strong>{stats.total}</strong>
           </article>
           <article className="adminStatCard">
@@ -55,6 +55,22 @@ export default async function AdminDashboardPage() {
             <span>Utkast</span>
             <strong>{stats.drafts}</strong>
           </article>
+          <article className="adminStatCard">
+            <span>Trenger gjennomgang</span>
+            <strong>{stats.needsReview}</strong>
+          </article>
+          <article className="adminStatCard">
+            <span>Godkjent</span>
+            <strong>{stats.approved}</strong>
+          </article>
+          <article className="adminStatCard">
+            <span>Mangler bilde</span>
+            <strong>{stats.missingImages}</strong>
+          </article>
+          <article className="adminStatCard">
+            <span>Mangler kilde</span>
+            <strong>{stats.missingSource}</strong>
+          </article>
         </div>
 
         <div className="adminQuickActions">
@@ -63,6 +79,9 @@ export default async function AdminDashboardPage() {
           </Link>
           <Link href="/admin/biler" className="button secondary">
             Se alle biler
+          </Link>
+          <Link href="/admin/merker" className="button secondary">
+            Administrer merker
           </Link>
         </div>
       </Container>

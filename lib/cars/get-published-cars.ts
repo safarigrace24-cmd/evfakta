@@ -16,6 +16,7 @@ type PublishedCarRow = {
   slug: string;
   brand: string;
   model: string;
+  year?: number | null;
   price_nok: number | null;
   range_km: number | null;
   battery_kwh: number | string | null;
@@ -36,6 +37,19 @@ type PublishedCarRow = {
   ac_charging_kw?: number | string | null;
   vehicle_type?: string | null;
   body_style?: string | null;
+  source_name?: string | null;
+  source_url?: string | null;
+  data_last_checked_at?: string | null;
+  range_score?: number | string | null;
+  charging_score?: number | string | null;
+  winter_score?: number | string | null;
+  comfort_score?: number | string | null;
+  space_score?: number | string | null;
+  value_score?: number | string | null;
+  reliability_score?: number | string | null;
+  overall_score?: number | string | null;
+  score_notes?: string | null;
+  score_methodology?: string | null;
   car_images?: PublishedCarImageRow[] | null;
 };
 
@@ -45,6 +59,7 @@ const PUBLISHED_CAR_COLUMNS = [
   "slug",
   "brand",
   "model",
+  "year",
   "price_nok",
   "range_km",
   "battery_kwh",
@@ -65,9 +80,54 @@ const PUBLISHED_CAR_COLUMNS = [
   "ac_charging_kw",
   "vehicle_type",
   "body_style",
+  "source_name",
+  "source_url",
+  "data_last_checked_at",
+  "range_score",
+  "charging_score",
+  "winter_score",
+  "comfort_score",
+  "space_score",
+  "value_score",
+  "reliability_score",
+  "overall_score",
+  "score_notes",
+  "score_methodology",
+].join(", ");
+
+/** Columns without score fields (fallback before score migration). */
+const PUBLISHED_CAR_COLUMNS_LEGACY = [
+  "slug",
+  "brand",
+  "model",
+  "year",
+  "price_nok",
+  "range_km",
+  "battery_kwh",
+  "dc_charging_kw",
+  "drivetrain",
+  "image_url",
+  "description",
+  "updated_at",
+  "consumption_kwh_100km",
+  "power_hp",
+  "torque_nm",
+  "acceleration_0_100",
+  "top_speed_kmh",
+  "seats",
+  "cargo_l",
+  "towing_kg",
+  "warranty",
+  "ac_charging_kw",
+  "vehicle_type",
+  "body_style",
+  "source_name",
+  "source_url",
+  "data_last_checked_at",
 ].join(", ");
 
 const PUBLISHED_CAR_SELECT = `${PUBLISHED_CAR_COLUMNS}, car_images(id, image_url, image_type, alt_text, sort_order, is_primary)`;
+const PUBLISHED_CAR_SELECT_LEGACY = `${PUBLISHED_CAR_COLUMNS_LEGACY}, car_images(id, image_url, image_type, alt_text, sort_order, is_primary)`;
 
 function mapDrive(drivetrain: string | null): Car["drive"] {
   if (drivetrain && (DRIVES as readonly string[]).includes(drivetrain)) {
@@ -122,6 +182,7 @@ export function mapPublishedCar(row: PublishedCarRow): Car {
     slug: row.slug,
     brand: row.brand,
     model: row.model,
+    year: row.year ?? null,
     priceNok: row.price_nok ?? 0,
     rangeKm: row.range_km ?? 0,
     batteryKwh: Number(row.battery_kwh ?? 0),
@@ -132,6 +193,11 @@ export function mapPublishedCar(row: PublishedCarRow): Car {
     updated: formatUpdated(row.updated_at),
     imageUrl: primary?.imageUrl ?? row.image_url,
     images,
+    sourceName: row.source_name ?? null,
+    sourceUrl: row.source_url ?? null,
+    dataLastCheckedAt: row.data_last_checked_at
+      ? formatUpdated(row.data_last_checked_at)
+      : null,
     consumptionKwh100km: toNumberOrNull(row.consumption_kwh_100km),
     powerHp: row.power_hp ?? null,
     torqueNm: row.torque_nm ?? null,
@@ -143,6 +209,16 @@ export function mapPublishedCar(row: PublishedCarRow): Car {
     warranty: row.warranty ?? null,
     vehicleType: row.vehicle_type ?? null,
     bodyStyle: row.body_style ?? null,
+    rangeScore: toNumberOrNull(row.range_score),
+    chargingScore: toNumberOrNull(row.charging_score),
+    winterScore: toNumberOrNull(row.winter_score),
+    comfortScore: toNumberOrNull(row.comfort_score),
+    spaceScore: toNumberOrNull(row.space_score),
+    valueScore: toNumberOrNull(row.value_score),
+    reliabilityScore: toNumberOrNull(row.reliability_score),
+    overallScore: toNumberOrNull(row.overall_score),
+    scoreNotes: row.score_notes ?? null,
+    scoreMethodology: row.score_methodology ?? null,
   };
 }
 
@@ -161,15 +237,27 @@ export async function getPublishedCars(): Promise<Car[]> {
       .order("brand", { ascending: true })
       .order("model", { ascending: true });
 
-    // Fallback before car_images migration is applied.
+    // Fallback before score / car_images migrations are applied.
     if (error) {
-      console.warn("[cars] getPublishedCars gallery select failed, falling back:", error.message);
-      ({ data, error } = await supabase
+      console.warn("[cars] getPublishedCars select failed, falling back:", error.message);
+      const legacyGallery = await supabase
         .from("cars")
-        .select(PUBLISHED_CAR_COLUMNS)
+        .select(PUBLISHED_CAR_SELECT_LEGACY)
         .eq("is_published", true)
         .order("brand", { ascending: true })
-        .order("model", { ascending: true }));
+        .order("model", { ascending: true });
+      data = legacyGallery.data as typeof data;
+      error = legacyGallery.error;
+    }
+    if (error) {
+      const legacy = await supabase
+        .from("cars")
+        .select(PUBLISHED_CAR_COLUMNS_LEGACY)
+        .eq("is_published", true)
+        .order("brand", { ascending: true })
+        .order("model", { ascending: true });
+      data = legacy.data as typeof data;
+      error = legacy.error;
     }
 
     if (error || !data) {
@@ -200,15 +288,27 @@ export async function getPublishedCarBySlug(slug: string): Promise<Car | null> {
 
     if (error) {
       console.warn(
-        "[cars] getPublishedCarBySlug gallery select failed, falling back:",
+        "[cars] getPublishedCarBySlug select failed, falling back:",
         error.message,
       );
-      ({ data, error } = await supabase
+      const legacyGallery = await supabase
         .from("cars")
-        .select(PUBLISHED_CAR_COLUMNS)
+        .select(PUBLISHED_CAR_SELECT_LEGACY)
         .eq("is_published", true)
         .eq("slug", slug)
-        .maybeSingle());
+        .maybeSingle();
+      data = legacyGallery.data as typeof data;
+      error = legacyGallery.error;
+    }
+    if (error) {
+      const legacy = await supabase
+        .from("cars")
+        .select(PUBLISHED_CAR_COLUMNS_LEGACY)
+        .eq("is_published", true)
+        .eq("slug", slug)
+        .maybeSingle();
+      data = legacy.data as typeof data;
+      error = legacy.error;
     }
 
     if (error) {
@@ -230,4 +330,76 @@ export async function getPublishedCarBySlug(slug: string): Promise<Car | null> {
 export async function publishedCarExists(slug: string): Promise<boolean> {
   const car = await getPublishedCarBySlug(slug);
   return Boolean(car);
+}
+
+/** Published cars for a brand page (by brand_id, with name fallback for legacy rows). */
+export async function getPublishedCarsForBrand(input: {
+  brandId: string;
+  brandName: string;
+}): Promise<Car[]> {
+  if (!input.brandId || !getSupabaseEnv()) {
+    return [];
+  }
+
+  try {
+    const supabase = await createClient();
+    const select = PUBLISHED_CAR_SELECT;
+
+    const linked = await supabase
+      .from("cars")
+      .select(select)
+      .eq("is_published", true)
+      .eq("brand_id", input.brandId)
+      .order("model", { ascending: true });
+
+    let linkedRows = linked.data;
+    if (linked.error) {
+      console.warn(
+        "[cars] getPublishedCarsForBrand linked select failed, falling back:",
+        linked.error.message,
+      );
+      const fallback = await supabase
+        .from("cars")
+        .select(PUBLISHED_CAR_COLUMNS)
+        .eq("is_published", true)
+        .eq("brand_id", input.brandId)
+        .order("model", { ascending: true });
+      if (fallback.error) {
+        console.error("[cars] getPublishedCarsForBrand failed:", fallback.error.message);
+        return [];
+      }
+      linkedRows = fallback.data;
+    }
+
+    const legacy = await supabase
+      .from("cars")
+      .select(PUBLISHED_CAR_COLUMNS)
+      .eq("is_published", true)
+      .is("brand_id", null)
+      .eq("brand", input.brandName)
+      .order("model", { ascending: true });
+
+    if (legacy.error) {
+      console.warn("[cars] getPublishedCarsForBrand legacy select failed:", legacy.error.message);
+    }
+
+    const bySlug = new Map<string, PublishedCarRow>();
+    for (const row of linkedRows ?? []) {
+      const mapped = row as unknown as PublishedCarRow;
+      bySlug.set(mapped.slug, mapped);
+    }
+    for (const row of legacy.data ?? []) {
+      const mapped = row as unknown as PublishedCarRow;
+      if (!bySlug.has(mapped.slug)) {
+        bySlug.set(mapped.slug, mapped);
+      }
+    }
+
+    return [...bySlug.values()]
+      .sort((a, b) => a.model.localeCompare(b.model, "nb"))
+      .map((row) => mapPublishedCar(row));
+  } catch (error) {
+    console.error("[cars] getPublishedCarsForBrand exception:", error);
+    return [];
+  }
 }

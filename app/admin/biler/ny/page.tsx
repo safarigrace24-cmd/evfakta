@@ -3,6 +3,7 @@ import Eyebrow from "@/components/ui/eyebrow";
 import AdminNav from "@/components/admin/admin-nav";
 import AdminCarForm from "@/components/admin/admin-car-form";
 import { requireAdminUser } from "@/lib/auth/require-admin";
+import { listAdminBrands } from "@/lib/admin/brands";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export const metadata = {
 
 export default async function AdminNewCarPage() {
   await requireAdminUser("/admin/biler/ny");
+  const brands = await listAdminBrands();
 
   return (
     <section className="section">
@@ -20,12 +22,12 @@ export default async function AdminNewCarPage() {
           <Eyebrow>Adminpanel</Eyebrow>
           <h1>Legg til bil</h1>
           <p className="lead narrow">
-            Lagre en ny elbil i databasen. Publisering til /modeller kommer i neste fase.
+            Lagre en ny elbil som utkast. Godkjenn og publiser først når data er kvalitetssikret.
           </p>
         </div>
 
         <AdminNav current="new" />
-        <AdminCarForm mode="create" />
+        <AdminCarForm mode="create" brands={brands} />
       </Container>
     </section>
   );

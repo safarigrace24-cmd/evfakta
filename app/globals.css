@@ -1901,8 +1901,465 @@ h3 {
   gap: 20px;
 }
 
+.adminFormSectionTitle {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.adminStatsGridWide {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .adminStatsGridWide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.detailHeaderActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.techSection,
+.relatedSection,
+.scorePanel {
+  margin-top: 40px;
+}
+
+.techList {
+  margin: 16px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+
+.techRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.techRow dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.techRow dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.scorePanel {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+}
+
+.scorePanelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.scorePanelHeader p {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+}
+
+.scoreOverall {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 88px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--brand-light);
+  color: var(--brand-dark);
+}
+
+.scoreOverall strong {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.scoreList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scoreItem {
+  display: grid;
+  grid-template-columns: 120px 1fr 40px;
+  gap: 12px;
+  align-items: center;
+}
+
+.scoreBarTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+
+.scoreBarFill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+}
+
+.scoreNotes,
+.scoreMethodology {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.catalogFilters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.catalogFilterField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.catalogFilterField input,
+.catalogFilterField select {
+  width: 100%;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--text);
+}
+
+.catalogFilterGrow {
+  grid-column: span 2;
+}
+
+.compareLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.comparePicker {
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+}
+
+.comparePickerHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.compareChipList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.compareChip {
+  border: 1px solid var(--line-soft);
+  background: var(--bg-alt);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.compareChip.active {
+  border-color: var(--brand);
+  background: var(--brand-light);
+  color: var(--brand-dark);
+}
+
+.compareTableWrap {
+  overflow-x: auto;
+}
+
+.compareTable {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.compareTable th,
+.compareTable td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+
+.compareTable thead th {
+  background: var(--bg-alt);
+}
+
+.compareBest {
+  background: rgba(46, 125, 90, 0.1);
+  font-weight: 800;
+  color: var(--brand-dark);
+}
+
+.compareCarHead {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.compareCarThumb {
+  width: 72px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--brand-light);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.compareCarThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.compareEmpty,
+.compareEmptyPanel {
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--line);
+  background: var(--surface);
+}
+
+.compareHint,
+.loadingBlock {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .catalogFilters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalogFilterGrow {
+    grid-column: span 2;
+  }
+
+  .techList {
+    grid-template-columns: 1fr;
+  }
+
+  .scoreItem {
+    grid-template-columns: 1fr 48px;
+  }
+
+  .scoreItem .scoreBarTrack {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+}
+
+@media (max-width: 640px) {
+  .catalogFilters {
+    grid-template-columns: 1fr;
+  }
+
+  .catalogFilterGrow {
+    grid-column: auto;
+  }
+
+  .scorePanelHeader {
+    flex-direction: column;
+  }
+}
+
 .adminImageFormCard {
   margin: 0;
+}
+
+.adminBrandLogoPreview {
+  max-width: 180px;
+  height: 180px;
+  background: var(--surface);
+}
+
+.adminBrandLogoPreviewImg {
+  object-fit: contain;
+  object-position: center;
+  padding: 16px;
+}
+
+.adminBrandLogoCell {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+}
+
+.adminBrandLogoThumb {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: var(--bg-alt);
+}
+
+.adminBrandLogoFallback {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  font-weight: 800;
+}
+
+.brandGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.brandCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100%;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.brandCard:hover {
+  border-color: var(--line);
+  transform: translateY(-2px);
+}
+
+.brandCardLogo {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, var(--brand-light) 0%, #d4ebe0 100%);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.brandCardLogoImg {
+  object-fit: contain;
+  object-position: center;
+  padding: 18px;
+}
+
+.brandCardLogoFallback {
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--brand);
+  opacity: 0.7;
+}
+
+.brandCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brandCardBody strong {
+  font-size: 1.2rem;
+}
+
+.brandCardBody span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.brandCardLink {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--brand-dark) !important;
+}
+
+.brandDetailHeader {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  margin: 28px 0 40px;
+}
+
+.brandDetailLogo {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, var(--brand-light) 0%, #d4ebe0 100%);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 900px) {
+  .brandGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .brandGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .brandDetailHeader {
+    grid-template-columns: 1fr;
+  }
 }
 
 .adminImageField {

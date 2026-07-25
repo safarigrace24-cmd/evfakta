@@ -17,16 +17,13 @@ export default function SiteFooter() {
           <div className="footerCol">
             <strong>Utforsk</strong>
             <Link href="/modeller">Alle modeller</Link>
+            <Link href="/merker">Merker</Link>
             <Link href="/sammenlign">Sammenlign</Link>
-            <Link href="/kalkulator">Kalkulator</Link>
-            <Link href="/rimeligste">Rimeligste</Link>
           </div>
           <div className="footerCol">
-            <strong>Mer</strong>
-            <Link href="/ladestasjoner">Ladestasjoner</Link>
-            <Link href="/bruktbil">Bruktbil</Link>
-            <Link href="/testdata">Testdata</Link>
-            <Link href="/info">Info</Link>
+            <strong>Konto</strong>
+            <Link href="/min-side">Min side</Link>
+            <Link href="/login">Logg inn</Link>
           </div>
           <div className="footerCol">
             <strong>Kontakt</strong>

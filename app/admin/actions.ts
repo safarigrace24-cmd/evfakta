@@ -3,7 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getAuthUser } from "@/lib/auth/get-user";
-import { ADMIN_MESSAGES, type AdminCarInput } from "@/lib/admin/types";
+import {
+  ADMIN_MESSAGES,
+  type AdminCar,
+  type AdminCarInput,
+} from "@/lib/admin/types";
+import {
+  formatPublishIssues,
+  getPublishIssues,
+} from "@/lib/admin/publish-readiness";
 import { mapAdminDbError, validateAdminCarInput } from "@/lib/admin/validate";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
 
@@ -31,6 +39,8 @@ function adminDbReady(): boolean {
 function revalidateAdminPaths(slug?: string) {
   revalidatePath("/admin");
   revalidatePath("/admin/biler");
+  revalidatePath("/merker");
+  revalidatePath("/modeller");
   if (slug) {
     revalidatePath(`/modeller/${slug}`);
   }
@@ -44,6 +54,13 @@ export async function createAdminCarAction(
 
   const validated = validateAdminCarInput(input);
   if (!validated.ok) return validated;
+
+  if (validated.data.is_published) {
+    const issues = getPublishIssues(validated.data);
+    if (issues.length > 0) {
+      return { ok: false, error: formatPublishIssues(issues) };
+    }
+  }
 
   if (!adminDbReady()) {
     return { ok: false, error: ADMIN_MESSAGES.unavailable };
@@ -92,6 +109,13 @@ export async function updateAdminCarAction(
   const validated = validateAdminCarInput(input);
   if (!validated.ok) return validated;
 
+  if (validated.data.is_published) {
+    const issues = getPublishIssues(validated.data);
+    if (issues.length > 0) {
+      return { ok: false, error: formatPublishIssues(issues) };
+    }
+  }
+
   if (!adminDbReady()) {
     return { ok: false, error: ADMIN_MESSAGES.unavailable };
   }
@@ -138,6 +162,33 @@ export async function setAdminCarPublishedAction(
 
   try {
     const supabase = createAdminClient();
+
+    if (isPublished) {
+      const { data: existing } = await supabase
+        .from("cars")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (!existing) {
+        return { ok: false, error: ADMIN_MESSAGES.notFound };
+      }
+
+      const { count } = await supabase
+        .from("car_images")
+        .select("id", { count: "exact", head: true })
+        .eq("car_id", id);
+
+      const issues = getPublishIssues({
+        ...(existing as AdminCar),
+        has_gallery_image: (count ?? 0) > 0,
+      });
+
+      if (issues.length > 0) {
+        return { ok: false, error: formatPublishIssues(issues) };
+      }
+    }
+
     const { data, error } = await supabase
       .from("cars")
       .update({ is_published: isPublished })

@@ -4,6 +4,7 @@ export type AdminCar = {
   id: string;
   slug: string;
   brand: string;
+  brand_id: string | null;
   model: string;
   year: number | null;
   price_nok: number | null;
@@ -32,12 +33,23 @@ export type AdminCar = {
   data_last_checked_at: string | null;
   import_status: ImportStatus | null;
   import_notes: string | null;
+  range_score: number | null;
+  charging_score: number | null;
+  winter_score: number | null;
+  comfort_score: number | null;
+  space_score: number | null;
+  value_score: number | null;
+  reliability_score: number | null;
+  overall_score: number | null;
+  score_notes: string | null;
+  score_methodology: string | null;
   created_at: string;
   updated_at: string;
 };
 
 export type AdminCarInput = {
   brand: string;
+  brand_id: string;
   model: string;
   slug: string;
   year: string;
@@ -67,10 +79,21 @@ export type AdminCarInput = {
   data_last_checked_at: string;
   import_status: string;
   import_notes: string;
+  range_score: string;
+  charging_score: string;
+  winter_score: string;
+  comfort_score: string;
+  space_score: string;
+  value_score: string;
+  reliability_score: string;
+  overall_score: string;
+  score_notes: string;
+  score_methodology: string;
 };
 
 export type AdminCarWrite = {
   brand: string;
+  brand_id: string | null;
   model: string;
   slug: string;
   year: number | null;
@@ -100,6 +123,16 @@ export type AdminCarWrite = {
   data_last_checked_at: string | null;
   import_status: ImportStatus;
   import_notes: string | null;
+  range_score: number | null;
+  charging_score: number | null;
+  winter_score: number | null;
+  comfort_score: number | null;
+  space_score: number | null;
+  value_score: number | null;
+  reliability_score: number | null;
+  overall_score: number | null;
+  score_notes: string | null;
+  score_methodology: string | null;
 };
 
 export const DRIVETRAIN_OPTIONS = [

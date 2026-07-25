@@ -19,6 +19,15 @@ export const metadata: Metadata = {
     template: "%s | EVFAKTA.no",
   },
   description: "Sammenlign elbiler, rekkevidde, priser, batteri og ladehastighet i Norge.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "nb_NO",
+    siteName: "EVFAKTA.no",
+    title: "EVFAKTA.no – Uavhengig elbil-fakta for Norge",
+    description: "Sammenlign elbiler, rekkevidde, priser, batteri og ladehastighet i Norge.",
+    url: "/",
+  },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

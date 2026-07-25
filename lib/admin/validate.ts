@@ -44,6 +44,19 @@ function parseOptionalNumber(
   return { ok: true, value: parsed };
 }
 
+function parseOptionalScore(
+  value: string,
+  label: string,
+): { ok: true; value: number | null } | { ok: false; error: string } {
+  const parsed = parseOptionalNumber(value, label);
+  if (!parsed.ok) return parsed;
+  if (parsed.value == null) return parsed;
+  if (parsed.value < 0 || parsed.value > 10) {
+    return { ok: false, error: `${label} må være mellom 0 og 10.` };
+  }
+  return parsed;
+}
+
 function parseOptionalTimestamptz(
   value: string,
   label: string,
@@ -176,10 +189,34 @@ export function validateAdminCarInput(
     }
   }
 
+  const brandIdRaw = (input.brand_id ?? "").trim();
+  const brand_id = brandIdRaw || null;
+
+  const rangeScore = parseOptionalScore(input.range_score, "Rekkevidde-score");
+  if (!rangeScore.ok) return rangeScore;
+  const chargingScore = parseOptionalScore(input.charging_score, "Lade-score");
+  if (!chargingScore.ok) return chargingScore;
+  const winterScore = parseOptionalScore(input.winter_score, "Vinter-score");
+  if (!winterScore.ok) return winterScore;
+  const comfortScore = parseOptionalScore(input.comfort_score, "Komfort-score");
+  if (!comfortScore.ok) return comfortScore;
+  const spaceScore = parseOptionalScore(input.space_score, "Plass-score");
+  if (!spaceScore.ok) return spaceScore;
+  const valueScore = parseOptionalScore(input.value_score, "Verdi-score");
+  if (!valueScore.ok) return valueScore;
+  const reliabilityScore = parseOptionalScore(
+    input.reliability_score,
+    "Pålitelighets-score",
+  );
+  if (!reliabilityScore.ok) return reliabilityScore;
+  const overallScore = parseOptionalScore(input.overall_score, "Totalscore");
+  if (!overallScore.ok) return overallScore;
+
   return {
     ok: true,
     data: {
       brand,
+      brand_id,
       model,
       slug,
       year: year.value,
@@ -209,6 +246,16 @@ export function validateAdminCarInput(
       data_last_checked_at: lastChecked.value,
       import_status,
       import_notes: emptyToNull(input.import_notes),
+      range_score: rangeScore.value,
+      charging_score: chargingScore.value,
+      winter_score: winterScore.value,
+      comfort_score: comfortScore.value,
+      space_score: spaceScore.value,
+      value_score: valueScore.value,
+      reliability_score: reliabilityScore.value,
+      overall_score: overallScore.value,
+      score_notes: emptyToNull(input.score_notes),
+      score_methodology: emptyToNull(input.score_methodology),
     },
   };
 }
@@ -216,6 +263,9 @@ export function validateAdminCarInput(
 export function mapAdminDbError(error: { code?: string; message?: string } | null): string {
   if (!error) return ADMIN_MESSAGES.genericError;
   if (error.code === "23505") return ADMIN_MESSAGES.slugTaken;
+  if (error.code === "23503") {
+    return "Valgt merke finnes ikke. Oppdater merkevalget og prøv igjen.";
+  }
   console.error("[admin] database error:", {
     code: error.code,
     message: error.message,

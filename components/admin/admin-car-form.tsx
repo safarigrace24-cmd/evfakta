@@ -8,6 +8,7 @@ import {
   updateAdminCarAction,
 } from "@/app/admin/actions";
 import AdminCarImageField from "@/components/admin/admin-car-image-field";
+import type { AdminBrand } from "@/lib/admin/brand-types";
 import {
   BODY_STYLE_OPTIONS,
   DRIVETRAIN_OPTIONS,
@@ -22,6 +23,7 @@ import {
 type AdminCarFormProps = {
   mode: "create" | "edit";
   car?: AdminCar;
+  brands?: AdminBrand[];
 };
 
 function numToInput(value: number | null | undefined): string {
@@ -40,6 +42,7 @@ function dateToInput(value: string | null | undefined): string {
 function toFormState(car?: AdminCar): AdminCarInput {
   return {
     brand: car?.brand ?? "",
+    brand_id: car?.brand_id ?? "",
     model: car?.model ?? "",
     slug: car?.slug ?? "",
     year: numToInput(car?.year),
@@ -69,6 +72,16 @@ function toFormState(car?: AdminCar): AdminCarInput {
     data_last_checked_at: dateToInput(car?.data_last_checked_at),
     import_status: car?.import_status ?? "draft",
     import_notes: car?.import_notes ?? "",
+    range_score: numToInput(car?.range_score),
+    charging_score: numToInput(car?.charging_score),
+    winter_score: numToInput(car?.winter_score),
+    comfort_score: numToInput(car?.comfort_score),
+    space_score: numToInput(car?.space_score),
+    value_score: numToInput(car?.value_score),
+    reliability_score: numToInput(car?.reliability_score),
+    overall_score: numToInput(car?.overall_score),
+    score_notes: car?.score_notes ?? "",
+    score_methodology: car?.score_methodology ?? "",
   };
 }
 
@@ -84,13 +97,17 @@ function slugify(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export default function AdminCarForm({ mode, car }: AdminCarFormProps) {
+export default function AdminCarForm({ mode, car, brands = [] }: AdminCarFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<AdminCarInput>(() => toFormState(car));
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  const selectableBrands = brands.filter(
+    (brand) => brand.is_active || brand.id === form.brand_id,
+  );
 
   function updateField<K extends keyof AdminCarInput>(key: K, value: AdminCarInput[K]) {
     setForm((current) => {
@@ -99,6 +116,29 @@ export default function AdminCarForm({ mode, car }: AdminCarFormProps) {
         const brand = key === "brand" ? String(value) : next.brand;
         const model = key === "model" ? String(value) : next.model;
         next.slug = slugify(`${brand} ${model}`);
+      }
+      return next;
+    });
+  }
+
+  function onBrandSelect(brandId: string) {
+    if (!brandId) {
+      updateField("brand_id", "");
+      return;
+    }
+    const selected = brands.find((brand) => brand.id === brandId);
+    if (!selected) {
+      updateField("brand_id", "");
+      return;
+    }
+    setForm((current) => {
+      const next = {
+        ...current,
+        brand_id: selected.id,
+        brand: selected.name,
+      };
+      if (!slugTouched) {
+        next.slug = slugify(`${selected.name} ${next.model}`);
       }
       return next;
     });
@@ -160,12 +200,38 @@ export default function AdminCarForm({ mode, car }: AdminCarFormProps) {
 
         <div className="adminFormGrid">
           <label className="authField">
-            <span>Merke *</span>
+            <span>Merke (katalog)</span>
+            <select
+              value={form.brand_id}
+              onChange={(e) => onBrandSelect(e.target.value)}
+              disabled={isPending}
+            >
+              <option value="">Fritekst / ikke koblet</option>
+              {selectableBrands.map((brand) => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.name}
+                  {!brand.is_active ? " (inaktiv)" : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="authField">
+            <span>Merkenavn *</span>
             <input
               value={form.brand}
-              onChange={(e) => updateField("brand", e.target.value)}
+              onChange={(e) => {
+                const brandName = e.target.value;
+                setForm((current) => {
+                  const next = { ...current, brand_id: "", brand: brandName };
+                  if (!slugTouched) {
+                    next.slug = slugify(`${brandName} ${next.model}`);
+                  }
+                  return next;
+                });
+              }}
               required
-              disabled={isPending}
+              disabled={isPending || Boolean(form.brand_id)}
             />
           </label>
 
@@ -465,6 +531,56 @@ export default function AdminCarForm({ mode, car }: AdminCarFormProps) {
               onChange={(e) => updateField("import_notes", e.target.value)}
               disabled={isPending}
               placeholder="Notater fra automatisk import eller manuell gjennomgang"
+            />
+          </label>
+
+          <p className="adminFormSectionTitle adminFormFull">
+            EVFAKTA Score (manuell, 0–10 — ikke auto-generert)
+          </p>
+
+          {(
+            [
+              ["range_score", "Rekkevidde"],
+              ["charging_score", "Lading"],
+              ["winter_score", "Vinter"],
+              ["comfort_score", "Komfort"],
+              ["space_score", "Plass"],
+              ["value_score", "Pris/verdi"],
+              ["reliability_score", "Pålitelighet"],
+              ["overall_score", "Totalt"],
+            ] as const
+          ).map(([key, label]) => (
+            <label key={key} className="authField">
+              <span>{label}</span>
+              <input
+                inputMode="decimal"
+                value={form[key]}
+                onChange={(e) => updateField(key, e.target.value)}
+                disabled={isPending}
+                placeholder="0–10"
+              />
+            </label>
+          ))}
+
+          <label className="authField adminFormFull">
+            <span>Score-merknader</span>
+            <textarea
+              rows={3}
+              value={form.score_notes}
+              onChange={(e) => updateField("score_notes", e.target.value)}
+              disabled={isPending}
+              placeholder="Interne/redaksjonelle merknader til score"
+            />
+          </label>
+
+          <label className="authField adminFormFull">
+            <span>Score-metodikk (offentlig)</span>
+            <textarea
+              rows={3}
+              value={form.score_methodology}
+              onChange={(e) => updateField("score_methodology", e.target.value)}
+              disabled={isPending}
+              placeholder="Kort forklaring som vises offentlig når score er satt"
             />
           </label>
 

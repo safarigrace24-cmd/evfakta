@@ -9,6 +9,7 @@ import AdminCarReviewPanel from "@/components/admin/admin-car-review-panel";
 import { requireAdminUser } from "@/lib/auth/require-admin";
 import { getAdminCarById } from "@/lib/admin/cars";
 import { listAdminCarImages } from "@/lib/admin/car-images";
+import { listAdminBrands } from "@/lib/admin/brands";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export default async function AdminEditCarPage({
 }) {
   await requireAdminUser("/admin/biler");
   const { id } = await params;
-  const car = await getAdminCarById(id);
+  const [car, brands] = await Promise.all([getAdminCarById(id), listAdminBrands()]);
 
   if (!car) {
     notFound();
@@ -50,7 +51,7 @@ export default async function AdminEditCarPage({
         <AdminNav current="cars" />
         <AdminCarReviewPanel car={car} />
         <AdminCarGallery carId={car.id} carSlug={car.slug} initialImages={images} />
-        <AdminCarForm mode="edit" car={car} />
+        <AdminCarForm mode="edit" car={car} brands={brands} />
       </Container>
     </section>
   );

@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "tsx --test tests/**/*.test.ts",
+    "lint": "tsc --noEmit",
     "import:cars": "tsx scripts/import-cars-from-data.ts",
     "import:cars:csv": "tsx scripts/import-cars-from-csv.ts"
   },

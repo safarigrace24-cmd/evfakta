@@ -10,6 +10,8 @@
  *   Extended (optional): consumption_kwh_100km,power_hp,torque_nm,
  *         acceleration_0_100,top_speed_kmh,seats,cargo_l,towing_kg,
  *         warranty,ac_charging_kw,vehicle_type,body_style
+ *   Review (optional): source_name,source_url,data_last_checked_at,
+ *         import_status,import_notes
  *
  * Prerequisites:
  * 1. Run the cars SQL migration in Supabase
@@ -58,9 +60,17 @@ const OPTIONAL_HEADERS = [
   "ac_charging_kw",
   "vehicle_type",
   "body_style",
+  "source_name",
+  "source_url",
+  "data_last_checked_at",
+  "import_status",
+  "import_notes",
 ] as const;
 
+const IMPORT_STATUS_VALUES = ["draft", "needs_review", "approved"] as const;
+
 type CsvHeader = (typeof REQUIRED_HEADERS)[number] | (typeof OPTIONAL_HEADERS)[number];
+type ImportStatus = (typeof IMPORT_STATUS_VALUES)[number];
 
 type CarRow = {
   slug: string;
@@ -87,6 +97,11 @@ type CarRow = {
   ac_charging_kw: number | null;
   vehicle_type: string | null;
   body_style: string | null;
+  source_name: string | null;
+  source_url: string | null;
+  data_last_checked_at: string | null;
+  import_status: ImportStatus;
+  import_notes: string | null;
 };
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -278,6 +293,39 @@ function parsePublished(
   };
 }
 
+function parseImportStatus(
+  value: string,
+  rowNumber: number,
+): { ok: true; value: ImportStatus } | { ok: false; error: string } {
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return { ok: true, value: "draft" };
+  if ((IMPORT_STATUS_VALUES as readonly string[]).includes(trimmed)) {
+    return { ok: true, value: trimmed as ImportStatus };
+  }
+  return {
+    ok: false,
+    error: `Row ${rowNumber}: import_status must be draft/needs_review/approved (got "${value}").`,
+  };
+}
+
+function parseOptionalTimestamp(
+  value: string,
+  label: string,
+  rowNumber: number,
+): { ok: true; value: string | null } | { ok: false; error: string } {
+  const trimmed = value.trim();
+  if (!trimmed) return { ok: true, value: null };
+
+  const date = new Date(trimmed);
+  if (Number.isNaN(date.getTime())) {
+    return {
+      ok: false,
+      error: `Row ${rowNumber}: ${label} must be a valid ISO date/datetime (got "${value}").`,
+    };
+  }
+  return { ok: true, value: date.toISOString() };
+}
+
 function normalizeHeader(value: string): string {
   return value.trim().toLowerCase().replace(/^\uFEFF/, "");
 }
@@ -434,6 +482,22 @@ function rowsFromCsv(content: string): { rows: CarRow[]; warnings: string[]; err
       continue;
     }
 
+    const importStatus = parseImportStatus(get("import_status"), rowNumber);
+    if (!importStatus.ok) {
+      errors.push(importStatus.error);
+      continue;
+    }
+
+    const checkedAt = parseOptionalTimestamp(
+      get("data_last_checked_at"),
+      "data_last_checked_at",
+      rowNumber,
+    );
+    if (!checkedAt.ok) {
+      errors.push(checkedAt.error);
+      continue;
+    }
+
     const rawSlug = get("slug");
     const { slug, adjusted } = ensureValidSlug(rawSlug, brand, model, usedSlugs);
     if (adjusted) {
@@ -469,6 +533,11 @@ function rowsFromCsv(content: string): { rows: CarRow[]; warnings: string[]; err
       ac_charging_kw: ac.value,
       vehicle_type: emptyToNull(get("vehicle_type")),
       body_style: emptyToNull(get("body_style")),
+      source_name: emptyToNull(get("source_name")),
+      source_url: emptyToNull(get("source_url")),
+      data_last_checked_at: checkedAt.value,
+      import_status: importStatus.value,
+      import_notes: emptyToNull(get("import_notes")),
     });
   }
 

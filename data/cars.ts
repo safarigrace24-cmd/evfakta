@@ -23,6 +23,10 @@ export type Car = {
   imageUrl?: string | null;
   /** Multi-image gallery from public.car_images (optional) */
   images?: CarGalleryImage[];
+  year?: number | null;
+  sourceName?: string | null;
+  sourceUrl?: string | null;
+  dataLastCheckedAt?: string | null;
   /** Extended EV fields from public.cars (optional for backwards compatibility) */
   consumptionKwh100km?: number | null;
   powerHp?: number | null;
@@ -35,6 +39,17 @@ export type Car = {
   warranty?: string | null;
   vehicleType?: string | null;
   bodyStyle?: string | null;
+  /** Manual EVFAKTA scores (0–10). Never auto-generated. */
+  rangeScore?: number | null;
+  chargingScore?: number | null;
+  winterScore?: number | null;
+  comfortScore?: number | null;
+  spaceScore?: number | null;
+  valueScore?: number | null;
+  reliabilityScore?: number | null;
+  overallScore?: number | null;
+  scoreNotes?: string | null;
+  scoreMethodology?: string | null;
 };
 
 export const cars: Car[] = [

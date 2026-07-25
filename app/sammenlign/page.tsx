@@ -1,26 +1,42 @@
 import Container from "@/components/layout/container";
-import EmptyState from "@/components/ui/empty-state";
+import CompareClient from "@/components/compare/compare-client";
 import { getPublishedCars } from "@/lib/cars/get-published-cars";
+import { parseCompareSlugs } from "@/lib/compare/comparison";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Sammenlign elbiler",
-  description: "Sammenlign elbiler etter pris, rekkevidde, batteri og ladehastighet.",
+  description:
+    "Sammenlign 2–3 publiserte elbiler etter spesifikasjoner og EVFAKTA Score.",
+  alternates: { canonical: "/sammenlign" },
+  openGraph: {
+    title: "Sammenlign elbiler | EVFAKTA.no",
+    description:
+      "Sammenlign 2–3 publiserte elbiler etter spesifikasjoner og EVFAKTA Score.",
+    url: "/sammenlign",
+  },
 };
 
-export default async function Page() {
-  // Comparison UI is still a placeholder; data already comes from published Supabase cars.
-  const cars = await getPublishedCars();
+export default async function ComparePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ biler?: string }>;
+}) {
+  const params = await searchParams;
+  const [cars, initialSlugs] = await Promise.all([
+    getPublishedCars(),
+    Promise.resolve(parseCompareSlugs(params.biler)),
+  ]);
+
+  const validInitial = initialSlugs.filter((slug) =>
+    cars.some((car) => car.slug === slug),
+  );
 
   return (
-    <section className="section" data-published-cars={cars.length}>
+    <section className="section">
       <Container>
-        <EmptyState
-          eyebrow="Neste funksjon"
-          title="Sammenlign elbiler"
-          description="Her bygger vi valg og sammenligning av to eller tre modeller."
-        />
+        <CompareClient cars={cars} initialSlugs={validInitial} />
       </Container>
     </section>
   );

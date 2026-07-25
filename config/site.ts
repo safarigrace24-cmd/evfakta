@@ -3,23 +3,18 @@ export type NavLink = {
   href: string;
 };
 
+/** Primary IA for v1.0 — hide unfinished destinations from main nav. */
 export const navLinks: NavLink[] = [
   { label: "Hjem", href: "/" },
   { label: "Modeller", href: "/modeller" },
+  { label: "Merker", href: "/merker" },
   { label: "Sammenlign", href: "/sammenlign" },
-  { label: "Kalkulator", href: "/kalkulator" },
-  { label: "Rimeligste", href: "/rimeligste" },
-  { label: "Verktøy", href: "/verktoy" },
-  { label: "Testdata", href: "/testdata" },
-  { label: "Ladestasjoner", href: "/ladestasjoner" },
-  { label: "Bruktbil", href: "/bruktbil" },
-  { label: "Info", href: "/info" },
 ];
 
 export const primaryNavLinks: NavLink[] = [
   { label: "Modeller", href: "/modeller" },
+  { label: "Merker", href: "/merker" },
   { label: "Sammenlign", href: "/sammenlign" },
-  { label: "Kalkulator", href: "/kalkulator" },
 ];
 
 export const siteConfig = {
