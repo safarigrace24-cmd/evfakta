@@ -255,7 +255,7 @@ export default function CompareClient({
           </table>
           <p className="compareHint">
             Beste tallverdi markeres når sammenligningen er meningsfull (f.eks. lengst
-            rekkevidde eller høyest ladeeffekt).
+            rekkevidde, lavest pris).
           </p>
         </div>
       )}

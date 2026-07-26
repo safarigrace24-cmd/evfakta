@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { navLinks, primaryNavLinks, siteConfig, socialLinks } from "@/config/site";
+import { navLinks, primaryNavLinks } from "@/config/site";
 import LogoutButton from "@/components/auth/logout-button";
 
 type SiteHeaderProps = {
@@ -16,7 +15,6 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = Boolean(userEmail);
-  const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
     setMenuOpen(false);
@@ -34,109 +32,16 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
     return pathname.startsWith(href);
   };
 
-  if (isAdminRoute) {
-    return (
-      <header className="siteHeader siteHeaderAdmin">
-        <div className="container headerInner">
-          <Link href="/admin" className="brand">
-            <span className="brandMark">EV</span>
-            <span className="brandText">FAKTA Admin</span>
-          </Link>
-          <nav className="navDesktop" aria-label="Adminmeny">
-            <Link href="/admin" className={isActive("/admin") && pathname === "/admin" ? "navLink active" : "navLink"}>
-              Dashboard
-            </Link>
-            <Link
-              href="/admin/production"
-              className={isActive("/admin/production") ? "navLink active" : "navLink"}
-            >
-              Production
-            </Link>
-            <Link href="/admin/biler" className={isActive("/admin/biler") ? "navLink active" : "navLink"}>
-              Biler
-            </Link>
-            <Link href="/admin/images" className={isActive("/admin/images") ? "navLink active" : "navLink"}>
-              Images
-            </Link>
-            <Link href="/" className="navLink">
-              Public site
-            </Link>
-          </nav>
-          <div className="headerActions">
-            {isLoggedIn ? (
-              <LogoutButton className="button secondary buttonSm headerAuthLogout" />
-            ) : null}
-            <button
-              type="button"
-              className="menuToggle"
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav"
-              aria-label={menuOpen ? "Lukk meny" : "Åpne meny"}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
-          </div>
-        </div>
-        <div
-          id="mobile-nav"
-          className={`mobileNav${menuOpen ? " open" : ""}`}
-          aria-hidden={!menuOpen}
-        >
-          <nav aria-label="Admin mobilmeny">
-            <Link href="/admin" className="mobileNavLink">
-              Dashboard
-            </Link>
-            <Link href="/admin/production" className="mobileNavLink">
-              Production
-            </Link>
-            <Link href="/admin/biler" className="mobileNavLink">
-              Biler
-            </Link>
-            <Link href="/admin/images" className="mobileNavLink">
-              Images
-            </Link>
-            <Link href="/" className="mobileNavLink">
-              Public site
-            </Link>
-          </nav>
-        </div>
-        {menuOpen && (
-          <button
-            type="button"
-            className="navOverlay"
-            aria-label="Lukk meny"
-            onClick={() => setMenuOpen(false)}
-          />
-        )}
-      </header>
-    );
-  }
-
   return (
     <header className="siteHeader">
       <div className="container headerInner">
         <Link href="/" className="brand">
-          <Image
-            src={siteConfig.logoUrl}
-            alt=""
-            width={36}
-            height={36}
-            className="brandLogo"
-            unoptimized
-          />
-          <span className="brandTextBlock">
-            <span className="brandText">
-              EVFAKTA<span className="brandDot">.no</span>
-            </span>
-            <span className="brandSub">Uavhengig elbil-fakta for Norge</span>
-          </span>
+          <span className="brandMark">EV</span>
+          <span className="brandText">FAKTA.no</span>
         </Link>
 
         <nav className="navDesktop" aria-label="Hovedmeny">
-          {primaryNavLinks.map(({ label, href, badge }) => (
+          {primaryNavLinks.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
@@ -144,7 +49,6 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               aria-current={isActive(href) ? "page" : undefined}
             >
               {label}
-              {badge ? <span className="navBadge">{badge}</span> : null}
             </Link>
           ))}
           {isAdmin && (
@@ -156,29 +60,26 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               Admin
             </Link>
           )}
+          <details className="navMore">
+            <summary>Mer</summary>
+            <div className="navMoreMenu">
+              {navLinks
+                .filter(({ href }) => !primaryNavLinks.some((p) => p.href === href) && href !== "/")
+                .map(({ label, href }) => (
+                  <Link key={href} href={href} className={isActive(href) ? "active" : undefined}>
+                    {label}
+                  </Link>
+                ))}
+            </div>
+          </details>
         </nav>
 
         <div className="headerActions">
-          <div className="headerSocial" aria-label="Sosiale medier">
-            {socialLinks.slice(0, 2).map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="headerSocialLink"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
           {isLoggedIn ? (
             <div className="headerAuth">
               <Link
                 href="/min-side"
-                className={
-                  isActive("/min-side") ? "navLink active headerAuthLink" : "navLink headerAuthLink"
-                }
+                className={isActive("/min-side") ? "navLink active headerAuthLink" : "navLink headerAuthLink"}
                 aria-current={isActive("/min-side") ? "page" : undefined}
               >
                 Min side
@@ -190,6 +91,9 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               Logg inn
             </Link>
           )}
+          <Link href="/modeller" className="button buttonSm primary headerCta">
+            Se modeller
+          </Link>
           <button
             type="button"
             className="menuToggle"

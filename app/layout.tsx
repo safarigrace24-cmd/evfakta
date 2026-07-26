@@ -1,34 +1,31 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { headers } from "next/headers";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/layout/site-header";
 import SiteFooter from "@/components/layout/site-footer";
 import { getAuthUser } from "@/lib/auth/get-user";
 import { isAdminEmail } from "@/lib/auth/is-admin";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.evfakta.no"),
   title: {
-    default: "Sammenlign elbiler i Norge | EVFAKTA",
+    default: "EVFAKTA.no – Uavhengig elbil-fakta for Norge",
     template: "%s | EVFAKTA.no",
   },
-  description:
-    "Sammenlign rekkevidde, lading, forbruk og plass for elbiler på det norske markedet.",
+  description: "Sammenlign elbiler, rekkevidde, priser, batteri og ladehastighet i Norge.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "nb_NO",
     siteName: "EVFAKTA.no",
-    title: "Sammenlign elbiler i Norge | EVFAKTA",
-    description:
-      "Sammenlign rekkevidde, lading, forbruk og plass for elbiler på det norske markedet.",
+    title: "EVFAKTA.no – Uavhengig elbil-fakta for Norge",
+    description: "Sammenlign elbiler, rekkevidde, priser, batteri og ladehastighet i Norge.",
     url: "/",
   },
 };
@@ -36,12 +33,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const user = await getAuthUser();
   const isAdmin = isAdminEmail(user?.email);
-  const pathname = (await headers()).get("x-evfakta-pathname") ?? "";
-  const isAdminRoute = pathname.startsWith("/admin");
 
   return (
-    <html lang="nb" className={inter.variable}>
-      <body className={isAdminRoute ? "theme-admin" : "theme-public"}>
+    <html lang="nb" className={dmSans.variable}>
+      <body>
         <a href="#main-content" className="skipLink">
           Hopp til innhold
         </a>

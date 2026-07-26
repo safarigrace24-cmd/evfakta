@@ -7,14 +7,6 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.supabase.co",
       },
-      {
-        protocol: "https",
-        hostname: "eu.chat-img.sintra.ai",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.sintra.ai",
-      },
     ],
   },
 };

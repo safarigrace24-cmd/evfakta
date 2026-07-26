@@ -13,24 +13,6 @@ import { applyVariantToCar, resolveVariantSlug } from "@/lib/cars/variants";
 import { getRelatedCars } from "@/lib/cars/related-cars";
 import { getFavoriteSlugs, isFavoriteSlug } from "@/lib/favorites/get-favorites";
 import { PUBLIC_SHOW_PRICES } from "@/lib/public/display-policy";
-import {
-  sanitizePublicText,
-  sanitizePublicTextList,
-} from "@/lib/public/sanitize-public-copy";
-import type { Car } from "@/data/cars";
-
-function toPublicCar(car: Car): Car {
-  return {
-    ...car,
-    description: sanitizePublicText(car.description),
-    pros: sanitizePublicTextList(car.pros),
-    cons: sanitizePublicTextList(car.cons),
-    suitableFor: sanitizePublicTextList(car.suitableFor),
-    // Keep draft editorial notes out of the public RSC/client payload.
-    scoreNotes: sanitizePublicText(car.scoreNotes) || null,
-    scoreMethodology: sanitizePublicText(car.scoreMethodology) || null,
-  };
-}
 
 export const dynamic = "force-dynamic";
 
@@ -59,8 +41,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
       ? `${car.brand} ${car.model} ${display.variant}`
       : `${car.brand} ${car.model}`;
   const description =
-    sanitizePublicText(car.description) ||
-    `${car.brand} ${car.model}: rekkevidde, lading, forbruk og spesifikasjoner for det norske markedet.`;
+    car.description?.trim() ||
+    `${car.brand} ${car.model}: rekkevidde, pris, lading og EVFAKTA Score.`;
 
   const canonical =
     variantSlug && variantSlug !== resolveVariantSlug(car, null)
@@ -97,29 +79,27 @@ export default async function CarPage({ params, searchParams }: PageProps) {
     getFavoriteSlugs(),
   ]);
 
-  const publicCar = toPublicCar(car);
-  const publicDisplay = applyVariantToCar(publicCar, initialVariantSlug);
-  const related = getRelatedCars(car, allCars, 3).map(toPublicCar);
+  const related = getRelatedCars(car, allCars, 3);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Car",
     name:
-      publicDisplay.variant && publicCar.variants?.length
-        ? `${publicCar.brand} ${publicCar.model} ${publicDisplay.variant}`
-        : `${publicCar.brand} ${publicCar.model}`,
-    brand: { "@type": "Brand", name: publicCar.brand },
-    description: publicCar.description || undefined,
-    image: publicCar.imageUrl || undefined,
-    vehicleConfiguration: publicDisplay.drive,
+      display.variant && car.variants?.length
+        ? `${car.brand} ${car.model} ${display.variant}`
+        : `${car.brand} ${car.model}`,
+    brand: { "@type": "Brand", name: car.brand },
+    description: car.description,
+    image: car.imageUrl || undefined,
+    vehicleConfiguration: display.drive,
     fuelType: "Electric",
-    url: `https://www.evfakta.no/modeller/${publicCar.slug}`,
+    url: `https://www.evfakta.no/modeller/${car.slug}`,
     offers:
-      PUBLIC_SHOW_PRICES && publicDisplay.priceNok > 0
+      PUBLIC_SHOW_PRICES && display.priceNok > 0
         ? {
             "@type": "Offer",
             priceCurrency: "NOK",
-            price: publicDisplay.priceNok,
+            price: display.priceNok,
             availability: "https://schema.org/InStock",
           }
         : undefined,
@@ -143,7 +123,7 @@ export default async function CarPage({ params, searchParams }: PageProps) {
         </nav>
 
         <CarVariantDetail
-          car={publicCar}
+          car={car}
           initialVariantSlug={initialVariantSlug}
           isFavorite={isFavorite}
           isLoggedIn={Boolean(user)}
