@@ -1,0 +1,205 @@
+{
+  "batch": "reference-workflow-model3-2026-07-26",
+  "source_name": "Tesla Norge + Tesla Owner's Manual (Europe)",
+  "source_url": "https://www.tesla.com/no_NO/model3",
+  "notes": "First Reference Workflow example (not a permanent content template). See docs/REFERENCE_WORKFLOW.md and docs/CAR_BLUEPRINT.md. Only official Tesla sources. Battery/range/performance left empty until Tesla Norge human capture. Never publish.",
+  "checked_at": "2026-07-26",
+  "cars": [
+    {
+      "slug": "tesla-model-3",
+      "brand": "Tesla",
+      "model": "Model 3",
+      "model_generation": "Highland",
+      "vehicle_type": "Personbil",
+      "body_style": "Sedan",
+      "seats": 5,
+      "length_mm": 4720,
+      "height_mm": 1440,
+      "width_mm": 1850,
+      "wheelbase_mm": 2875,
+      "cargo_l": 594,
+      "frunk_l": 88,
+      "heat_pump": true,
+      "charging_connector_ac": "Type 2",
+      "charging_connector_dc": "CCS2",
+      "towing_kg": null,
+      "warranty": "Nybilgaranti (Europa): 4 år / 80 000 km. Batteri og drivlinje: 8 år / 160 000 km (Standard) eller 8 år / 192 000 km (Long Range/Performance), minimum 70 % kapasitet. Bekreft norsk garantiark før publisering.",
+      "source_name": "Tesla Norge + Tesla Owner's Manual (Europe)",
+      "source_url": "https://www.tesla.com/no_NO/model3",
+      "description": "Tesla Model 3 er en helelektrisk sedan solgt i Norge via Tesla. Highland-generasjonen er en kompakt fire-dørs elbil med fem sitteplasser, frunk og CCS-lading i det europeiske markedet.\n\nDenne oppføringen er det første validerte eksempel i EVFAKTAs Reference Workflow (docs/REFERENCE_WORKFLOW.md). Sidekrav følger CAR_BLUEPRINT.md. Tall for batteri, WLTP-rekkevidde, forbruk og ytelse må hentes direkte fra Tesla Norge per variant før publisering.\n\nDraft – Requires editor review.",
+      "pros": [
+        "Romslig bagasjerom bak (594 l bak andre seterad) pluss frunk (88 l) ifølge Tesla Owner's Manual (Europe).",
+        "Kompakt sedan-format med 2 875 mm akselavstand — praktisk til daglig bruk og parkering.",
+        "Varmepumpe er del av klimasystemet i manualen — relevant for norsk vinter (kvalitativt, uten offisielle vintertall).",
+        "CCS-støtte i Europa er dokumentert i Tesla-manualen (Supercharger-kart viser CCS).",
+        "Draft – Requires editor review."
+      ],
+      "cons": [
+        "WLTP-rekkevidde, batterikapasitet, forbruk og ytelse mangler fortsatt offisiell bekreftelse fra Tesla Norge for hver variant.",
+        "Tilhengervekt er ikke én tallverdi: Tesla-manualen oppgir 750 kg uten / 1 000 kg med tilhengerbremser (krever fabrikkfestet trekkpakke).",
+        "Lengde og høyde er variantavhengig (RWD/Long Range vs Performance) — Performance er 4 mm lengre og 9 mm lavere.",
+        "Offisielle produktbilder må lastes ned manuelt fra Tesla (automatisk henting blokkert).",
+        "Draft – Requires editor review."
+      ],
+      "suitable_for": [
+        "Pendling og daglig bruk",
+        "Små familier (5 seter)",
+        "Langtur når variantens WLTP er bekreftet mot Tesla Norge",
+        "Vinterbruk med forventning om varmepumpe — uten offisielle vinterrekkeviddetall",
+        "Draft – Requires editor review."
+      ],
+      "intentionally_empty": [
+        "range_km",
+        "winter_range_km",
+        "real_world_range_km",
+        "battery_total_kwh",
+        "battery_usable_kwh",
+        "battery_chemistry",
+        "consumption_kwh_100km",
+        "ac_charging_kw",
+        "dc_charging_kw",
+        "charge_time_10_80_minutes",
+        "power_hp",
+        "torque_nm",
+        "acceleration_0_100",
+        "top_speed_kmh",
+        "towing_kg",
+        "price_nok"
+      ],
+      "towing_note": {
+        "without_brakes_kg": 750,
+        "with_brakes_kg": 1000,
+        "source_url": "https://www.tesla.com/ownersmanual/model3/en_eu/Owners_Manual.pdf"
+      },
+      "variants": [
+        {
+          "name": "Rear-Wheel Drive",
+          "slug": "rear-wheel-drive",
+          "drivetrain": "Bakhjulsdrift",
+          "length_mm": 4720,
+          "height_mm": 1440,
+          "width_mm": 1850,
+          "wheelbase_mm": 2875,
+          "is_default": true,
+          "is_active": false
+        },
+        {
+          "name": "Long Range RWD",
+          "slug": "long-range-rwd",
+          "drivetrain": "Bakhjulsdrift",
+          "length_mm": 4720,
+          "height_mm": 1440,
+          "width_mm": 1850,
+          "wheelbase_mm": 2875,
+          "is_default": false,
+          "is_active": false
+        },
+        {
+          "name": "Long Range AWD",
+          "slug": "long-range-awd",
+          "drivetrain": "Firehjulsdrift",
+          "length_mm": 4720,
+          "height_mm": 1440,
+          "width_mm": 1850,
+          "wheelbase_mm": 2875,
+          "is_default": false,
+          "is_active": false
+        },
+        {
+          "name": "Performance",
+          "slug": "performance",
+          "drivetrain": "Firehjulsdrift",
+          "length_mm": 4724,
+          "height_mm": 1431,
+          "width_mm": 1850,
+          "wheelbase_mm": 2875,
+          "is_default": false,
+          "is_active": false
+        }
+      ],
+      "image_candidates": [
+        {
+          "image_type": "front",
+          "original_url": "https://www.tesla.com/no_NO/model3",
+          "source_name": "Tesla Norge",
+          "source_url": "https://www.tesla.com/no_NO/model3",
+          "license_note": "Official Tesla marketing page — download still manually. Do not treat page URL as image.",
+          "status": "pending"
+        },
+        {
+          "image_type": "rear",
+          "original_url": "https://www.tesla.com/no_NO/model3",
+          "source_name": "Tesla Norge",
+          "source_url": "https://www.tesla.com/no_NO/model3",
+          "status": "pending"
+        },
+        {
+          "image_type": "side",
+          "original_url": "https://www.tesla.com/no_NO/model3",
+          "source_name": "Tesla Norge",
+          "source_url": "https://www.tesla.com/no_NO/model3",
+          "status": "pending"
+        },
+        {
+          "image_type": "interior",
+          "original_url": "https://www.tesla.com/ownersmanual/model3/en_eu/Owners_Manual.pdf",
+          "source_name": "Tesla Model 3 Owner's Manual (Europe)",
+          "source_url": "https://www.tesla.com/ownersmanual/model3/en_eu/Owners_Manual.pdf",
+          "status": "pending"
+        },
+        {
+          "image_type": "cargo",
+          "original_url": "https://www.tesla.com/ownersmanual/model3/en_eu/Owners_Manual.pdf",
+          "source_name": "Tesla Model 3 Owner's Manual (Europe)",
+          "source_url": "https://www.tesla.com/ownersmanual/model3/en_eu/Owners_Manual.pdf",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "resolved_conflicts": [
+    {
+      "field_key": "cargo_l",
+      "chosen": 594,
+      "rejected": 561,
+      "reason": "Current EU Owner's Manual; older GB manual is pre-Highland"
+    },
+    {
+      "field_key": "length_mm",
+      "resolution": "variant_split",
+      "base_and_non_performance": 4720,
+      "performance": 4724
+    },
+    {
+      "field_key": "height_mm",
+      "resolution": "variant_split",
+      "base_and_non_performance": 1440,
+      "performance": 1431
+    },
+    {
+      "field_key": "width_mm",
+      "chosen": 1850,
+      "notes": "Excluding mirrors; 2089 including mirrors documented in field_sources"
+    },
+    {
+      "field_key": "battery_usable_kwh",
+      "chosen": null,
+      "reason": "Secondary-only conflict — left empty"
+    },
+    {
+      "field_key": "real_world_range_km",
+      "chosen": null,
+      "reason": "Secondary-only conflict — left empty"
+    },
+    {
+      "field_key": "towing_kg",
+      "chosen": null,
+      "reason": "Two official values (750/1000) — left empty, documented in notes"
+    },
+    {
+      "field_key": "warranty",
+      "chosen": "official_eu_warranty_pdf",
+      "reason": "Rejected unverified secondary blogs"
+    }
+  ]
+}

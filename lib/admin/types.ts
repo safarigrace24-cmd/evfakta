@@ -71,6 +71,13 @@ export type AdminCar = {
       source_url: string | null;
       imported_at: string;
       import_job_id: string | null;
+      research_job_id?: string | null;
+      confidence?: number | null;
+      retrieved_at?: string | null;
+      data_last_checked_at?: string | null;
+      review_status?: "pending" | "approved" | "rejected" | null;
+      draft?: boolean | null;
+      notes?: string | null;
     }
   > | null;
   imported_at: string | null;

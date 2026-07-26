@@ -3,12 +3,13 @@ import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import AdminNav from "@/components/admin/admin-nav";
 import { requireAdminUser } from "@/lib/auth/require-admin";
-import { getAdminCarStats } from "@/lib/admin/cars";
+import { computeAdminCarStats, listAdminCars } from "@/lib/admin/cars";
 import { FUTURE_IMPORT_CONNECTORS } from "@/lib/admin/import/types";
 import {
   getImportDashboardStats,
   listImportJobs,
 } from "@/lib/admin/import/jobs";
+import { computeMasterCatalogProgress } from "@/lib/admin/master-catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,9 @@ function formatDate(value: string | null) {
 
 export default async function AdminImportPage() {
   await requireAdminUser("/admin/import");
-  const carStats = await getAdminCarStats();
+  const cars = await listAdminCars();
+  const carStats = computeAdminCarStats(cars);
+  const catalogProgress = computeMasterCatalogProgress(cars);
   const [stats, jobs] = await Promise.all([
     getImportDashboardStats({
       drafts: carStats.drafts,
@@ -46,28 +49,76 @@ export default async function AdminImportPage() {
               eller trenger gjennomgang — aldri auto-publisert.
             </p>
           </div>
-          <Link href="/admin/import/ny" className="button primary">
-            Ny import
-          </Link>
+          <div className="adminQuickActions">
+            <Link href="/admin/import/research" className="button primary">
+              Ny research
+            </Link>
+            <Link href="/admin/import/ny" className="button secondary">
+              CSV / JSON-import
+            </Link>
+          </div>
         </div>
 
         <AdminNav current="import" />
 
+        <section className="adminImportSection adminCatalogProgress" aria-labelledby="catalog-progress-heading">
+          <h2 id="catalog-progress-heading">Katalogfremdrift (master 50)</h2>
+          <p className="adminHint">
+            Målt mot planlagte modeller i masterkatalogplanen. Se{" "}
+            <code>docs/EVFAKTA_MASTER_CATALOG.md</code>. Første batch:{" "}
+            <code>data/catalog-batch-01-tesla.json</code> (ikke kjørt automatisk).
+          </p>
+          <div className="adminStatsGrid adminStatsGridWide">
+            <article className="adminStatCard">
+              <span>Planlagte modeller</span>
+              <strong>{catalogProgress.plannedModels}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Importerte modeller</span>
+              <strong>{catalogProgress.importedModels}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Trenger gjennomgang</span>
+              <strong>{catalogProgress.needsReview}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Godkjent</span>
+              <strong>{catalogProgress.approved}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Publisert</span>
+              <strong>{catalogProgress.published}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Mangler bilde</span>
+              <strong>{catalogProgress.missingImages}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Mangler kilde</span>
+              <strong>{catalogProgress.missingSources}</strong>
+            </article>
+            <article className="adminStatCard">
+              <span>Ikke importert ennå</span>
+              <strong>{catalogProgress.notYetImported}</strong>
+            </article>
+          </div>
+        </section>
+
         <div className="adminStatsGrid adminStatsGridWide">
           <article className="adminStatCard">
-            <span>Utkast</span>
+            <span>Utkast (alle biler)</span>
             <strong>{stats.drafts}</strong>
           </article>
           <article className="adminStatCard">
-            <span>Trenger gjennomgang</span>
+            <span>Trenger gjennomgang (alle)</span>
             <strong>{stats.needsReview}</strong>
           </article>
           <article className="adminStatCard">
-            <span>Godkjent</span>
+            <span>Godkjent (alle)</span>
             <strong>{stats.approved}</strong>
           </article>
           <article className="adminStatCard">
-            <span>Publisert</span>
+            <span>Publisert (alle)</span>
             <strong>{stats.published}</strong>
           </article>
           <article className="adminStatCard">
@@ -91,7 +142,10 @@ export default async function AdminImportPage() {
         </div>
 
         <div className="adminQuickActions">
-          <Link href="/admin/import/ny" className="button primary">
+          <Link href="/admin/import/research" className="button primary">
+            Research-pipeline
+          </Link>
+          <Link href="/admin/import/ny" className="button secondary">
             CSV / JSON-import
           </Link>
           <Link href="/admin/biler?status=needs_review" className="button secondary">

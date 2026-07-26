@@ -12,6 +12,7 @@ import {
 import { applyVariantToCar, resolveVariantSlug } from "@/lib/cars/variants";
 import { getRelatedCars } from "@/lib/cars/related-cars";
 import { getFavoriteSlugs, isFavoriteSlug } from "@/lib/favorites/get-favorites";
+import { PUBLIC_SHOW_PRICES } from "@/lib/public/display-policy";
 
 export const dynamic = "force-dynamic";
 
@@ -94,7 +95,7 @@ export default async function CarPage({ params, searchParams }: PageProps) {
     fuelType: "Electric",
     url: `https://www.evfakta.no/modeller/${car.slug}`,
     offers:
-      display.priceNok > 0
+      PUBLIC_SHOW_PRICES && display.priceNok > 0
         ? {
             "@type": "Offer",
             priceCurrency: "NOK",

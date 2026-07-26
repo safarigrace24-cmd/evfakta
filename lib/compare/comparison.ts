@@ -1,5 +1,9 @@
 import type { Car } from "@/data/cars";
 import { applyVariantToCar, resolveVariantSlug } from "@/lib/cars/variants";
+import {
+  PUBLIC_SHOW_PRICES,
+  PUBLIC_SHOW_SCORES,
+} from "@/lib/public/display-policy";
 
 export type CompareDirection = "higher" | "lower" | "none";
 
@@ -128,7 +132,13 @@ export function resolveCompareCars(
     .filter((car): car is Car => Boolean(car));
 }
 
-export function buildComparisonRows(cars: Car[]): CompareRow[] {
+export function buildComparisonRows(
+  cars: Car[],
+  options?: { includeHiddenPublicFields?: boolean },
+): CompareRow[] {
+  const showPrices = options?.includeHiddenPublicFields || PUBLIC_SHOW_PRICES;
+  const showScores = options?.includeHiddenPublicFields || PUBLIC_SHOW_SCORES;
+
   const defs: Array<{
     key: string;
     label: string;
@@ -178,6 +188,25 @@ export function buildComparisonRows(cars: Car[]): CompareRow[] {
   ];
 
   return defs
+    .filter((def) => {
+      if (!showPrices && def.key === "priceNok") return false;
+      if (
+        !showScores &&
+        [
+          "overallScore",
+          "rangeScore",
+          "chargingScore",
+          "winterScore",
+          "comfortScore",
+          "spaceScore",
+          "valueScore",
+          "reliabilityScore",
+        ].includes(def.key)
+      ) {
+        return false;
+      }
+      return true;
+    })
     .map((def) => {
       const values = cars.map((car) => def.get(car));
       const numericValues = cars.map((car) =>

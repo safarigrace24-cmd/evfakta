@@ -15,6 +15,10 @@ import {
   formatNok,
 } from "@/lib/format";
 import { buildCompareHref } from "@/lib/compare/comparison";
+import {
+  PUBLIC_SHOW_PRICES,
+  PUBLIC_SHOW_SCORES,
+} from "@/lib/public/display-policy";
 import FavoriteButton from "@/components/favorites/favorite-button";
 import CarGallery from "@/components/cars/car-gallery";
 import FactGrid from "@/components/cars/fact-grid";
@@ -141,8 +145,10 @@ export default function CarVariantDetail({
   );
 
   const keyFacts = [
-    { label: "Pris fra", value: formatNok(display.priceNok), highlight: true },
-    { label: "WLTP-rekkevidde", value: formatKm(display.rangeKm) },
+    ...(PUBLIC_SHOW_PRICES
+      ? [{ label: "Pris fra", value: formatNok(display.priceNok), highlight: true }]
+      : []),
+    { label: "WLTP-rekkevidde", value: formatKm(display.rangeKm), highlight: !PUBLIC_SHOW_PRICES },
     { label: "Batteri", value: formatKwh(display.batteryKwh) },
     { label: "DC-lading", value: formatKw(display.dcKw) },
     { label: "AC-lading", value: formatKw(display.acKw) },
@@ -234,7 +240,7 @@ export default function CarVariantDetail({
         </section>
       )}
 
-      <EvfaktaScore car={display} />
+      {PUBLIC_SHOW_SCORES && <EvfaktaScore car={display} />}
 
       <div className="detailActions">
         <Button href={compareHref} variant="primary">

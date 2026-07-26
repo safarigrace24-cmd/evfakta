@@ -49,24 +49,27 @@ describe("buildCompareHref", () => {
 
 describe("buildComparisonRows", () => {
   it("highlights best numeric values", () => {
-    const rows = buildComparisonRows([
-      car({
-        slug: "a",
-        brand: "A",
-        model: "One",
-        priceNok: 400000,
-        rangeKm: 500,
-        overallScore: 7,
-      }),
-      car({
-        slug: "b",
-        brand: "B",
-        model: "Two",
-        priceNok: 350000,
-        rangeKm: 450,
-        overallScore: 8,
-      }),
-    ]);
+    const rows = buildComparisonRows(
+      [
+        car({
+          slug: "a",
+          brand: "A",
+          model: "One",
+          priceNok: 400000,
+          rangeKm: 500,
+          overallScore: 7,
+        }),
+        car({
+          slug: "b",
+          brand: "B",
+          model: "Two",
+          priceNok: 350000,
+          rangeKm: 450,
+          overallScore: 8,
+        }),
+      ],
+      { includeHiddenPublicFields: true },
+    );
 
     const price = rows.find((row) => row.key === "priceNok");
     const range = rows.find((row) => row.key === "rangeKm");

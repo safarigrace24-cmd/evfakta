@@ -74,7 +74,10 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="adminQuickActions">
-          <Link href="/admin/import/ny" className="button primary">
+          <Link href="/admin/production" className="button primary">
+            Production dashboard
+          </Link>
+          <Link href="/admin/import/ny" className="button secondary">
             Ny import
           </Link>
           <Link href="/admin/biler/ny" className="button secondary">

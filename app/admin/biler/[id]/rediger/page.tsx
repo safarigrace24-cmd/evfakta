@@ -3,10 +3,7 @@ import { notFound } from "next/navigation";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import AdminNav from "@/components/admin/admin-nav";
-import AdminCarForm from "@/components/admin/admin-car-form";
-import AdminCarGallery from "@/components/admin/admin-car-gallery";
-import AdminCarReviewPanel from "@/components/admin/admin-car-review-panel";
-import AdminCarVariantsPanel from "@/components/admin/admin-car-variants-panel";
+import AdminCarEditorWorkspace from "@/components/admin/admin-car-editor-workspace";
 import { requireAdminUser } from "@/lib/auth/require-admin";
 import { getAdminCarById } from "@/lib/admin/cars";
 import { listAdminCarImages } from "@/lib/admin/car-images";
@@ -38,26 +35,33 @@ export default async function AdminEditCarPage({
   ]);
 
   return (
-    <section className="section">
-      <Container>
+    <section className="section adminEditorPage">
+      <Container className="adminEditorContainer">
         <div className="pageHeader adminPageHeader">
           <div>
             <Eyebrow>Adminpanel</Eyebrow>
-            <h1>Rediger bil</h1>
+            <h1>Car Editor</h1>
             <p className="lead narrow">
               {car.brand} {car.model}
             </p>
           </div>
-          <Link href="/admin/biler" className="button secondary">
-            Tilbake til biler
-          </Link>
+          <div className="adminQuickActions">
+            <Link href={`/admin/biler/${car.id}/varianter`} className="button secondary">
+              Variants
+            </Link>
+            <Link href="/admin/biler" className="button secondary">
+              Tilbake til biler
+            </Link>
+          </div>
         </div>
 
         <AdminNav current="cars" />
-        <AdminCarReviewPanel car={car} />
-        <AdminCarGallery carId={car.id} carSlug={car.slug} initialImages={images} />
-        <AdminCarVariantsPanel carId={car.id} initialVariants={variants} />
-        <AdminCarForm mode="edit" car={car} brands={brands} />
+        <AdminCarEditorWorkspace
+          car={car}
+          brands={brands}
+          images={images}
+          variants={variants}
+        />
       </Container>
     </section>
   );

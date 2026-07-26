@@ -14,6 +14,10 @@ import {
   uniqueBodyStyles,
   uniqueBrands,
 } from "@/lib/cars/catalog-filters";
+import {
+  PUBLIC_SHOW_PRICES,
+  PUBLIC_SHOW_SCORES,
+} from "@/lib/public/display-policy";
 
 type ModelsClientProps = {
   initialCars: Car[];
@@ -55,7 +59,7 @@ export default function ModelsClient({
           <Eyebrow>Elbil-databasen</Eyebrow>
           <h1>Alle modeller</h1>
           <p className="lead narrow">
-            Filtrer på merke, pris, rekkevidde og mer. Filtre lagres i URL-en.
+            Filtrer på merke, rekkevidde og mer. Filtre lagres i URL-en.
           </p>
         </div>
 
@@ -117,25 +121,29 @@ export default function ModelsClient({
             </select>
           </label>
 
-          <label className="catalogFilterField">
-            <span>Pris fra</span>
-            <input
-              inputMode="numeric"
-              value={initialFilters.priceMin}
-              onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              placeholder="NOK"
-            />
-          </label>
+          {PUBLIC_SHOW_PRICES && (
+            <>
+              <label className="catalogFilterField">
+                <span>Pris fra</span>
+                <input
+                  inputMode="numeric"
+                  value={initialFilters.priceMin}
+                  onChange={(e) => updateFilters({ priceMin: e.target.value })}
+                  placeholder="NOK"
+                />
+              </label>
 
-          <label className="catalogFilterField">
-            <span>Pris til</span>
-            <input
-              inputMode="numeric"
-              value={initialFilters.priceMax}
-              onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              placeholder="NOK"
-            />
-          </label>
+              <label className="catalogFilterField">
+                <span>Pris til</span>
+                <input
+                  inputMode="numeric"
+                  value={initialFilters.priceMax}
+                  onChange={(e) => updateFilters({ priceMax: e.target.value })}
+                  placeholder="NOK"
+                />
+              </label>
+            </>
+          )}
 
           <label className="catalogFilterField">
             <span>Min. rekkevidde</span>
@@ -154,10 +162,16 @@ export default function ModelsClient({
               onChange={(e) => updateFilters({ sort: e.target.value as CatalogSort })}
             >
               <option value="newest">Navn A–Å</option>
-              <option value="price-asc">Pris lav–høy</option>
-              <option value="price-desc">Pris høy–lav</option>
+              {PUBLIC_SHOW_PRICES && (
+                <>
+                  <option value="price-asc">Pris lav–høy</option>
+                  <option value="price-desc">Pris høy–lav</option>
+                </>
+              )}
               <option value="range-desc">Rekkevidde</option>
-              <option value="score-desc">EVFAKTA Score</option>
+              {PUBLIC_SHOW_SCORES && (
+                <option value="score-desc">EVFAKTA Score</option>
+              )}
             </select>
           </label>
         </form>

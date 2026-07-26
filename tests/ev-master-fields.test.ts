@@ -112,10 +112,10 @@ describe("comparison empty rows", () => {
       description: "",
       updated: "2026-07-25",
     };
-    const rows = buildComparisonRows([
-      base,
-      { ...base, slug: "b", brand: "B", model: "Two", priceNok: 350000 },
-    ]);
+    const rows = buildComparisonRows(
+      [base, { ...base, slug: "b", brand: "B", model: "Two", priceNok: 350000 }],
+      { includeHiddenPublicFields: true },
+    );
     assert.ok(rows.some((row) => row.key === "priceNok"));
     assert.ok(!rows.some((row) => row.key === "winterRange"));
     assert.ok(!rows.some((row) => row.key === "heatPump"));

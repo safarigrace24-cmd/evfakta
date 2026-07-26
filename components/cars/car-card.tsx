@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Car } from "@/data/cars";
 import { withDefaultVariantSpecs } from "@/lib/cars/variants";
 import { formatKm, formatKwh, formatKw, formatNok } from "@/lib/format";
+import { PUBLIC_SHOW_PRICES } from "@/lib/public/display-policy";
 import Badge from "@/components/ui/badge";
 import FavoriteButton from "@/components/favorites/favorite-button";
 import CarImage from "./car-image";
@@ -26,7 +27,9 @@ export default function CarCard({
       ? [
           { value: formatKm(display.rangeKm), label: "WLTP" },
           { value: formatKw(display.dcKw), label: "DC-lading" },
-          { value: formatNok(display.priceNok), label: "Fra pris" },
+          ...(PUBLIC_SHOW_PRICES
+            ? [{ value: formatNok(display.priceNok), label: "Fra pris" }]
+            : [{ value: display.drive, label: "Drivhjul" }]),
         ]
       : [
           { value: formatKm(display.rangeKm), label: "WLTP" },
@@ -55,7 +58,7 @@ export default function CarCard({
           <span className="carBrand">{car.brand}</span>
           <Heading>{car.model}</Heading>
           <SpecRow items={specs} />
-          {variant === "full" && (
+          {variant === "full" && PUBLIC_SHOW_PRICES && (
             <strong className="carPrice">Fra {formatNok(display.priceNok)}</strong>
           )}
         </div>

@@ -63,8 +63,7 @@ export async function getAdminCarById(id: string): Promise<AdminCar | null> {
   }
 }
 
-export async function getAdminCarStats(): Promise<AdminCarStats> {
-  const cars = await listAdminCars();
+export function computeAdminCarStats(cars: AdminCar[]): AdminCarStats {
   const published = cars.filter((car) => car.is_published).length;
   const needsReview = cars.filter((car) => car.import_status === "needs_review").length;
   const approved = cars.filter((car) => car.import_status === "approved").length;
@@ -90,4 +89,9 @@ export async function getAdminCarStats(): Promise<AdminCarStats> {
     missingImages,
     missingSource,
   };
+}
+
+export async function getAdminCarStats(): Promise<AdminCarStats> {
+  const cars = await listAdminCars();
+  return computeAdminCarStats(cars);
 }

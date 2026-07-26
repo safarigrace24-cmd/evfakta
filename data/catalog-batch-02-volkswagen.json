@@ -1,0 +1,802 @@
+{
+  "batch": "catalog-batch-02-volkswagen",
+  "checked_at": "2026-07-26T10:00:00.000Z",
+  "source_name": "Volkswagen Norge (official PDFs + model pages)",
+  "source_url": "https://www.volkswagen.no/no/kjope-bil/prisliste.html",
+  "notes": "Only officially documented values. Editorial drafts marked Draft – Requires editor review. Never publish from this batch.",
+  "cars": [
+    {
+      "slug": "volkswagen-id-3",
+      "model": "ID.3",
+      "primary_source": {
+        "name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+        "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf"
+      },
+      "page": {
+        "name": "Volkswagen Norge — ID.3 modellside",
+        "url": "https://www.volkswagen.no/no/alle-bilmodeller/id3.html"
+      },
+      "car_fields": {
+        "length_mm": 4264,
+        "width_mm": 1809,
+        "height_mm": 1564,
+        "wheelbase_mm": 2770,
+        "cargo_l": 385,
+        "seats": 5,
+        "towing_kg": null,
+        "heat_pump": null,
+        "v2l": null,
+        "charging_connector_ac": "Type 2",
+        "charging_connector_dc": "CCS2",
+        "battery_chemistry": "Lithium Ion",
+        "warranty": "2 års nybilgaranti uten kilometerbegrensning. Norgesgaranti 5 år / 100 000 km (det som først inntreffer) for biler importert av Harald A. Møller AS registrert fra 01.01.2011. Batteripakke: 8 år / 160 000 km (det som først inntreffer). Bekreft gjeldende vilkår hos forhandler før publisering.",
+        "apple_carplay": true,
+        "android_auto": true,
+        "range_km": null,
+        "battery_kwh": null,
+        "battery_total_kwh": null,
+        "battery_usable_kwh": null,
+        "power_hp": null,
+        "torque_nm": null,
+        "acceleration_0_100": null,
+        "top_speed_kmh": null,
+        "dc_charging_kw": null,
+        "ac_charging_kw": null,
+        "charge_time_10_80_minutes": null,
+        "consumption_kwh_100km": null,
+        "curb_weight_kg": null,
+        "drivetrain": "Bakhjulstrekk",
+        "price_nok": null
+      },
+      "variants": [
+        {
+          "name": "Pure Businessline",
+          "slug": "pure-businessline",
+          "trim_level": "Pure Businessline",
+          "is_default": true,
+          "power_hp": 170,
+          "torque_nm": 310,
+          "battery_total_kwh": 58,
+          "battery_usable_kwh": 52,
+          "range_km": 387,
+          "consumption_kwh_100km": 15.3,
+          "ac_charging_kw": 7.2,
+          "dc_charging_kw": 145,
+          "charge_time_10_80_minutes": 25,
+          "acceleration_0_100": 8.2,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 1787,
+          "drivetrain": "Bakhjulstrekk",
+          "towing_kg": null,
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf"
+          },
+          "import_notes": "AC 11 kW ikke tilgjengelig på Pure ifølge PDF. Tilhenger ikke mulig."
+        },
+        {
+          "name": "Pro Highline",
+          "slug": "pro-highline",
+          "trim_level": "Pro Highline",
+          "power_hp": 204,
+          "torque_nm": 310,
+          "battery_total_kwh": 62,
+          "battery_usable_kwh": 59,
+          "range_km": 430,
+          "consumption_kwh_100km": 15.4,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 165,
+          "charge_time_10_80_minutes": 24,
+          "acceleration_0_100": 7.6,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 1822,
+          "drivetrain": "Bakhjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf"
+          }
+        },
+        {
+          "name": "Pro S Highline",
+          "slug": "pro-s-highline",
+          "trim_level": "Pro S Highline",
+          "power_hp": 204,
+          "torque_nm": 310,
+          "battery_total_kwh": 84,
+          "battery_usable_kwh": 79,
+          "range_km": 561,
+          "consumption_kwh_100km": 15.8,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 185,
+          "charge_time_10_80_minutes": 26,
+          "acceleration_0_100": 8.2,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 1957,
+          "drivetrain": "Bakhjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf"
+          }
+        },
+        {
+          "name": "GTX Performance FIRE+ICE",
+          "slug": "gtx-performance-fire-ice",
+          "trim_level": "GTX Performance FIRE+ICE",
+          "power_hp": 326,
+          "torque_nm": 545,
+          "battery_total_kwh": 84,
+          "battery_usable_kwh": 79,
+          "range_km": 586,
+          "consumption_kwh_100km": 15,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 185,
+          "charge_time_10_80_minutes": 26,
+          "acceleration_0_100": 5.7,
+          "top_speed_kmh": 200,
+          "curb_weight_kg": 1993,
+          "drivetrain": "Bakhjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf"
+          }
+        }
+      ],
+      "image_candidates": [
+        {
+          "original_url": "https://www.volkswagen.no/content/dam/onehub_master/pc/models/id-3/id-3-pa-2023/exterior/IN0276-ID3-exterior-front-stage.jpg",
+          "source_name": "Volkswagen Norge — ID.3 modellside",
+          "source_url": "https://www.volkswagen.no/no/alle-bilmodeller/id3.html",
+          "alt_text": "Volkswagen ID.3 — offisielt eksteriørbilde (VW Norge)",
+          "image_type": "exterior",
+          "is_primary_candidate": true,
+          "notes": "Candidate only — not attached, not approved."
+        }
+      ],
+      "conflicts": [
+        {
+          "field_key": "length_mm",
+          "entity_type": "car",
+          "message": "Norsk måltabell vs tysk dimensjonsskisse i samme tekniske PDF.",
+          "values": [
+            {
+              "value": 4264,
+              "source_name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 4261,
+              "source_name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025) (tysk skisse)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf",
+              "confidence": 0.7
+            }
+          ]
+        },
+        {
+          "field_key": "range_km",
+          "entity_type": "car",
+          "message": "Modellside markedsfører «inntil 430 km», mens teknisk PDF har Pro S/GTX inntil 561/586 km. Variantverdier fra PDF er brukt; bilnivå range tomt.",
+          "values": [
+            {
+              "value": 430,
+              "source_name": "Volkswagen Norge — ID.3 modellside",
+              "source_url": "https://www.volkswagen.no/no/alle-bilmodeller/id3.html",
+              "confidence": 0.7
+            },
+            {
+              "value": 586,
+              "source_name": "Volkswagen Norge — Tekniske data ID.3 (Desember 2025)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-3/tekniske_data_id3.pdf",
+              "confidence": 0.95
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "price_nok (fra-priser finnes på prisliste, ikke lagret som enkeltpris)",
+        "winter_range_km",
+        "real_world_range_km",
+        "frunk_l",
+        "gross_weight_kg (variantavhengig — kun egenvekt lagret på varianter)",
+        "heat_pump (variantavhengig)",
+        "v2l",
+        "primary approved image"
+      ],
+      "completion_pct": 100,
+      "readiness": "partial — needs_review (not publish-ready; editor review required)"
+    },
+    {
+      "slug": "volkswagen-id-4",
+      "model": "ID.4",
+      "primary_source": {
+        "name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+        "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf"
+      },
+      "page": {
+        "name": "Volkswagen Norge — ID.4 modellside",
+        "url": "https://www.volkswagen.no/no/alle-bilmodeller/id4.html"
+      },
+      "car_fields": {
+        "length_mm": 4584,
+        "width_mm": 1852,
+        "height_mm": 1619,
+        "wheelbase_mm": 2771,
+        "cargo_l": 543,
+        "seats": 5,
+        "towing_kg": 1800,
+        "heat_pump": true,
+        "v2l": true,
+        "charging_connector_ac": "Type 2",
+        "charging_connector_dc": "CCS2",
+        "battery_chemistry": "Litium-ion",
+        "warranty": "2 års nybilgaranti uten kilometerbegrensning. Norgesgaranti 5 år / 100 000 km (det som først inntreffer) for biler importert av Harald A. Møller AS registrert fra 01.01.2011. Batteripakke: 8 år / 160 000 km (det som først inntreffer). Bekreft gjeldende vilkår hos forhandler før publisering.",
+        "apple_carplay": true,
+        "android_auto": true,
+        "drivetrain": "Firehjulstrekk",
+        "range_km": null,
+        "battery_kwh": null,
+        "battery_total_kwh": null,
+        "battery_usable_kwh": null,
+        "power_hp": null,
+        "torque_nm": null,
+        "acceleration_0_100": null,
+        "top_speed_kmh": null,
+        "dc_charging_kw": null,
+        "ac_charging_kw": 11,
+        "charge_time_10_80_minutes": null,
+        "consumption_kwh_100km": null,
+        "curb_weight_kg": null,
+        "price_nok": null
+      },
+      "variants": [
+        {
+          "name": "Pro 4MOTION",
+          "slug": "pro-4motion",
+          "trim_level": "Pro 4MOTION",
+          "is_default": true,
+          "power_hp": 299,
+          "battery_total_kwh": 82,
+          "battery_usable_kwh": 77,
+          "range_km": 554,
+          "consumption_kwh_100km": 16.2,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 165,
+          "charge_time_10_80_minutes": 29,
+          "acceleration_0_100": 6.1,
+          "top_speed_kmh": 180,
+          "curb_weight_kg": 2219,
+          "towing_kg": 1800,
+          "drivetrain": "Firehjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf"
+          },
+          "import_notes": "Effekt «inntil» 299 hk / 220 kW (UN-GTR.21). Businessline/Highline/Exclusive er utstyrsnivåer på samme drivlinje i PDF."
+        },
+        {
+          "name": "GTX 4MOTION Exclusive",
+          "slug": "gtx-4motion-exclusive",
+          "trim_level": "GTX 4MOTION Exclusive",
+          "power_hp": 340,
+          "battery_total_kwh": 84,
+          "battery_usable_kwh": 77,
+          "range_km": 524,
+          "consumption_kwh_100km": 16.8,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 185,
+          "charge_time_10_80_minutes": 27,
+          "acceleration_0_100": 5.4,
+          "top_speed_kmh": 180,
+          "curb_weight_kg": 2233,
+          "towing_kg": 1800,
+          "drivetrain": "Firehjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf"
+          },
+          "import_notes": "Effekt «inntil» 340 hk / 250 kW. Lengde 4582 mm (2 mm kortere enn Pro)."
+        }
+      ],
+      "image_candidates": [
+        {
+          "original_url": "https://www.volkswagen.no/content/dam/onehub_pkw/importers/no/modeller/id-4/bjarne/16_9_2M3A0972.jpg",
+          "source_name": "Volkswagen Norge — ID.4 modellside",
+          "source_url": "https://www.volkswagen.no/no/alle-bilmodeller/id4.html",
+          "alt_text": "Volkswagen ID.4 — offisielt bilde (VW Norge)",
+          "image_type": "exterior",
+          "is_primary_candidate": true,
+          "notes": "Candidate only — not attached, not approved."
+        }
+      ],
+      "conflicts": [
+        {
+          "field_key": "length_mm",
+          "entity_type": "car",
+          "message": "Pro 4MOTION 4584 mm vs GTX 4MOTION 4582 mm.",
+          "values": [
+            {
+              "value": 4584,
+              "source_name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 4582,
+              "source_name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf",
+              "confidence": 0.95
+            }
+          ]
+        },
+        {
+          "field_key": "towing_kg",
+          "entity_type": "car",
+          "message": "To offisielle tilhengertall (med/uten brems).",
+          "values": [
+            {
+              "value": 1800,
+              "source_name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 750,
+              "source_name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf",
+              "confidence": 0.95
+            }
+          ]
+        },
+        {
+          "field_key": "torque_nm",
+          "entity_type": "car",
+          "message": "PDF oppgir separate dreiemoment for for- og bakaksel — ikke én katalogverdi.",
+          "values": [
+            {
+              "value": 134,
+              "source_name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 560,
+              "source_name": "Volkswagen Norge — Tekniske data ID.4 (Mai 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-4/tekniske_data_id4.pdf",
+              "confidence": 0.95
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "price_nok",
+        "winter_range_km",
+        "real_world_range_km",
+        "frunk_l",
+        "torque_nm (todelt foran/bak)",
+        "separate RWD Pro uten 4MOTION (ikke i denne PDF-tabellen)",
+        "primary approved image"
+      ],
+      "completion_pct": 100,
+      "readiness": "partial — needs_review (not publish-ready; editor review required)"
+    },
+    {
+      "slug": "volkswagen-id-5",
+      "model": "ID.5",
+      "primary_source": {
+        "name": "Volkswagen Norge — Prislister",
+        "url": "https://www.volkswagen.no/no/kjope-bil/prisliste.html"
+      },
+      "page": {
+        "name": "Volkswagen Norge — Prislister",
+        "url": "https://www.volkswagen.no/no/kjope-bil/prisliste.html"
+      },
+      "car_fields": {
+        "length_mm": null,
+        "width_mm": null,
+        "height_mm": null,
+        "wheelbase_mm": null,
+        "cargo_l": null,
+        "seats": null,
+        "towing_kg": null,
+        "heat_pump": null,
+        "v2l": null,
+        "charging_connector_ac": null,
+        "charging_connector_dc": null,
+        "battery_chemistry": null,
+        "warranty": "2 års nybilgaranti uten kilometerbegrensning. Norgesgaranti 5 år / 100 000 km (det som først inntreffer) for biler importert av Harald A. Møller AS registrert fra 01.01.2011. Batteripakke: 8 år / 160 000 km (det som først inntreffer). Bekreft gjeldende vilkår hos forhandler før publisering.",
+        "apple_carplay": null,
+        "android_auto": null,
+        "drivetrain": null,
+        "range_km": null,
+        "battery_kwh": null,
+        "battery_total_kwh": null,
+        "battery_usable_kwh": null,
+        "power_hp": null,
+        "torque_nm": null,
+        "acceleration_0_100": null,
+        "top_speed_kmh": null,
+        "dc_charging_kw": null,
+        "ac_charging_kw": null,
+        "charge_time_10_80_minutes": null,
+        "consumption_kwh_100km": null,
+        "curb_weight_kg": null,
+        "price_nok": null
+      },
+      "variants": [],
+      "image_candidates": [],
+      "conflicts": [],
+      "missing_fields": [
+        "Alle tekniske felt — ingen gjeldende ID.5 tekniske-data-PDF på volkswagen.no/prisliste (2026-07-26)",
+        "Modellside /alle-bilmodeller/id5.html redirecter til modelliste",
+        "variants",
+        "official image candidates on active NO model page",
+        "price_nok"
+      ],
+      "completion_pct": 50,
+      "readiness": "shell_only — blocked on missing official NO tech PDF"
+    },
+    {
+      "slug": "volkswagen-id-7",
+      "model": "ID.7",
+      "primary_source": {
+        "name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+        "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf"
+      },
+      "page": {
+        "name": "Volkswagen Norge — ID.7 modellside",
+        "url": "https://www.volkswagen.no/no/alle-bilmodeller/id7.html"
+      },
+      "car_fields": {
+        "length_mm": 4961,
+        "width_mm": null,
+        "height_mm": null,
+        "wheelbase_mm": null,
+        "cargo_l": 532,
+        "seats": 5,
+        "towing_kg": null,
+        "heat_pump": true,
+        "v2l": true,
+        "charging_connector_ac": "Type 2",
+        "charging_connector_dc": "CCS2",
+        "battery_chemistry": "Lithium Ion",
+        "warranty": "2 års nybilgaranti uten kilometerbegrensning. Norgesgaranti 5 år / 100 000 km (det som først inntreffer) for biler importert av Harald A. Møller AS registrert fra 01.01.2011. Batteripakke: 8 år / 160 000 km (det som først inntreffer). Bekreft gjeldende vilkår hos forhandler før publisering.",
+        "apple_carplay": true,
+        "android_auto": true,
+        "drivetrain": null,
+        "range_km": null,
+        "battery_kwh": null,
+        "battery_total_kwh": null,
+        "battery_usable_kwh": null,
+        "power_hp": null,
+        "torque_nm": null,
+        "acceleration_0_100": null,
+        "top_speed_kmh": null,
+        "dc_charging_kw": null,
+        "ac_charging_kw": 11,
+        "charge_time_10_80_minutes": 28,
+        "consumption_kwh_100km": null,
+        "curb_weight_kg": null,
+        "price_nok": null
+      },
+      "variants": [
+        {
+          "name": "Pro S Stasjonsvogn",
+          "slug": "pro-s-stasjonsvogn",
+          "trim_level": "Pro S Exclusive (stasjonsvogn)",
+          "is_default": true,
+          "power_hp": 286,
+          "torque_nm": 545,
+          "battery_total_kwh": 91,
+          "battery_usable_kwh": 86,
+          "range_km": 676,
+          "consumption_kwh_100km": 14.32,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 200,
+          "charge_time_10_80_minutes": 28,
+          "acceleration_0_100": 6.7,
+          "top_speed_kmh": 180,
+          "curb_weight_kg": 2235,
+          "towing_kg": 1000,
+          "drivetrain": "Tohjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf"
+          },
+          "import_notes": "PDF-kolonne «ID.7 Pro S Stasjonsvogn». DC oppgitt som 200 kW-klasse for 86 kWh. Bagasje Tourer 605 l (ikke på variant-rad)."
+        },
+        {
+          "name": "GTX Fastback",
+          "slug": "gtx-fastback",
+          "trim_level": "GTX Fastback",
+          "power_hp": 340,
+          "battery_total_kwh": 91,
+          "battery_usable_kwh": 86,
+          "range_km": 597,
+          "consumption_kwh_100km": 16.3,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 200,
+          "charge_time_10_80_minutes": 28,
+          "acceleration_0_100": 5.4,
+          "top_speed_kmh": 200,
+          "curb_weight_kg": 2328,
+          "towing_kg": 1800,
+          "drivetrain": "Firehjulsdrift",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf"
+          },
+          "import_notes": "Dreiemoment PDF: 135/545 Nm — ikke lagret som enkeltfelt. Bagasje Fastback 532 l."
+        },
+        {
+          "name": "GTX Stasjonsvogn",
+          "slug": "gtx-stasjonsvogn",
+          "trim_level": "GTX Stasjonsvogn",
+          "power_hp": 340,
+          "battery_total_kwh": 91,
+          "battery_usable_kwh": 86,
+          "range_km": 590,
+          "consumption_kwh_100km": 16.52,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 200,
+          "charge_time_10_80_minutes": 28,
+          "acceleration_0_100": 5.5,
+          "top_speed_kmh": 200,
+          "curb_weight_kg": 2340,
+          "towing_kg": 1800,
+          "drivetrain": "Firehjulsdrift",
+          "source": {
+            "name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf"
+          },
+          "import_notes": "Dreiemoment PDF: 135/545 Nm — ikke lagret. Bagasje Tourer 605 l."
+        }
+      ],
+      "image_candidates": [],
+      "conflicts": [
+        {
+          "field_key": "cargo_l",
+          "entity_type": "car",
+          "message": "Fastback vs stasjonsvogn bagasjevolum.",
+          "values": [
+            {
+              "value": 532,
+              "source_name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 605,
+              "source_name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf",
+              "confidence": 0.95
+            }
+          ]
+        },
+        {
+          "field_key": "dc_charging_kw",
+          "entity_type": "car",
+          "message": "PDF nevner DC 175 kW (77 kWh) / 200 kW (86 kWh); talltabellen for Pro S/GTX bruker 86 kWh-kolonnen.",
+          "values": [
+            {
+              "value": 175,
+              "source_name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf",
+              "confidence": 0.8
+            },
+            {
+              "value": 200,
+              "source_name": "Volkswagen Norge — Tekniske data ID.7 (April 2026)",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-7/tekniske-data-id7.pdf",
+              "confidence": 0.9
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "price_nok",
+        "winter_range_km",
+        "real_world_range_km",
+        "width_mm / height_mm / wheelbase_mm (ikke sikkert ekstrahert)",
+        "Pro Fastback / Pro uten S (ikke i talltabellen)",
+        "torque_nm for GTX (todelt)",
+        "official image candidate URL (ikke funnet i denne runden)",
+        "primary approved image"
+      ],
+      "completion_pct": 81,
+      "readiness": "partial — needs_review (no image candidate stored)"
+    },
+    {
+      "slug": "volkswagen-id-buzz",
+      "model": "ID. Buzz",
+      "primary_source": {
+        "name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+        "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf"
+      },
+      "page": {
+        "name": "Volkswagen Norge — ID. Buzz modellside",
+        "url": "https://www.volkswagen.no/no/alle-bilmodeller/id-buzz.html"
+      },
+      "car_fields": {
+        "length_mm": 4712,
+        "width_mm": 1985,
+        "height_mm": 1896,
+        "wheelbase_mm": 2989,
+        "cargo_l": null,
+        "seats": null,
+        "towing_kg": null,
+        "heat_pump": null,
+        "v2l": null,
+        "charging_connector_ac": "Type 2",
+        "charging_connector_dc": "CCS2",
+        "battery_chemistry": null,
+        "warranty": "2 års nybilgaranti uten kilometerbegrensning. Norgesgaranti 5 år / 100 000 km (det som først inntreffer) for biler importert av Harald A. Møller AS registrert fra 01.01.2011. Batteripakke: 8 år / 160 000 km (det som først inntreffer). Bekreft gjeldende vilkår hos forhandler før publisering.",
+        "apple_carplay": null,
+        "android_auto": null,
+        "drivetrain": null,
+        "range_km": null,
+        "battery_kwh": null,
+        "battery_total_kwh": null,
+        "battery_usable_kwh": null,
+        "power_hp": null,
+        "torque_nm": null,
+        "acceleration_0_100": null,
+        "top_speed_kmh": 160,
+        "dc_charging_kw": null,
+        "ac_charging_kw": 11,
+        "charge_time_10_80_minutes": 29,
+        "consumption_kwh_100km": null,
+        "curb_weight_kg": null,
+        "price_nok": null
+      },
+      "variants": [
+        {
+          "name": "Pro Kort",
+          "slug": "pro-kort",
+          "trim_level": "Pro",
+          "is_default": true,
+          "power_hp": 286,
+          "torque_nm": 560,
+          "battery_total_kwh": 84,
+          "battery_usable_kwh": 79,
+          "range_km": 455,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 183,
+          "charge_time_10_80_minutes": 29,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 2546,
+          "towing_kg": 1200,
+          "drivetrain": "Bakhjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf"
+          },
+          "import_notes": "Rekkevidde 455 km fra prisliste-rad Pro 79 kWh. Lengde 4712 mm."
+        },
+        {
+          "name": "Pro Lang",
+          "slug": "pro-lang",
+          "trim_level": "Pro Lang",
+          "power_hp": 286,
+          "torque_nm": 560,
+          "battery_total_kwh": 91,
+          "battery_usable_kwh": 86,
+          "range_km": 492,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 199,
+          "charge_time_10_80_minutes": 29,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 2676,
+          "towing_kg": 1000,
+          "drivetrain": "Bakhjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf"
+          },
+          "import_notes": "Rekkevidde 492 km fra prisliste-rad Pro Lang 86 kWh. Lengde 4962 mm / aksel 3239 mm."
+        },
+        {
+          "name": "GTX Kort",
+          "slug": "gtx-kort",
+          "trim_level": "GTX",
+          "power_hp": 340,
+          "battery_total_kwh": 84,
+          "battery_usable_kwh": 79,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 183,
+          "charge_time_10_80_minutes": 29,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 2674,
+          "drivetrain": "Firehjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — ID. Buzz GTX prisliste/tekniske data",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz-gtx.pdf"
+          },
+          "import_notes": "WLTP-rekkevidde ikke sikkert lest som én «inntil»-verdi i GTX-PDF-tabellen i denne runden — range_km tomt."
+        },
+        {
+          "name": "GTX Lang",
+          "slug": "gtx-lang",
+          "trim_level": "GTX Lang",
+          "power_hp": 340,
+          "battery_total_kwh": 91,
+          "battery_usable_kwh": 86,
+          "ac_charging_kw": 11,
+          "dc_charging_kw": 199,
+          "charge_time_10_80_minutes": 29,
+          "top_speed_kmh": 160,
+          "curb_weight_kg": 2802,
+          "drivetrain": "Firehjulstrekk",
+          "source": {
+            "name": "Volkswagen Norge — ID. Buzz GTX prisliste/tekniske data",
+            "url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz-gtx.pdf"
+          },
+          "import_notes": "4MOTION Lang. range_km tomt til entydig WLTP-tall bekreftes i GTX-PDF."
+        }
+      ],
+      "image_candidates": [
+        {
+          "original_url": "https://www.volkswagen.no/content/dam/onehub_pkw/importers/no/modeller/id-buzz/bjarne/16_9_DSC03122.jpg",
+          "source_name": "Volkswagen Norge — ID. Buzz modellside",
+          "source_url": "https://www.volkswagen.no/no/alle-bilmodeller/id-buzz.html",
+          "alt_text": "Volkswagen ID. Buzz — offisielt bilde (VW Norge)",
+          "image_type": "exterior",
+          "is_primary_candidate": true,
+          "notes": "Candidate only — not attached, not approved."
+        }
+      ],
+      "conflicts": [
+        {
+          "field_key": "length_mm",
+          "entity_type": "car",
+          "message": "Kort vs lang karosseri.",
+          "values": [
+            {
+              "value": 4712,
+              "source_name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 4962,
+              "source_name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf",
+              "confidence": 0.95
+            }
+          ]
+        },
+        {
+          "field_key": "towing_kg",
+          "entity_type": "car",
+          "message": "Pro kort 1200 kg vs Pro lang 1000 kg (PDF).",
+          "values": [
+            {
+              "value": 1200,
+              "source_name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf",
+              "confidence": 0.95
+            },
+            {
+              "value": 1000,
+              "source_name": "Volkswagen Norge — ID. Buzz prisliste/tekniske data",
+              "source_url": "https://www.volkswagen.no/idhub/content/dam/onehub_pkw/importers/no/priser-og-brosjyrer/id-buzz/id-buzz.pdf",
+              "confidence": 0.95
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "price_nok (fra-priser på prisliste, ikke enkeltpris)",
+        "winter_range_km",
+        "real_world_range_km",
+        "cargo_l (seterad-avhengig)",
+        "seats (5/6/7)",
+        "heat_pump (ikke bekreftet som standard i ekstrahert tabell)",
+        "GTX WLTP range_km",
+        "apple_carplay / android_auto",
+        "primary approved image"
+      ],
+      "completion_pct": 88,
+      "readiness": "partial — needs_review (GTX range gaps; images not attached)"
+    }
+  ]
+}
