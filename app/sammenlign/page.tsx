@@ -8,13 +8,11 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Sammenlign elbiler",
-  description:
-    "Sammenlign 2–3 publiserte elbiler etter spesifikasjoner og EVFAKTA Score.",
+  description: "Sammenlign 2–3 publiserte elbiler etter rekkevidde, lading, batteri og plass.",
   alternates: { canonical: "/sammenlign" },
   openGraph: {
     title: "Sammenlign elbiler | EVFAKTA.no",
-    description:
-      "Sammenlign 2–3 publiserte elbiler etter spesifikasjoner og EVFAKTA Score.",
+    description: "Sammenlign 2–3 publiserte elbiler etter rekkevidde, lading, batteri og plass.",
     url: "/sammenlign",
   },
 };

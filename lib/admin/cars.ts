@@ -75,8 +75,19 @@ export function computeAdminCarStats(cars: AdminCar[]): AdminCarStats {
   let missingSource = 0;
 
   for (const car of cars) {
-    const issues = getPublishIssues(car);
-    if (issues.some((issue) => issue.code === "image")) missingImages += 1;
+    // Stats path has no gallery rows loaded — approximate with car.image_url only.
+    const issues = getPublishIssues({
+      ...car,
+      gallery_images: [],
+      has_gallery_image: false,
+    });
+    if (
+      issues.some((issue) =>
+        ["image", "hero_image", "front_image", "side_image"].includes(issue.code),
+      )
+    ) {
+      missingImages += 1;
+    }
     if (issues.some((issue) => issue.code === "source")) missingSource += 1;
   }
 

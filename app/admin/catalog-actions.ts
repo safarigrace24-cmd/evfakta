@@ -6,9 +6,21 @@ import { getAuthUser } from "@/lib/auth/get-user";
 import {
   formatPublishIssues,
   getPublishIssues,
+  type GalleryImageRef,
 } from "@/lib/admin/publish-readiness";
 import { ADMIN_MESSAGES, type AdminCar, type ImportStatus } from "@/lib/admin/types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
+
+async function loadGalleryImageRefs(
+  supabase: ReturnType<typeof createAdminClient>,
+  carId: string,
+): Promise<GalleryImageRef[]> {
+  const { data } = await supabase
+    .from("car_images")
+    .select("image_type, is_primary")
+    .eq("car_id", carId);
+  return (data ?? []) as GalleryImageRef[];
+}
 
 export type CatalogBulkResult =
   | { ok: true; message: string; affected: number; skipped: number }
@@ -104,14 +116,11 @@ export async function bulkPublishCarsAction(
 
     for (const car of (cars ?? []) as AdminCar[]) {
       if (publish) {
-        const { count } = await supabase
-          .from("car_images")
-          .select("id", { count: "exact", head: true })
-          .eq("car_id", car.id);
-
+        const gallery_images = await loadGalleryImageRefs(supabase, car.id);
         const issues = getPublishIssues({
           ...car,
-          has_gallery_image: (count ?? 0) > 0,
+          gallery_images,
+          has_gallery_image: gallery_images.length > 0,
         });
         if (issues.length > 0) {
           skipped += 1;
@@ -307,14 +316,11 @@ export async function explainPublishBlockersAction(id: string) {
   const { data } = await supabase.from("cars").select("*").eq("id", id).maybeSingle();
   if (!data) return { ok: false as const, error: ADMIN_MESSAGES.notFound };
 
-  const { count } = await supabase
-    .from("car_images")
-    .select("id", { count: "exact", head: true })
-    .eq("car_id", id);
-
+  const gallery_images = await loadGalleryImageRefs(supabase, id);
   const issues = getPublishIssues({
     ...(data as AdminCar),
-    has_gallery_image: (count ?? 0) > 0,
+    gallery_images,
+    has_gallery_image: gallery_images.length > 0,
   });
 
   return {

@@ -114,6 +114,38 @@ export default function AdminProductionDashboard({
           <span>Missing Variants</span>
           <strong>{stats.missingVariants}</strong>
         </article>
+        <article className="adminStatCard">
+          <span>Images Ready</span>
+          <strong>{stats.imagesReady}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Images Pending</span>
+          <strong>{stats.imagesPending}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Missing Hero</span>
+          <strong>{stats.missingHero}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Missing Gallery</span>
+          <strong>{stats.missingGallery}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Launch Content Ready</span>
+          <strong>{stats.launchContentReady}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Launch Blocked</span>
+          <strong>{stats.launchBlocked}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Publish Ready</span>
+          <strong>{stats.publishReady}</strong>
+        </article>
+        <article className="adminStatCard">
+          <span>Draft Markers</span>
+          <strong>{stats.hasDraftMarker}</strong>
+        </article>
       </div>
 
       <section className="adminProductionSection" aria-labelledby="production-progress-heading">
@@ -161,6 +193,9 @@ export default function AdminProductionDashboard({
           </Link>
           <Link href="/admin/import/research" className="button secondary">
             Open Research
+          </Link>
+          <Link href="/admin/images" className="button secondary">
+            Review Images
           </Link>
           <Link
             href={firstNeedsReview ? `/admin/biler/${firstNeedsReview.id}/rediger` : "/admin/biler"}
@@ -335,6 +370,14 @@ export default function AdminProductionDashboard({
               <option value="missing_images">Missing Images</option>
               <option value="missing_sources">Missing Sources</option>
               <option value="missing_editorial">Missing Editorial</option>
+              <option value="images_ready">Images Ready</option>
+              <option value="images_pending">Images Pending</option>
+              <option value="missing_hero">Missing Hero</option>
+              <option value="missing_gallery">Missing Gallery</option>
+              <option value="launch_ready">Launch Content Ready</option>
+              <option value="launch_blocked">Launch Blocked</option>
+              <option value="publish_ready">Publish Ready</option>
+              <option value="has_draft_marker">Draft Markers</option>
             </select>
           </label>
           <div className="catalogFilterField">
@@ -358,6 +401,8 @@ export default function AdminProductionDashboard({
                 <th>Completion %</th>
                 <th>Editorial %</th>
                 <th>Images %</th>
+                <th>Image Ready</th>
+                <th>Launch</th>
                 <th>Specs %</th>
                 <th>Sources %</th>
                 <th>Review %</th>
@@ -368,7 +413,7 @@ export default function AdminProductionDashboard({
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={10}>No models match these filters.</td>
+                  <td colSpan={12}>No models match these filters.</td>
                 </tr>
               ) : (
                 filtered.map((row) => (
@@ -381,6 +426,34 @@ export default function AdminProductionDashboard({
                     <td>{row.completionPercent}%</td>
                     <td>{row.editorialPercent}%</td>
                     <td>{row.imagesPercent}%</td>
+                    <td>
+                      <span
+                        className={
+                          row.imagesReady
+                            ? "adminStatusBadge status-completed"
+                            : "adminStatusBadge isNeedsReview"
+                        }
+                      >
+                        {row.imageReadinessLabel}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          row.publishReady
+                            ? "adminStatusBadge status-completed"
+                            : row.launchContentReady
+                              ? "adminStatusBadge isApproved"
+                              : "adminStatusBadge isNeedsReview"
+                        }
+                      >
+                        {row.publishReady
+                          ? "Publish Ready"
+                          : row.launchContentReady
+                            ? "Content Ready"
+                            : "Launch Blocked"}
+                      </span>
+                    </td>
                     <td>{row.specsPercent}%</td>
                     <td>{row.sourcesPercent}%</td>
                     <td>{row.reviewPercent}%</td>
@@ -394,6 +467,12 @@ export default function AdminProductionDashboard({
                           className="button secondary buttonSm"
                         >
                           Review
+                        </Link>
+                        <Link
+                          href={`/admin/images/${row.id}`}
+                          className="button secondary buttonSm"
+                        >
+                          Images
                         </Link>
                         <Link
                           href={`/admin/biler/${row.id}/rediger`}

@@ -3,6 +3,7 @@ import "server-only";
 import type { CarImageRow } from "@/lib/admin/car-image-types";
 import { listAdminBrands } from "@/lib/admin/brands";
 import { listAdminCars } from "@/lib/admin/cars";
+import { loadImageCandidatesByCarIds } from "@/lib/admin/image-review-data";
 import {
   computeProductionBrandRows,
   computeProductionDashboardStats,
@@ -11,6 +12,7 @@ import {
   type ProductionDashboardStats,
   type ProductionModelRow,
 } from "@/lib/admin/production-dashboard";
+import type { ResearchImageCandidate } from "@/lib/admin/research/types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
 import type { AdminCarVariant } from "@/lib/admin/variant-types";
 
@@ -24,11 +26,11 @@ export type ProductionDashboardPayload = {
 async function loadRelatedMaps(carIds: string[]): Promise<{
   imagesByCar: Map<string, CarImageRow[]>;
   variantsByCar: Map<string, AdminCarVariant[]>;
-  candidatesByCar: Map<string, number>;
+  candidatesByCar: Map<string, ResearchImageCandidate[]>;
 }> {
   const imagesByCar = new Map<string, CarImageRow[]>();
   const variantsByCar = new Map<string, AdminCarVariant[]>();
-  const candidatesByCar = new Map<string, number>();
+  const candidatesByCar = new Map<string, ResearchImageCandidate[]>();
 
   if (
     carIds.length === 0 ||
@@ -41,14 +43,11 @@ async function loadRelatedMaps(carIds: string[]): Promise<{
   try {
     const supabase = createAdminClient();
 
-    const [{ data: images }, { data: variants }, { data: items }] =
+    const [{ data: images }, { data: variants }, candidatesMap] =
       await Promise.all([
         supabase.from("car_images").select("*").in("car_id", carIds),
         supabase.from("car_variants").select("*").in("car_id", carIds),
-        supabase
-          .from("research_items")
-          .select("id, existing_car_id")
-          .in("existing_car_id", carIds),
+        loadImageCandidatesByCarIds(carIds),
       ]);
 
     for (const image of (images ?? []) as CarImageRow[]) {
@@ -63,26 +62,8 @@ async function loadRelatedMaps(carIds: string[]): Promise<{
       variantsByCar.set(variant.car_id, list);
     }
 
-    const itemIds = (items ?? [])
-      .map((item) => item.id as string)
-      .filter(Boolean);
-    const itemToCar = new Map(
-      (items ?? [])
-        .filter((item) => item.existing_car_id && item.id)
-        .map((item) => [item.id as string, item.existing_car_id as string]),
-    );
-
-    if (itemIds.length > 0) {
-      const { data: candidates } = await supabase
-        .from("research_image_candidates")
-        .select("item_id")
-        .in("item_id", itemIds);
-
-      for (const candidate of candidates ?? []) {
-        const carId = itemToCar.get(candidate.item_id as string);
-        if (!carId) continue;
-        candidatesByCar.set(carId, (candidatesByCar.get(carId) ?? 0) + 1);
-      }
+    for (const [carId, candidates] of candidatesMap) {
+      candidatesByCar.set(carId, candidates);
     }
   } catch (error) {
     console.error("[admin] production dashboard related load failed:", error);
@@ -101,14 +82,16 @@ export async function loadProductionDashboard(): Promise<ProductionDashboardPayl
   const { imagesByCar, variantsByCar, candidatesByCar } =
     await loadRelatedMaps(carIds);
 
-  const models = cars.map((car) =>
-    computeProductionModelRow({
+  const models = cars.map((car) => {
+    const imageCandidates = candidatesByCar.get(car.id) ?? [];
+    return computeProductionModelRow({
       car,
       images: imagesByCar.get(car.id) ?? [],
       variants: variantsByCar.get(car.id) ?? [],
-      imageCandidateCount: candidatesByCar.get(car.id) ?? 0,
-    }),
-  );
+      imageCandidates,
+      imageCandidateCount: imageCandidates.length,
+    });
+  });
 
   const brandNames = [
     ...new Set([

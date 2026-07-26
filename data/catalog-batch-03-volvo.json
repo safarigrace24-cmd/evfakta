@@ -1,0 +1,312 @@
+{
+  "batch": "catalog-batch-03-volvo",
+  "checked_at": "2026-07-26T15:00:00.000Z",
+  "source_name": "Volvo Cars Norge — offisielle spesifikasjonssider",
+  "notes": "Only officially documented values. Editorial drafts marked Draft – Requires editor review. Never publish from this batch.",
+  "cars": [
+    {
+      "slug": "volvo-ex30",
+      "model": "EX30",
+      "car_id": "e491e460-4fb5-48d9-b7ce-bb87bddc4394",
+      "status": "READY_FOR_HUMAN_APPROVAL",
+      "completion_pct": 100,
+      "variants": [
+        "p5-elektrisk",
+        "p5-long-range-elektrisk",
+        "p8-awd-elektrisk"
+      ],
+      "image_candidates": 4,
+      "conflicts": [
+        {
+          "field_key": "car.towing_kg",
+          "message": "Tilhengervekt er variantavhengig (1400 vs 1600 kg) — bilnivå tomt.",
+          "values": [
+            {
+              "value": 1400,
+              "source_name": "Volvo Cars Norge — EX30 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex30-electric/specifications/"
+            },
+            {
+              "value": 1600,
+              "source_name": "Volvo Cars Norge — EX30 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex30-electric/specifications/"
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "battery_usable_kwh",
+        "ac_charging_kw",
+        "charging_connector_ac/dc",
+        "heat_pump",
+        "v2l/v2g",
+        "winter_range_km",
+        "price_nok",
+        "approved gallery"
+      ]
+    },
+    {
+      "slug": "volvo-ex40",
+      "model": "EX40",
+      "car_id": "0c67bdb4-b11d-4a69-a03b-78e8a23c5da9",
+      "status": "READY_FOR_HUMAN_APPROVAL",
+      "completion_pct": 100,
+      "variants": [
+        "single-motor",
+        "single-motor-extended-range",
+        "twin-motor",
+        "twin-motor-performance"
+      ],
+      "image_candidates": 4,
+      "conflicts": [
+        {
+          "field_key": "car.towing_kg",
+          "message": "Tilhengervekt 1500 kg (RWD) vs 1800 kg (AWD) — bilnivå tomt.",
+          "values": [
+            {
+              "value": 1500,
+              "source_name": "Volvo Cars Norge — EX40 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex40-electric/specifications/"
+            },
+            {
+              "value": 1800,
+              "source_name": "Volvo Cars Norge — EX40 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex40-electric/specifications/"
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "battery_usable_kwh",
+        "ac_charging_kw",
+        "connectors",
+        "heat_pump",
+        "v2l/v2g",
+        "winter_range_km",
+        "approved gallery"
+      ]
+    },
+    {
+      "slug": "volvo-ec40",
+      "model": "EC40",
+      "car_id": "99406a6e-1480-4620-8932-2362d4025a0d",
+      "status": "READY_FOR_HUMAN_APPROVAL",
+      "completion_pct": 100,
+      "variants": [
+        "single-motor",
+        "single-motor-extended-range",
+        "twin-motor",
+        "twin-motor-performance"
+      ],
+      "image_candidates": 3,
+      "conflicts": [
+        {
+          "field_key": "car.towing_kg",
+          "message": "Tilhengervekt 1500 vs 1800 kg avhengig av drivlinje — bilnivå tomt.",
+          "values": [
+            {
+              "value": 1500,
+              "source_name": "Volvo Cars Norge — EC40 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ec40-electric/specifications/"
+            },
+            {
+              "value": 1800,
+              "source_name": "Volvo Cars Norge — EC40 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ec40-electric/specifications/"
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "battery_usable_kwh",
+        "ac_charging_kw",
+        "connectors",
+        "heat_pump",
+        "interior image candidate",
+        "winter_range_km",
+        "approved gallery"
+      ]
+    },
+    {
+      "slug": "volvo-ex90",
+      "model": "EX90",
+      "car_id": "9f43ec39-0764-42ea-a42d-53727393a32f",
+      "status": "READY_FOR_HUMAN_APPROVAL",
+      "completion_pct": 100,
+      "variants": [
+        "twin-motor",
+        "twin-motor-performance"
+      ],
+      "image_candidates": 4,
+      "conflicts": [
+        {
+          "field_key": "car.seats",
+          "message": "Spesifikasjonssiden oppgir 6–7 seter — bilnivå seats er tomt.",
+          "values": [
+            {
+              "value": 6,
+              "source_name": "Volvo Cars Norge — EX90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex90-electric/specifications/"
+            },
+            {
+              "value": 7,
+              "source_name": "Volvo Cars Norge — EX90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex90-electric/specifications/"
+            }
+          ]
+        },
+        {
+          "field_key": "car.cargo_l",
+          "message": "Bagasjevolum avviker mellom 6- og 7-seters konfigurasjon (f.eks. bak 2. rad 690 vs 697 l) — bilnivå cargo tomt.",
+          "values": [
+            {
+              "value": 690,
+              "source_name": "Volvo Cars Norge — EX90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex90-electric/specifications/"
+            },
+            {
+              "value": 697,
+              "source_name": "Volvo Cars Norge — EX90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex90-electric/specifications/"
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "seats (6–7)",
+        "cargo_l (config-dependent)",
+        "battery_usable_kwh",
+        "ac_charging_kw",
+        "connectors",
+        "heat_pump",
+        "winter_range_km",
+        "approved gallery"
+      ]
+    },
+    {
+      "slug": "volvo-es90",
+      "model": "ES90",
+      "car_id": "fed4fc5c-383e-4c9d-8876-6739d84a8e76",
+      "status": "READY_FOR_HUMAN_APPROVAL",
+      "completion_pct": 100,
+      "variants": [
+        "single-motor-extended-range",
+        "twin-motor",
+        "twin-motor-performance"
+      ],
+      "image_candidates": 5,
+      "conflicts": [
+        {
+          "field_key": "variant.single-motor-extended-range.acceleration_0_100",
+          "message": "Pressemelding oppgav 6,9 s; spesifikasjonssiden oppgir 6,6 s. Specs-verdi lagret.",
+          "values": [
+            {
+              "value": 6.9,
+              "source_name": "Volvo Cars Media NO — ES90 pressemelding",
+              "source_url": "https://www.volvocars.com/no/media/press-releases/E9CE08417671E121/"
+            },
+            {
+              "value": 6.6,
+              "source_name": "Volvo Cars Norge — ES90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/es90-electric/specifications/"
+            }
+          ]
+        },
+        {
+          "field_key": "variant.twin-motor.power_hp",
+          "message": "Pressemelding oppgav 449 hk / 330 kW; spesifikasjonssiden oppgir 456 hk / 335 kW. Specs-verdi lagret.",
+          "values": [
+            {
+              "value": 449,
+              "source_name": "Volvo Cars Media NO — ES90 pressemelding",
+              "source_url": "https://www.volvocars.com/no/media/press-releases/E9CE08417671E121/"
+            },
+            {
+              "value": 456,
+              "source_name": "Volvo Cars Norge — ES90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/es90-electric/specifications/"
+            }
+          ]
+        },
+        {
+          "field_key": "car.towing_kg",
+          "message": "Single Motor 1600 kg vs Twin Motor 2000 kg — bilnivå tomt.",
+          "values": [
+            {
+              "value": 1600,
+              "source_name": "Volvo Cars Norge — ES90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/es90-electric/specifications/"
+            },
+            {
+              "value": 2000,
+              "source_name": "Volvo Cars Norge — ES90 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/es90-electric/specifications/"
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "ac_charging_kw",
+        "connectors",
+        "heat_pump",
+        "winter_range_km",
+        "approved gallery"
+      ]
+    },
+    {
+      "slug": "volvo-ex60",
+      "model": "EX60",
+      "car_id": "a256d583-1984-4310-b217-e66f07f3a298",
+      "status": "READY_FOR_HUMAN_APPROVAL",
+      "completion_pct": 100,
+      "variants": [
+        "p6-elektrisk",
+        "p10-awd-elektrisk",
+        "p12-awd-elektrisk"
+      ],
+      "image_candidates": 5,
+      "conflicts": [
+        {
+          "field_key": "variant.p6-elektrisk.range_km",
+          "message": "Pressemelding oppgav inntil 620 km for P6; spesifikasjonssiden oppgir 611 km. Specs-verdi lagret.",
+          "values": [
+            {
+              "value": 620,
+              "source_name": "Volvo Cars Media NO — EX60 pressemelding",
+              "source_url": "https://www.volvocars.com/no/media/press-releases/66BC87BAF48EA777/"
+            },
+            {
+              "value": 611,
+              "source_name": "Volvo Cars Norge — EX60 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex60-electric/specifications/"
+            }
+          ]
+        },
+        {
+          "field_key": "car.towing_kg",
+          "message": "P6 2000 kg vs P10/P12 2400 kg — bilnivå tomt.",
+          "values": [
+            {
+              "value": 2000,
+              "source_name": "Volvo Cars Norge — EX60 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex60-electric/specifications/"
+            },
+            {
+              "value": 2400,
+              "source_name": "Volvo Cars Norge — EX60 spesifikasjoner",
+              "source_url": "https://www.volvocars.com/no/cars/ex60-electric/specifications/"
+            }
+          ]
+        }
+      ],
+      "missing_fields": [
+        "ac_charging_kw",
+        "connectors",
+        "heat_pump",
+        "winter_range_km",
+        "Cross Country variants (MY2028 noted on model page — not created)",
+        "approved gallery"
+      ]
+    }
+  ]
+}

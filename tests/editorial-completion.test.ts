@@ -29,7 +29,8 @@ function baseCar(overrides: Partial<AdminCar> = {}): AdminCar {
     charging_connector_dc: null,
     drivetrain: "RWD",
     image_url: "https://example.com/front.webp",
-    description: "A popular EV.",
+    description:
+      "Tesla Model 3 er en populær elbil med dokumenterte norske spesifikasjoner for rekkevidde og lading.",
     is_published: false,
     consumption_kwh_100km: 14,
     power_hp: 280,
@@ -121,7 +122,7 @@ describe("computeEditorialCompletion", () => {
   it("allows publish when required fields are present even if checklist incomplete", () => {
     const completion = computeEditorialCompletion({
       car: baseCar(),
-      images: [image("front", "1")],
+      images: [image("front", "1"), image("side", "2")],
       variants: [],
     });
 

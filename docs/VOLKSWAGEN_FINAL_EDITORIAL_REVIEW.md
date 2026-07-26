@@ -383,3 +383,27 @@ Required categories for publication quality:
 - No automatic approval (`import_status=needs_review` enforced)
 - No image auto-approval
 - Tesla records not modified by this script
+
+# EVFAKTA Editorial Decision
+
+This section is an editorial recommendation only.
+
+It must NEVER write to the database.
+
+It must NEVER affect:
+
+- import_status
+- is_published
+- approval state
+- review state
+- production dashboard
+
+It exists only inside this generated markdown report.
+
+| Model | Recommendation | Reason |
+|--------|----------------|--------|
+| ID.3 | Publish Candidate | Complete Norwegian technical PDF mapping, editorial draft, and image candidates. |
+| ID.4 | Publish Candidate | Complete official documentation; open conflicts are documented for editor judgement. |
+| ID.5 | Await Official Documentation | No current Norwegian technical PDF or active model page. |
+| ID.7 | Hold for Review | Technical data is essentially complete; additional image review is needed. |
+| ID. Buzz | Publish Candidate | Official Pro/GTX documentation and editorial draft ready for manual approval. |

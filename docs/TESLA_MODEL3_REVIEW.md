@@ -219,3 +219,23 @@ Updates the Supabase car/variants with this package only. Never sets `is_publish
 **Overall ≈ 58%** toward a publishable Model 3 record.  
 **Reference Workflow validation:** complete enough to reuse the process on the next car.  
 **Content completeness for Norway catalog:** not yet.
+
+# EVFAKTA Editorial Decision
+
+This section is an editorial recommendation only.
+
+It must NEVER write to the database.
+
+It must NEVER affect:
+
+- import_status
+- is_published
+- approval state
+- review state
+- production dashboard
+
+It exists only inside this generated markdown report.
+
+| Model | Recommendation | Reason |
+|--------|----------------|--------|
+| Tesla Model 3 | Hold for Review | EU Owner’s Manual package covers dimensions/practical fields; Norwegian-market variant energy figures still need confirmation. |

@@ -6,7 +6,6 @@ import { PUBLIC_SHOW_PRICES } from "@/lib/public/display-policy";
 import Badge from "@/components/ui/badge";
 import FavoriteButton from "@/components/favorites/favorite-button";
 import CarImage from "./car-image";
-import SpecRow from "./spec-row";
 
 type CarCardProps = {
   car: Car;
@@ -22,22 +21,10 @@ export default function CarCard({
   isFavorite = false,
 }: CarCardProps) {
   const display = withDefaultVariantSpecs(car);
-  const specs =
-    variant === "compact"
-      ? [
-          { value: formatKm(display.rangeKm), label: "WLTP" },
-          { value: formatKw(display.dcKw), label: "DC-lading" },
-          ...(PUBLIC_SHOW_PRICES
-            ? [{ value: formatNok(display.priceNok), label: "Fra pris" }]
-            : [{ value: display.drive, label: "Drivhjul" }]),
-        ]
-      : [
-          { value: formatKm(display.rangeKm), label: "WLTP" },
-          { value: formatKwh(display.batteryKwh), label: "Batteri" },
-          { value: formatKw(display.dcKw), label: "DC-lading" },
-        ];
-
   const Heading = variant === "compact" ? "h3" : "h2";
+  const defaultVariant =
+    car.variants?.find((item) => item.isDefault) ?? car.variants?.[0] ?? null;
+  const modelLabel = defaultVariant?.name || car.variant || car.model;
 
   return (
     <article className="carCard">
@@ -56,15 +43,28 @@ export default function CarCard({
         </div>
         <div className="carCardBody">
           <span className="carBrand">{car.brand}</span>
-          <Heading>{car.model}</Heading>
-          <SpecRow items={specs} />
+          <Heading>{modelLabel}</Heading>
+          <div className="specRow">
+            <span>
+              <small>Rekkevidde</small>
+              <b className="specAccentTeal">{formatKm(display.rangeKm)}</b>
+            </span>
+            <span className="specDivider" aria-hidden="true" />
+            <span>
+              <small>Hurtiglading</small>
+              <b className="specAccentSky">{formatKw(display.dcKw)}</b>
+            </span>
+            <span className="specDivider" aria-hidden="true" />
+            <span>
+              <small>Forbruk</small>
+              <b>{formatKwh(display.consumptionKwh100km ?? 0)}</b>
+            </span>
+          </div>
           {variant === "full" && PUBLIC_SHOW_PRICES && (
             <strong className="carPrice">Fra {formatNok(display.priceNok)}</strong>
           )}
+          <span className="carCardCta">Se fakta →</span>
         </div>
-        <span className="carCardArrow" aria-hidden="true">
-          →
-        </span>
       </Link>
     </article>
   );

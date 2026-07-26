@@ -1,7 +1,6 @@
 import Link from "next/link";
-import Button from "@/components/ui/button";
-import Eyebrow from "@/components/ui/eyebrow";
 import Container from "@/components/layout/container";
+import { siteConfig } from "@/config/site";
 
 type HeroSectionProps = {
   modelCount: number;
@@ -11,59 +10,34 @@ export default function HeroSection({ modelCount }: HeroSectionProps) {
   return (
     <section className="hero">
       <div className="heroBg" aria-hidden="true">
-        <div className="heroOrb heroOrb1" />
-        <div className="heroOrb heroOrb2" />
-        <div className="heroGridPattern" />
+        <div className="heroGlow" />
       </div>
       <Container>
-        <div className="heroGrid">
-          <div className="heroContent">
-            <Eyebrow>Uavhengig elbil-fakta for Norge</Eyebrow>
-            <h1>
-              Finn elbilen
-              <br />
-              <span className="heroAccent">som passer deg</span>
-            </h1>
-            <p className="lead">
-              Sammenlign pris, rekkevidde, batteri og ladehastighet på ett sted – med tydelige kilder og oppdaterte tall.
-            </p>
-            <div className="actions">
-              <Button href="/modeller" variant="primary">
-                Se alle modeller
-              </Button>
-              <Button href="/sammenlign" variant="secondary">
-                Sammenlign biler
-              </Button>
-            </div>
-            <div className="heroStats">
-              <div className="heroStat">
-                <strong>{modelCount}</strong>
-                <span>modeller i databasen</span>
-              </div>
-              <div className="heroStat">
-                <strong>100%</strong>
-                <span>uavhengig kildebasert</span>
-              </div>
-              <div className="heroStat">
-                <strong>Gratis</strong>
-                <span>for alle brukere</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="heroCard">
-            <div className="heroCardIcon" aria-hidden="true">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <div className="heroCardContent">
-              <strong>Alt du trenger for å velge riktig elbil</strong>
-              <p>Pris, rekkevidde, batteristørrelse og ladehastighet – samlet i én oversiktlig database.</p>
-            </div>
-            <Link href="/kalkulator" className="heroCardLink">
-              Prøv ladekalkulatoren →
+        <div className="heroCentered">
+          <p className="eyebrow">{siteConfig.eyebrow}</p>
+          <h1>
+            Finn riktig elbil
+            <br />
+            <span className="heroAccent">på 2 minutter</span>
+          </h1>
+          <p className="lead heroLead">
+            Sammenlign rekkevidde, lading, forbruk og plass – med spesifikasjoner og kilder for
+            det norske markedet.
+          </p>
+          <div className="actions heroActions">
+            <Link href="/modeller" className="button primary">
+              Se alle →
             </Link>
+          </div>
+          <div className="heroStats">
+            <div className="heroStat">
+              <strong>{modelCount}</strong>
+              <span>{modelCount === 1 ? "Publisert modell" : "Publiserte modeller"}</span>
+            </div>
+            <div className="heroStat">
+              <strong>100%</strong>
+              <span>Uavhengig</span>
+            </div>
           </div>
         </div>
       </Container>

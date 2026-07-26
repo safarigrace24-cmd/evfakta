@@ -56,7 +56,7 @@ function item(
 
 /**
  * Editorial Review Assistant — completion checklist for editors.
- * Publish is still gated only by getPublishIssues (required fields).
+ * Publish is gated by getPublishIssues (draft marker, hero/front/side, SEO, sources, approval).
  */
 export function computeEditorialCompletion(input: {
   car: AdminCar;
@@ -201,7 +201,15 @@ export function computeEditorialCompletion(input: {
     source_url: car.source_url,
     data_last_checked_at: car.data_last_checked_at,
     import_status: car.import_status,
+    pros: car.pros,
+    cons: car.cons,
+    suitable_for: car.suitable_for,
+    score_notes: car.score_notes,
     has_gallery_image: images.length > 0,
+    gallery_images: images.map((image) => ({
+      image_type: image.image_type,
+      is_primary: image.is_primary,
+    })),
   });
 
   return {

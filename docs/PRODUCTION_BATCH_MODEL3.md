@@ -159,3 +159,23 @@ Attached `car_images` rows: **0** (must stay 0 until approval).
 - No invented specs applied as facts
 - No auto-publish / no image attach
 - Conflicts preserved for humans
+
+# EVFAKTA Editorial Decision
+
+This section is an editorial recommendation only.
+
+It must NEVER write to the database.
+
+It must NEVER affect:
+
+- import_status
+- is_published
+- approval state
+- review state
+- production dashboard
+
+It exists only inside this generated markdown report.
+
+| Model | Recommendation | Reason |
+|--------|----------------|--------|
+| Tesla Model 3 | Hold for Review | Dimensions/warranty/connectors are sourced; variant WLTP/battery/power still need Tesla Norge confirmation. |

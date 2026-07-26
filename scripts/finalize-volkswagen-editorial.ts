@@ -863,8 +863,13 @@ NOT_READY. Ikke fyll inn verdier før offisiell norsk dokumentasjon er verifiser
       .order("sort_order", { ascending: true });
     const gallery = await countGallery(client, meta.id);
     const candidates = await listImageCandidates(client, meta.id);
+    const { data: galleryRows } = await client
+      .from("car_images")
+      .select("image_type, is_primary")
+      .eq("car_id", meta.id);
     const publishIssues = getPublishIssues({
       ...car,
+      gallery_images: galleryRows ?? [],
       has_gallery_image: gallery > 0,
     });
 

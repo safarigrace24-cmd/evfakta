@@ -18,7 +18,8 @@ export default async function HomePage() {
     <>
       <HeroSection modelCount={cars.length} />
       <PopularModelsSection
-        cars={cars.slice(0, 3)}
+        cars={cars.slice(0, 6)}
+        totalCount={cars.length}
         isLoggedIn={Boolean(user)}
         favoriteSlugs={favoriteSlugs}
       />

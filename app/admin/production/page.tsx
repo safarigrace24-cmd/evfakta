@@ -36,6 +36,9 @@ export default async function AdminProductionPage({
             </p>
           </div>
           <div className="adminQuickActions">
+            <Link href="/admin/images" className="button secondary">
+              Images
+            </Link>
             <Link href="/admin/import/research" className="button secondary">
               Research
             </Link>

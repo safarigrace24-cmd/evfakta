@@ -3,10 +3,18 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getSupabaseEnv } from "./env";
 
-export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
+function nextWithPathname(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-evfakta-pathname", request.nextUrl.pathname);
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
   });
+}
+
+export async function updateSession(request: NextRequest) {
+  let supabaseResponse = nextWithPathname(request);
 
   const env = getSupabaseEnv();
   if (!env) {
@@ -23,9 +31,7 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
           });
-          supabaseResponse = NextResponse.next({
-            request,
-          });
+          supabaseResponse = nextWithPathname(request);
           cookiesToSet.forEach(({ name, value, options }) => {
             supabaseResponse.cookies.set(name, value, options);
           });

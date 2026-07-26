@@ -1,5 +1,15 @@
 import type { CarImageRow } from "@/lib/admin/car-image-types";
 import { computeEditorialCompletion } from "@/lib/admin/editorial-completion";
+import {
+  computeImageReviewReadiness,
+  type ImageReadinessLabel,
+} from "@/lib/admin/image-review";
+import {
+  containsEditorialDraftMarker,
+  getLaunchContentIssues,
+  getPublishIssues,
+} from "@/lib/admin/publish-readiness";
+import type { ResearchImageCandidate } from "@/lib/admin/research/types";
 import type { AdminCar } from "@/lib/admin/types";
 import type { AdminCarVariant } from "@/lib/admin/variant-types";
 
@@ -35,6 +45,18 @@ export type ProductionModelRow = {
   galleryCount: number;
   variantCount: number;
   imageCandidateCount: number;
+  imageReadinessLabel: ImageReadinessLabel;
+  imagesReady: boolean;
+  imagesPending: boolean;
+  missingHero: boolean;
+  missingGallery: boolean;
+  /** Content launch gates (draft + hero/front/side + SEO/source) — excludes approval. */
+  launchContentReady: boolean;
+  launchBlocked: boolean;
+  hasDraftMarker: boolean;
+  /** Full publish gate including import_status=approved. */
+  publishReady: boolean;
+  launchBlockerCodes: string[];
   nextAction: string;
 };
 
@@ -67,13 +89,34 @@ export type ProductionDashboardStats = {
   missingSources: number;
   missingEditorial: number;
   missingVariants: number;
+  imagesReady: number;
+  imagesPending: number;
+  missingHero: number;
+  missingGallery: number;
+  launchContentReady: number;
+  launchBlocked: number;
+  publishReady: number;
+  hasDraftMarker: number;
   overallProgressPercent: number;
 };
 
 export type ProductionDashboardFilters = {
   q: string;
   brand: string;
-  status: "" | ProductionStatus | "missing_images" | "missing_sources" | "missing_editorial";
+  status:
+    | ""
+    | ProductionStatus
+    | "missing_images"
+    | "missing_sources"
+    | "missing_editorial"
+    | "images_ready"
+    | "images_pending"
+    | "missing_hero"
+    | "missing_gallery"
+    | "launch_ready"
+    | "launch_blocked"
+    | "publish_ready"
+    | "has_draft_marker";
 };
 
 export const EMPTY_PRODUCTION_FILTERS: ProductionDashboardFilters = {
@@ -197,10 +240,24 @@ export function computeProductionModelRow(input: {
   images: CarImageRow[];
   variants: AdminCarVariant[];
   imageCandidateCount?: number;
+  imageCandidates?: ResearchImageCandidate[];
 }): ProductionModelRow {
-  const { car, images, variants, imageCandidateCount = 0 } = input;
+  const {
+    car,
+    images,
+    variants,
+    imageCandidateCount = 0,
+    imageCandidates = [],
+  } = input;
   const completion = computeEditorialCompletion({ car, images, variants });
   const specs = carOrVariantSpecs(car, variants);
+  const imageReadiness = computeImageReviewReadiness({
+    gallery: images,
+    candidates: imageCandidates,
+    carImageUrl: car.image_url,
+  });
+  const resolvedCandidateCount =
+    imageCandidateCount || imageCandidates.length;
 
   const editorialPercent = percentFromFlags([
     hasText(car.description),
@@ -213,7 +270,7 @@ export function computeProductionModelRow(input: {
     hasImageType(images, "front") || hasText(car.image_url),
     hasImageType(images, "rear") || hasImageType(images, "side"),
     hasImageType(images, "interior"),
-    images.length >= 1 || imageCandidateCount >= 1,
+    images.length >= 1 || resolvedCandidateCount >= 1,
   ]);
 
   const specsPercent = percentFromFlags([
@@ -244,13 +301,47 @@ export function computeProductionModelRow(input: {
     car,
     images,
     variants,
-    imageCandidateCount,
+    imageCandidateCount: resolvedCandidateCount,
   });
 
   const missingImages = images.length === 0 && !hasText(car.image_url);
   const missingSources = !(hasText(car.source_name) || hasText(car.source_url));
   const missingEditorial =
     !hasText(car.description) || !hasList(car.pros) || !hasList(car.cons);
+
+  const galleryRefs = images.map((image) => ({
+    image_type: image.image_type,
+    is_primary: image.is_primary,
+  }));
+  const readinessInput = {
+    brand: car.brand,
+    model: car.model,
+    slug: car.slug,
+    description: car.description,
+    image_url: car.image_url,
+    source_name: car.source_name,
+    source_url: car.source_url,
+    data_last_checked_at: car.data_last_checked_at,
+    import_status: car.import_status,
+    pros: car.pros,
+    cons: car.cons,
+    suitable_for: car.suitable_for,
+    score_notes: car.score_notes,
+    has_gallery_image: images.length > 0,
+    gallery_images: galleryRefs,
+  };
+  const launchIssues = getLaunchContentIssues(readinessInput);
+  const publishIssues = getPublishIssues(readinessInput);
+  const hasDraftMarker =
+    containsEditorialDraftMarker(car.description) ||
+    containsEditorialDraftMarker(car.pros) ||
+    containsEditorialDraftMarker(car.cons) ||
+    containsEditorialDraftMarker(car.suitable_for) ||
+    containsEditorialDraftMarker(car.score_notes);
+  const launchContentReady = launchIssues.length === 0;
+  const launchBlocked = !launchContentReady;
+  const publishReady = publishIssues.length === 0;
+  const launchBlockerCodes = [...new Set(launchIssues.map((issue) => issue.code))];
 
   // Prefer production-weighted completion over raw editorial checklist
   // (editorial checklist treats approved as required, which understates ready drafts).
@@ -265,11 +356,21 @@ export function computeProductionModelRow(input: {
   );
 
   let nextAction = "Open Edit";
-  if (status === "READY_FOR_HUMAN_APPROVAL") nextAction = "Start Review";
-  else if (missingSources || specsPercent < 40) nextAction = "Open Research";
+  if (hasDraftMarker) nextAction = "Rewrite Draft";
+  else if (
+    launchBlockerCodes.includes("hero_image") ||
+    launchBlockerCodes.includes("front_image") ||
+    launchBlockerCodes.includes("side_image")
+  ) {
+    nextAction = "Review Images";
+  } else if (missingSources || specsPercent < 40) nextAction = "Open Research";
+  else if (imageReadiness.missingHero || !imageReadiness.imagesReady)
+    nextAction = "Review Images";
   else if (missingImages) nextAction = "Add Images";
   else if (missingEditorial) nextAction = "Write Editorial";
-  else if (status === "APPROVED") nextAction = "Publish Queue";
+  else if (publishReady) nextAction = "Publish Queue";
+  else if (status === "READY_FOR_HUMAN_APPROVAL") nextAction = "Start Review";
+  else if (status === "APPROVED") nextAction = "Clear Launch Gates";
   else if (status === "PUBLISHED") nextAction = "View Car";
 
   return {
@@ -293,7 +394,17 @@ export function computeProductionModelRow(input: {
     missingVariants: variants.length === 0,
     galleryCount: images.length,
     variantCount: variants.length,
-    imageCandidateCount,
+    imageCandidateCount: resolvedCandidateCount,
+    imageReadinessLabel: imageReadiness.label,
+    imagesReady: imageReadiness.imagesReady,
+    imagesPending: !imageReadiness.imagesReady,
+    missingHero: imageReadiness.missingHero,
+    missingGallery: imageReadiness.missingGallery,
+    launchContentReady,
+    launchBlocked,
+    hasDraftMarker,
+    publishReady,
+    launchBlockerCodes,
     nextAction,
   };
 }
@@ -384,6 +495,14 @@ export function computeProductionDashboardStats(
     missingSources: models.filter((m) => m.missingSources).length,
     missingEditorial: models.filter((m) => m.missingEditorial).length,
     missingVariants: models.filter((m) => m.missingVariants).length,
+    imagesReady: models.filter((m) => m.imagesReady).length,
+    imagesPending: models.filter((m) => m.imagesPending).length,
+    missingHero: models.filter((m) => m.missingHero).length,
+    missingGallery: models.filter((m) => m.missingGallery).length,
+    launchContentReady: models.filter((m) => m.launchContentReady).length,
+    launchBlocked: models.filter((m) => m.launchBlocked).length,
+    publishReady: models.filter((m) => m.publishReady).length,
+    hasDraftMarker: models.filter((m) => m.hasDraftMarker).length,
     overallProgressPercent,
   };
 }
@@ -414,6 +533,22 @@ export function filterProductionModels(
         return row.missingSources;
       case "missing_editorial":
         return row.missingEditorial;
+      case "images_ready":
+        return row.imagesReady;
+      case "images_pending":
+        return row.imagesPending;
+      case "missing_hero":
+        return row.missingHero;
+      case "missing_gallery":
+        return row.missingGallery;
+      case "launch_ready":
+        return row.launchContentReady;
+      case "launch_blocked":
+        return row.launchBlocked;
+      case "publish_ready":
+        return row.publishReady;
+      case "has_draft_marker":
+        return row.hasDraftMarker;
       default:
         return true;
     }
@@ -437,6 +572,14 @@ export function parseProductionDashboardFilters(
     "missing_images",
     "missing_sources",
     "missing_editorial",
+    "images_ready",
+    "images_pending",
+    "missing_hero",
+    "missing_gallery",
+    "launch_ready",
+    "launch_blocked",
+    "publish_ready",
+    "has_draft_marker",
   ] as const;
 
   return {

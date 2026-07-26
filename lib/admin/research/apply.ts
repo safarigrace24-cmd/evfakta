@@ -161,89 +161,126 @@ async function upsertVariants(
   }
 }
 
+/**
+ * Attach one human-approved candidate into car_images.
+ * Never auto-approves; caller must set status=approved first.
+ * Does not publish the car.
+ */
+export async function applySingleApprovedImage(input: {
+  carId: string;
+  slug: string;
+  image: ResearchImageCandidate;
+  sortOrder?: number;
+}): Promise<{ ok: true; galleryImageId: string } | { ok: false; error: string }> {
+  const image = input.image;
+  if (image.status !== "approved") {
+    return { ok: false, error: "Bildet er ikke godkjent." };
+  }
+  if (image.applied_image_id) {
+    return { ok: true, galleryImageId: image.applied_image_id };
+  }
+
+  const supabase = createAdminClient();
+  try {
+    const response = await fetch(image.original_url, { redirect: "follow" });
+    if (!response.ok) {
+      return { ok: false, error: "Kunne ikke hente bilde-URL." };
+    }
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const webp = await sharp(buffer)
+      .rotate()
+      .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 82 })
+      .toBuffer();
+
+    const storagePath = `${input.slug}/${randomUUID()}.webp`;
+    const { error: uploadError } = await supabase.storage
+      .from(IMAGE_BUCKET)
+      .upload(storagePath, webp, {
+        contentType: "image/webp",
+        upsert: true,
+        cacheControl: "3600",
+      });
+    if (uploadError) {
+      return { ok: false, error: "Kunne ikke laste opp bildet." };
+    }
+
+    const publicUrl = publicUrlForPath(storagePath);
+    const imageType: CarImageType = isCarImageType(image.image_type ?? "")
+      ? (image.image_type as CarImageType)
+      : "other";
+
+    if (image.is_primary_candidate) {
+      await supabase.from("car_images").update({ is_primary: false }).eq("car_id", input.carId);
+    }
+
+    const { data: inserted, error: insertError } = await supabase
+      .from("car_images")
+      .insert({
+        car_id: input.carId,
+        image_url: publicUrl,
+        storage_path: storagePath,
+        image_type: imageType,
+        alt_text:
+          image.alt_text ||
+          `Kilde: ${image.source_name || image.source_url || image.original_url}`,
+        is_primary: image.is_primary_candidate,
+        sort_order: input.sortOrder ?? 0,
+      })
+      .select("id")
+      .single();
+
+    if (insertError || !inserted) {
+      return { ok: false, error: "Kunne ikke lagre bildeposten." };
+    }
+
+    if (image.is_primary_candidate) {
+      await supabase.from("cars").update({ image_url: publicUrl }).eq("id", input.carId);
+    }
+
+    await supabase
+      .from("research_image_candidates")
+      .update({
+        status: "applied",
+        applied_image_id: inserted.id,
+        storage_path: storagePath,
+        notes: [
+          image.notes,
+          image.license_note,
+          image.usage_terms,
+          `original:${image.original_url}`,
+        ]
+          .filter(Boolean)
+          .join(" | "),
+      })
+      .eq("id", image.id);
+
+    return { ok: true, galleryImageId: inserted.id as string };
+  } catch (error) {
+    console.error("[research] apply image failed:", error);
+    return { ok: false, error: "Kunne ikke anvende bildet." };
+  }
+}
+
 async function applyApprovedImages(input: {
   carId: string;
   slug: string;
   images: ResearchImageCandidate[];
 }): Promise<number> {
-  const supabase = createAdminClient();
   let applied = 0;
   let sortOrder = 0;
 
   for (const image of input.images) {
     if (image.status !== "approved") continue;
-    try {
-      const response = await fetch(image.original_url, { redirect: "follow" });
-      if (!response.ok) continue;
-      const buffer = Buffer.from(await response.arrayBuffer());
-      const webp = await sharp(buffer)
-        .rotate()
-        .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 82 })
-        .toBuffer();
-
-      const storagePath = `${input.slug}/${randomUUID()}.webp`;
-      const { error: uploadError } = await supabase.storage
-        .from(IMAGE_BUCKET)
-        .upload(storagePath, webp, {
-          contentType: "image/webp",
-          upsert: true,
-          cacheControl: "3600",
-        });
-      if (uploadError) continue;
-
-      const publicUrl = publicUrlForPath(storagePath);
-      const imageType: CarImageType = isCarImageType(image.image_type ?? "")
-        ? (image.image_type as CarImageType)
-        : "other";
-
-      if (image.is_primary_candidate) {
-        await supabase.from("car_images").update({ is_primary: false }).eq("car_id", input.carId);
-      }
-
-      const { data: inserted, error: insertError } = await supabase
-        .from("car_images")
-        .insert({
-          car_id: input.carId,
-          image_url: publicUrl,
-          storage_path: storagePath,
-          image_type: imageType,
-          alt_text:
-            image.alt_text ||
-            `Kilde: ${image.source_name || image.source_url || image.original_url}`,
-          is_primary: image.is_primary_candidate,
-          sort_order: sortOrder,
-        })
-        .select("id")
-        .single();
-
-      if (insertError || !inserted) continue;
-
-      if (image.is_primary_candidate) {
-        await supabase.from("cars").update({ image_url: publicUrl }).eq("id", input.carId);
-      }
-
-      await supabase
-        .from("research_image_candidates")
-        .update({
-          status: "applied",
-          applied_image_id: inserted.id,
-          storage_path: storagePath,
-          notes: [
-            image.notes,
-            image.license_note,
-            image.usage_terms,
-            `original:${image.original_url}`,
-          ]
-            .filter(Boolean)
-            .join(" | "),
-        })
-        .eq("id", image.id);
-
+    const result = await applySingleApprovedImage({
+      carId: input.carId,
+      slug: input.slug,
+      image,
+      sortOrder,
+    });
+    if (result.ok) {
       sortOrder += 1;
       applied += 1;
-    } catch (error) {
-      console.error("[research] apply image failed:", error);
     }
   }
 

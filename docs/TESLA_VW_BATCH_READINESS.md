@@ -272,3 +272,32 @@
 - No model was published by this pass.
 - Model Y was force-unpublished (had been published with unsourced specs).
 - Next human actions: attach/approve images, rewrite draft markers, confirm Tesla energy figures on Tesla Norge, then approve — still do not auto-publish.
+
+# EVFAKTA Editorial Decision
+
+This section is an editorial recommendation only.
+
+It must NEVER write to the database.
+
+It must NEVER affect:
+
+- import_status
+- is_published
+- approval state
+- review state
+- production dashboard
+
+It exists only inside this generated markdown report.
+
+| Model | Recommendation | Reason |
+|--------|----------------|--------|
+| Tesla Model 3 | Hold for Review | Reference workflow package is strong; variant energy figures still need Tesla Norge confirmation. |
+| Tesla Model Y | Await Official Documentation | Official Norwegian specifications incomplete after unsourced-data rollback. |
+| Tesla Model S | Not Ready | Large parts of the specification are unavailable; keep out of the publication pipeline. |
+| Tesla Model X | Not Ready | Large parts of the specification are unavailable; keep out of the publication pipeline. |
+| Volkswagen ID.3 | Publish Candidate | Complete Norwegian technical PDF mapping, editorial draft, and image candidates. |
+| Volkswagen ID.4 | Publish Candidate | Complete official documentation; open conflicts are documented for editor judgement. |
+| Volkswagen ID.5 | Await Official Documentation | No current Norwegian technical PDF or active model page. |
+| Volkswagen ID.7 | Hold for Review | Technical data is essentially complete; additional image review is needed. |
+| Volkswagen ID. Buzz | Publish Candidate | Official Pro/GTX documentation and editorial draft ready for manual approval. |
+

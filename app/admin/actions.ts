@@ -11,9 +11,19 @@ import {
 import {
   formatPublishIssues,
   getPublishIssues,
+  type GalleryImageRef,
 } from "@/lib/admin/publish-readiness";
 import { mapAdminDbError, validateAdminCarInput } from "@/lib/admin/validate";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
+
+async function loadGalleryImageRefs(carId: string): Promise<GalleryImageRef[]> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("car_images")
+    .select("image_type, is_primary")
+    .eq("car_id", carId);
+  return (data ?? []) as GalleryImageRef[];
+}
 
 export type AdminActionResult =
   | { ok: true; message: string; id?: string }
@@ -56,7 +66,11 @@ export async function createAdminCarAction(
   if (!validated.ok) return validated;
 
   if (validated.data.is_published) {
-    const issues = getPublishIssues(validated.data);
+    const issues = getPublishIssues({
+      ...validated.data,
+      gallery_images: [],
+      has_gallery_image: false,
+    });
     if (issues.length > 0) {
       return { ok: false, error: formatPublishIssues(issues) };
     }
@@ -110,7 +124,15 @@ export async function updateAdminCarAction(
   if (!validated.ok) return validated;
 
   if (validated.data.is_published) {
-    const issues = getPublishIssues(validated.data);
+    if (!adminDbReady()) {
+      return { ok: false, error: ADMIN_MESSAGES.unavailable };
+    }
+    const gallery_images = await loadGalleryImageRefs(id);
+    const issues = getPublishIssues({
+      ...validated.data,
+      gallery_images,
+      has_gallery_image: gallery_images.length > 0,
+    });
     if (issues.length > 0) {
       return { ok: false, error: formatPublishIssues(issues) };
     }
@@ -174,14 +196,11 @@ export async function setAdminCarPublishedAction(
         return { ok: false, error: ADMIN_MESSAGES.notFound };
       }
 
-      const { count } = await supabase
-        .from("car_images")
-        .select("id", { count: "exact", head: true })
-        .eq("car_id", id);
-
+      const gallery_images = await loadGalleryImageRefs(id);
       const issues = getPublishIssues({
         ...(existing as AdminCar),
-        has_gallery_image: (count ?? 0) > 0,
+        gallery_images,
+        has_gallery_image: gallery_images.length > 0,
       });
 
       if (issues.length > 0) {

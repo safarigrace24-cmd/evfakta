@@ -256,5 +256,86 @@ describe("production dashboard readiness", () => {
     assert.equal(stats.readyForHumanApproval, 1);
     assert.equal(stats.notReady, 1);
     assert.equal(stats.brands, 1);
+    assert.equal(typeof stats.imagesReady, "number");
+    assert.equal(typeof stats.imagesPending, "number");
+    assert.equal(typeof stats.missingHero, "number");
+    assert.equal(typeof stats.missingGallery, "number");
+    assert.equal(typeof stats.launchContentReady, "number");
+    assert.equal(typeof stats.launchBlocked, "number");
+    assert.equal(typeof stats.publishReady, "number");
+    assert.equal(typeof stats.hasDraftMarker, "number");
+  });
+
+  it("exposes image readiness fields without changing publish state", () => {
+    const row = computeProductionModelRow({
+      car: baseCar(),
+      images: [],
+      variants: [baseVariant()],
+      imageCandidateCount: 2,
+    });
+    assert.equal(row.imagesReady, false);
+    assert.equal(row.imagesPending, true);
+    assert.equal(row.missingHero, true);
+    assert.equal(row.imageReadinessLabel, "Images Pending Review");
+    assert.equal(row.isPublished, false);
+    assert.equal(row.importStatus, "needs_review");
+  });
+
+  it("marks draft + missing gallery as launch blocked, not publish ready", () => {
+    const row = computeProductionModelRow({
+      car: baseCar(),
+      images: [],
+      variants: [baseVariant()],
+      imageCandidateCount: 2,
+    });
+    assert.equal(row.hasDraftMarker, true);
+    assert.equal(row.launchContentReady, false);
+    assert.equal(row.launchBlocked, true);
+    assert.equal(row.publishReady, false);
+    assert.equal(row.nextAction, "Rewrite Draft");
+  });
+
+  it("reports launch content ready when draft cleared and hero/front/side attached", () => {
+    const row = computeProductionModelRow({
+      car: baseCar({
+        description:
+          "Volkswagen ID.3 er en kompakt elbil med dokumenterte norske spesifikasjoner.",
+        pros: ["Kompakt format"],
+        cons: ["Begrenset bagasje"],
+        suitable_for: ["Pendlerne"],
+        score_notes: null,
+        import_status: "needs_review",
+        image_url: null,
+      }),
+      images: [
+        {
+          id: "img-1",
+          car_id: "car-1",
+          image_url: "/front.webp",
+          storage_path: "front",
+          image_type: "front",
+          alt_text: "front",
+          sort_order: 0,
+          is_primary: true,
+          created_at: "2026-07-26T00:00:00.000Z",
+        },
+        {
+          id: "img-2",
+          car_id: "car-1",
+          image_url: "/side.webp",
+          storage_path: "side",
+          image_type: "side",
+          alt_text: "side",
+          sort_order: 1,
+          is_primary: false,
+          created_at: "2026-07-26T00:00:00.000Z",
+        },
+      ],
+      variants: [baseVariant()],
+    });
+    assert.equal(row.hasDraftMarker, false);
+    assert.equal(row.launchContentReady, true);
+    assert.equal(row.publishReady, false);
+    assert.equal(Array.isArray(row.launchBlockerCodes), true);
   });
 });

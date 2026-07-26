@@ -19,6 +19,10 @@ import {
   PUBLIC_SHOW_PRICES,
   PUBLIC_SHOW_SCORES,
 } from "@/lib/public/display-policy";
+import {
+  sanitizePublicText,
+  sanitizePublicTextList,
+} from "@/lib/public/sanitize-public-copy";
 import FavoriteButton from "@/components/favorites/favorite-button";
 import CarGallery from "@/components/cars/car-gallery";
 import FactGrid from "@/components/cars/fact-grid";
@@ -120,9 +124,18 @@ function buildTechRows(car: Car): Array<{ label: string; value: string | null }>
     { label: "Garanti", value: car.warranty ?? null },
     { label: "Kjøretøytype", value: car.vehicleType ?? null },
     { label: "Karosseri", value: car.bodyStyle ?? null },
-    { label: "Fordeler", value: formatTextList(car.pros) },
-    { label: "Ulemper", value: formatTextList(car.cons) },
-    { label: "Passer for", value: formatTextList(car.suitableFor) },
+    {
+      label: "Fordeler",
+      value: formatTextList(sanitizePublicTextList(car.pros)),
+    },
+    {
+      label: "Ulemper",
+      value: formatTextList(sanitizePublicTextList(car.cons)),
+    },
+    {
+      label: "Passer for",
+      value: formatTextList(sanitizePublicTextList(car.suitableFor)),
+    },
   ].filter((row) => row.value);
 }
 
@@ -142,6 +155,10 @@ export default function CarVariantDetail({
   const display = useMemo(
     () => applyVariantToCar(car, selectedSlug),
     [car, selectedSlug],
+  );
+  const publicDescription = useMemo(
+    () => sanitizePublicText(car.description),
+    [car.description],
   );
 
   const keyFacts = [
@@ -185,7 +202,9 @@ export default function CarVariantDetail({
       <div className="detailHeader">
         <Eyebrow>{car.brand}</Eyebrow>
         <h1>{car.model}</h1>
-        <p className="lead narrow">{car.description}</p>
+        {publicDescription ? (
+          <p className="lead narrow">{publicDescription}</p>
+        ) : null}
 
         {variants.length > 0 && (
           <div className="variantSelector" role="group" aria-label="Velg variant">
