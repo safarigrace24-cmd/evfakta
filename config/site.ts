@@ -3,7 +3,10 @@ export type NavLink = {
   href: string;
 };
 
-/** Primary IA for v1.0 — hide unfinished destinations from main nav. */
+/**
+ * Full public IA for v1.0 (mobile drawer + shared destinations).
+ * Unfinished stub tools stay out of navigation.
+ */
 export const navLinks: NavLink[] = [
   { label: "Hjem", href: "/" },
   { label: "Modeller", href: "/modeller" },
@@ -11,10 +14,18 @@ export const navLinks: NavLink[] = [
   { label: "Sammenlign", href: "/sammenlign" },
 ];
 
+/** Desktop top-level links. */
 export const primaryNavLinks: NavLink[] = [
   { label: "Modeller", href: "/modeller" },
-  { label: "Merker", href: "/merker" },
   { label: "Sammenlign", href: "/sammenlign" },
+];
+
+/**
+ * Desktop “Mer” dropdown — finished public destinations not shown
+ * as primary top-level items. No unfinished stubs.
+ */
+export const moreNavLinks: NavLink[] = [
+  { label: "Merker", href: "/merker" },
 ];
 
 export const siteConfig = {
