@@ -3,7 +3,8 @@
 **Date checked:** 2026-07-26T15:00:00.000Z
 **Brand:** Volvo
 **Rule:** Official Volvo Cars Norge sources only. Never invent. Never auto-publish.
-**Images:** candidates only — not attached, not approved
+**Images:** candidates only — not attached, not approved  
+**Image refresh (2026-07-28):** failed OEM/CDN candidates superseded; Storage-backed replacements in [`VW_VOLVO_IMAGE_REFRESH_REPORT.md`](./VW_VOLVO_IMAGE_REFRESH_REPORT.md) (EX60 not included).
 **Apply script:** `scripts/apply-volvo-batch-01.ts`
 **Batch JSON:** `data/catalog-batch-03-volvo.json`
 

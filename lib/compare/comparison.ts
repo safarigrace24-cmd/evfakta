@@ -7,9 +7,45 @@ import {
 
 export type CompareDirection = "higher" | "lower" | "none";
 
+export type CompareGroup =
+  | "identity"
+  | "battery"
+  | "range"
+  | "charging"
+  | "performance"
+  | "dimensions"
+  | "practicality"
+  | "warranty"
+  | "scores";
+
+export const COMPARE_GROUP_ORDER: CompareGroup[] = [
+  "identity",
+  "battery",
+  "range",
+  "charging",
+  "performance",
+  "dimensions",
+  "practicality",
+  "warranty",
+  "scores",
+];
+
+export const COMPARE_GROUP_LABELS: Record<CompareGroup, string> = {
+  identity: "Identitet",
+  battery: "Batteri",
+  range: "Rekkevidde",
+  charging: "Lading",
+  performance: "Ytelse",
+  dimensions: "Dimensjoner",
+  practicality: "Praktisk",
+  warranty: "Garanti",
+  scores: "Score",
+};
+
 export type CompareRow = {
   key: string;
   label: string;
+  group: CompareGroup;
   values: Array<string | number | null>;
   numericValues: Array<number | null>;
   direction: CompareDirection;
@@ -132,6 +168,18 @@ export function resolveCompareCars(
     .filter((car): car is Car => Boolean(car));
 }
 
+export function groupComparisonRows(rows: CompareRow[]): Array<{
+  group: CompareGroup;
+  label: string;
+  rows: CompareRow[];
+}> {
+  return COMPARE_GROUP_ORDER.map((group) => ({
+    group,
+    label: COMPARE_GROUP_LABELS[group],
+    rows: rows.filter((row) => row.group === group),
+  })).filter((section) => section.rows.length > 0);
+}
+
 export function buildComparisonRows(
   cars: Car[],
   options?: { includeHiddenPublicFields?: boolean },
@@ -142,49 +190,50 @@ export function buildComparisonRows(
   const defs: Array<{
     key: string;
     label: string;
+    group: CompareGroup;
     direction: CompareDirection;
     get: (car: Car) => string | number | null;
     getNumeric?: (car: Car) => number | null;
   }> = [
-    { key: "priceNok", label: "Pris fra (NOK)", direction: "lower", get: (c) => c.priceNok || null, getNumeric: (c) => meaningful(c.priceNok, "priceNok") },
-    { key: "variant", label: "Variant", direction: "none", get: (c) => c.variant ?? null },
-    { key: "rangeKm", label: "WLTP-rekkevidde (km)", direction: "higher", get: (c) => c.rangeKm || null, getNumeric: (c) => meaningful(c.rangeKm, "rangeKm") },
-    { key: "winterRange", label: "Vinterrekkevidde (km)", direction: "higher", get: (c) => c.winterRangeKm ?? null, getNumeric: (c) => num(c.winterRangeKm) },
-    { key: "realWorldRange", label: "Real-world rekkevidde (km)", direction: "higher", get: (c) => c.realWorldRangeKm ?? null, getNumeric: (c) => num(c.realWorldRangeKm) },
-    { key: "batteryKwh", label: "Batteri (kWh)", direction: "higher", get: (c) => c.batteryKwh || null, getNumeric: (c) => meaningful(c.batteryKwh, "batteryKwh") },
-    { key: "batteryUsable", label: "Batteri brukbart (kWh)", direction: "higher", get: (c) => c.batteryUsableKwh ?? null, getNumeric: (c) => num(c.batteryUsableKwh) },
-    { key: "batteryTotal", label: "Batteri totalt (kWh)", direction: "higher", get: (c) => c.batteryTotalKwh ?? null, getNumeric: (c) => num(c.batteryTotalKwh) },
-    { key: "batteryChemistry", label: "Batterikjemi", direction: "none", get: (c) => c.batteryChemistry ?? null },
-    { key: "consumption", label: "Forbruk (kWh/100 km)", direction: "lower", get: (c) => c.consumptionKwh100km ?? null, getNumeric: (c) => num(c.consumptionKwh100km) },
-    { key: "dcKw", label: "DC-lading (kW)", direction: "higher", get: (c) => c.dcKw || null, getNumeric: (c) => meaningful(c.dcKw, "dcKw") },
-    { key: "charge1080", label: "Ladetid 10–80 % (min)", direction: "lower", get: (c) => c.chargeTime1080Minutes ?? null, getNumeric: (c) => num(c.chargeTime1080Minutes) },
-    { key: "acKw", label: "AC-lading (kW)", direction: "higher", get: (c) => c.acKw || null, getNumeric: (c) => num(c.acKw) },
-    { key: "connectorAc", label: "AC-kontakt", direction: "none", get: (c) => c.chargingConnectorAc ?? null },
-    { key: "connectorDc", label: "DC-kontakt", direction: "none", get: (c) => c.chargingConnectorDc ?? null },
-    { key: "powerHp", label: "Effekt (hk)", direction: "higher", get: (c) => c.powerHp ?? null, getNumeric: (c) => num(c.powerHp) },
-    { key: "torqueNm", label: "Moment (Nm)", direction: "higher", get: (c) => c.torqueNm ?? null, getNumeric: (c) => num(c.torqueNm) },
-    { key: "accel", label: "0–100 km/t (s)", direction: "lower", get: (c) => c.acceleration0100 ?? null, getNumeric: (c) => num(c.acceleration0100) },
-    { key: "topSpeed", label: "Toppfart (km/t)", direction: "higher", get: (c) => c.topSpeedKmh ?? null, getNumeric: (c) => num(c.topSpeedKmh) },
-    { key: "seats", label: "Seter", direction: "higher", get: (c) => c.seats ?? null, getNumeric: (c) => num(c.seats) },
-    { key: "cargo", label: "Bagasjerom (l)", direction: "higher", get: (c) => c.cargoL ?? null, getNumeric: (c) => num(c.cargoL) },
-    { key: "frunk", label: "Frunk (l)", direction: "higher", get: (c) => c.frunkL ?? null, getNumeric: (c) => num(c.frunkL) },
-    { key: "towing", label: "Tilhengervekt (kg)", direction: "higher", get: (c) => c.towingKg ?? null, getNumeric: (c) => num(c.towingKg) },
-    { key: "curbWeight", label: "Egenvekt (kg)", direction: "lower", get: (c) => c.curbWeightKg ?? null, getNumeric: (c) => num(c.curbWeightKg) },
-    { key: "length", label: "Lengde (mm)", direction: "none", get: (c) => c.lengthMm ?? null, getNumeric: (c) => num(c.lengthMm) },
-    { key: "drive", label: "Drivhjul", direction: "none", get: (c) => c.drive },
-    { key: "body", label: "Karosseri", direction: "none", get: (c) => c.bodyStyle ?? null },
-    { key: "vehicleType", label: "Kjøretøytype", direction: "none", get: (c) => c.vehicleType ?? null },
-    { key: "heatPump", label: "Varmepumpe", direction: "none", get: (c) => (c.heatPump == null ? null : c.heatPump ? "Ja" : "Nei") },
-    { key: "v2l", label: "V2L", direction: "none", get: (c) => (c.v2l == null ? null : c.v2l ? "Ja" : "Nei") },
-    { key: "warranty", label: "Garanti", direction: "none", get: (c) => c.warranty ?? null },
-    { key: "overallScore", label: "EVFAKTA totalscore", direction: "higher", get: (c) => c.overallScore ?? null, getNumeric: (c) => num(c.overallScore) },
-    { key: "rangeScore", label: "Score: rekkevidde", direction: "higher", get: (c) => c.rangeScore ?? null, getNumeric: (c) => num(c.rangeScore) },
-    { key: "chargingScore", label: "Score: lading", direction: "higher", get: (c) => c.chargingScore ?? null, getNumeric: (c) => num(c.chargingScore) },
-    { key: "winterScore", label: "Score: vinter", direction: "higher", get: (c) => c.winterScore ?? null, getNumeric: (c) => num(c.winterScore) },
-    { key: "comfortScore", label: "Score: komfort", direction: "higher", get: (c) => c.comfortScore ?? null, getNumeric: (c) => num(c.comfortScore) },
-    { key: "spaceScore", label: "Score: plass", direction: "higher", get: (c) => c.spaceScore ?? null, getNumeric: (c) => num(c.spaceScore) },
-    { key: "valueScore", label: "Score: verdi", direction: "higher", get: (c) => c.valueScore ?? null, getNumeric: (c) => num(c.valueScore) },
-    { key: "reliabilityScore", label: "Score: pålitelighet", direction: "higher", get: (c) => c.reliabilityScore ?? null, getNumeric: (c) => num(c.reliabilityScore) },
+    { key: "priceNok", label: "Pris fra (NOK)", group: "identity", direction: "lower", get: (c) => c.priceNok || null, getNumeric: (c) => meaningful(c.priceNok, "priceNok") },
+    { key: "variant", label: "Variant", group: "identity", direction: "none", get: (c) => c.variant ?? null },
+    { key: "drive", label: "Drivlinje", group: "identity", direction: "none", get: (c) => c.drive },
+    { key: "body", label: "Karosseri", group: "identity", direction: "none", get: (c) => c.bodyStyle ?? null },
+    { key: "vehicleType", label: "Kjøretøytype", group: "identity", direction: "none", get: (c) => c.vehicleType ?? null },
+    { key: "batteryKwh", label: "Batteri (kWh)", group: "battery", direction: "higher", get: (c) => c.batteryKwh || null, getNumeric: (c) => meaningful(c.batteryKwh, "batteryKwh") },
+    { key: "batteryUsable", label: "Batteri brukbart (kWh)", group: "battery", direction: "higher", get: (c) => c.batteryUsableKwh ?? null, getNumeric: (c) => num(c.batteryUsableKwh) },
+    { key: "batteryTotal", label: "Batteri totalt (kWh)", group: "battery", direction: "higher", get: (c) => c.batteryTotalKwh ?? null, getNumeric: (c) => num(c.batteryTotalKwh) },
+    { key: "batteryChemistry", label: "Batterikjemi", group: "battery", direction: "none", get: (c) => c.batteryChemistry ?? null },
+    { key: "consumption", label: "Forbruk (kWh/100 km)", group: "battery", direction: "lower", get: (c) => c.consumptionKwh100km ?? null, getNumeric: (c) => num(c.consumptionKwh100km) },
+    { key: "rangeKm", label: "WLTP-rekkevidde (km)", group: "range", direction: "higher", get: (c) => c.rangeKm || null, getNumeric: (c) => meaningful(c.rangeKm, "rangeKm") },
+    { key: "winterRange", label: "Vinterrekkevidde (km)", group: "range", direction: "higher", get: (c) => c.winterRangeKm ?? null, getNumeric: (c) => num(c.winterRangeKm) },
+    { key: "realWorldRange", label: "Real-world rekkevidde (km)", group: "range", direction: "higher", get: (c) => c.realWorldRangeKm ?? null, getNumeric: (c) => num(c.realWorldRangeKm) },
+    { key: "dcKw", label: "DC-lading (kW)", group: "charging", direction: "higher", get: (c) => c.dcKw || null, getNumeric: (c) => meaningful(c.dcKw, "dcKw") },
+    { key: "charge1080", label: "Ladetid 10–80 % (min)", group: "charging", direction: "lower", get: (c) => c.chargeTime1080Minutes ?? null, getNumeric: (c) => num(c.chargeTime1080Minutes) },
+    { key: "acKw", label: "AC-lading (kW)", group: "charging", direction: "higher", get: (c) => c.acKw || null, getNumeric: (c) => num(c.acKw) },
+    { key: "connectorAc", label: "AC-kontakt", group: "charging", direction: "none", get: (c) => c.chargingConnectorAc ?? null },
+    { key: "connectorDc", label: "DC-kontakt", group: "charging", direction: "none", get: (c) => c.chargingConnectorDc ?? null },
+    { key: "powerHp", label: "Effekt (hk)", group: "performance", direction: "higher", get: (c) => c.powerHp ?? null, getNumeric: (c) => num(c.powerHp) },
+    { key: "torqueNm", label: "Moment (Nm)", group: "performance", direction: "higher", get: (c) => c.torqueNm ?? null, getNumeric: (c) => num(c.torqueNm) },
+    { key: "accel", label: "0–100 km/t (s)", group: "performance", direction: "lower", get: (c) => c.acceleration0100 ?? null, getNumeric: (c) => num(c.acceleration0100) },
+    { key: "topSpeed", label: "Toppfart (km/t)", group: "performance", direction: "higher", get: (c) => c.topSpeedKmh ?? null, getNumeric: (c) => num(c.topSpeedKmh) },
+    { key: "length", label: "Lengde (mm)", group: "dimensions", direction: "none", get: (c) => c.lengthMm ?? null, getNumeric: (c) => num(c.lengthMm) },
+    { key: "curbWeight", label: "Egenvekt (kg)", group: "dimensions", direction: "lower", get: (c) => c.curbWeightKg ?? null, getNumeric: (c) => num(c.curbWeightKg) },
+    { key: "seats", label: "Seter", group: "practicality", direction: "higher", get: (c) => c.seats ?? null, getNumeric: (c) => num(c.seats) },
+    { key: "cargo", label: "Bagasjerom (l)", group: "practicality", direction: "higher", get: (c) => c.cargoL ?? null, getNumeric: (c) => num(c.cargoL) },
+    { key: "frunk", label: "Frunk (l)", group: "practicality", direction: "higher", get: (c) => c.frunkL ?? null, getNumeric: (c) => num(c.frunkL) },
+    { key: "towing", label: "Tilhengervekt (kg)", group: "practicality", direction: "higher", get: (c) => c.towingKg ?? null, getNumeric: (c) => num(c.towingKg) },
+    { key: "heatPump", label: "Varmepumpe", group: "practicality", direction: "none", get: (c) => (c.heatPump == null ? null : c.heatPump ? "Ja" : "Nei") },
+    { key: "v2l", label: "V2L", group: "practicality", direction: "none", get: (c) => (c.v2l == null ? null : c.v2l ? "Ja" : "Nei") },
+    { key: "warranty", label: "Garanti", group: "warranty", direction: "none", get: (c) => c.warranty ?? null },
+    { key: "overallScore", label: "EVFAKTA totalscore", group: "scores", direction: "higher", get: (c) => c.overallScore ?? null, getNumeric: (c) => num(c.overallScore) },
+    { key: "rangeScore", label: "Score: rekkevidde", group: "scores", direction: "higher", get: (c) => c.rangeScore ?? null, getNumeric: (c) => num(c.rangeScore) },
+    { key: "chargingScore", label: "Score: lading", group: "scores", direction: "higher", get: (c) => c.chargingScore ?? null, getNumeric: (c) => num(c.chargingScore) },
+    { key: "winterScore", label: "Score: vinter", group: "scores", direction: "higher", get: (c) => c.winterScore ?? null, getNumeric: (c) => num(c.winterScore) },
+    { key: "comfortScore", label: "Score: komfort", group: "scores", direction: "higher", get: (c) => c.comfortScore ?? null, getNumeric: (c) => num(c.comfortScore) },
+    { key: "spaceScore", label: "Score: plass", group: "scores", direction: "higher", get: (c) => c.spaceScore ?? null, getNumeric: (c) => num(c.spaceScore) },
+    { key: "valueScore", label: "Score: verdi", group: "scores", direction: "higher", get: (c) => c.valueScore ?? null, getNumeric: (c) => num(c.valueScore) },
+    { key: "reliabilityScore", label: "Score: pålitelighet", group: "scores", direction: "higher", get: (c) => c.reliabilityScore ?? null, getNumeric: (c) => num(c.reliabilityScore) },
   ];
 
   return defs
@@ -215,6 +264,7 @@ export function buildComparisonRows(
       return {
         key: def.key,
         label: def.label,
+        group: def.group,
         values: values.map(formatValue),
         numericValues,
         direction: def.direction,

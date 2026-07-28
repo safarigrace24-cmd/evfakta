@@ -5,7 +5,15 @@
 
 import type { CarImageRow } from "@/lib/admin/car-image-types";
 import { CAR_IMAGE_TYPE_LABELS, isCarImageType } from "@/lib/admin/car-image-types";
-import { isPreviewableImageUrl } from "@/lib/admin/research/review-workspace";
+import {
+  collectImageProductionWarnings,
+  isRejectedImageSourceUrl,
+} from "@/lib/admin/image-production";
+import {
+  hasDownloadFailed,
+  isUsableImageReviewCandidate,
+  resolveImageReviewPreviewUrl,
+} from "@/lib/admin/image-review-preview";
 import type {
   ResearchImageCandidate,
   ResearchImageStatus,
@@ -20,7 +28,12 @@ export type ImageQualityWarning =
   | "Low resolution"
   | "Duplicate"
   | "Broken URL"
-  | "Missing attribution";
+  | "Missing attribution"
+  | "Rejected source"
+  | "Unclear usage rights"
+  | "Needs Manual Identity Check"
+  | "Unsupported file type"
+  | "Download Failed";
 
 export type ImageReviewCard = {
   id: string;
@@ -163,8 +176,25 @@ export function collectImageQualityWarnings(
     warnings.push("Duplicate");
   }
 
+  for (const warning of collectImageProductionWarnings(image, allForCar)) {
+    if (
+      warning === "Rejected source" ||
+      warning === "Unclear usage rights" ||
+      warning === "Needs Manual Identity Check" ||
+      warning === "Unsupported file type"
+    ) {
+      if (!warnings.includes(warning)) warnings.push(warning);
+    }
+  }
+
+  if (hasDownloadFailed(image.notes) && !warnings.includes("Download Failed")) {
+    warnings.push("Download Failed");
+  }
+
   return warnings;
 }
+
+export { resolveImageReviewPreviewUrl } from "@/lib/admin/image-review-preview";
 
 export function buildImageReviewCard(
   image: ResearchImageCandidate,
@@ -172,12 +202,13 @@ export function buildImageReviewCard(
 ): ImageReviewCard {
   const resolution = parseResolutionFromNotes(image.notes);
   const reviewStatus = toImageReviewStatus(image.status);
-  const attemptPreview = shouldAttemptImagePreview(image.original_url);
+  const previewUrl = resolveImageReviewPreviewUrl(image);
+  const downloadFailed = hasDownloadFailed(image.notes);
 
   return {
     id: image.id,
     itemId: image.item_id,
-    previewUrl: image.original_url?.trim() || "",
+    previewUrl,
     imageType: (image.image_type || "other").trim() || "other",
     imageTypeLabel: image.is_primary_candidate
       ? `Hero · ${imageTypeLabel(image.image_type)}`
@@ -192,8 +223,7 @@ export function buildImageReviewCard(
     isInGallery: image.status === "applied" && Boolean(image.applied_image_id),
     appliedImageId: image.applied_image_id,
     warnings: collectImageQualityWarnings(image, allForCar),
-    // Prefer attempting preview whenever a candidate URL exists.
-    previewKind: attemptPreview ? "image" : "source_page",
+    previewKind: previewUrl && !downloadFailed ? "image" : "source_page",
     altText: image.alt_text,
     notes: image.notes,
   };
@@ -237,7 +267,9 @@ export function computeImageReviewReadiness(input: {
     candidateTypeApproved(candidates, "side");
 
   const imagesReady = hasApprovedHero && hasApprovedFront && hasApprovedSide;
-  const pendingCount = candidates.filter((c) => c.status === "pending").length;
+  const pendingCount = candidates.filter(
+    (c) => c.status === "pending" && isUsableImageReviewCandidate(c),
+  ).length;
   const approvedCount = candidates.filter((c) => APPROVED_DB.has(c.status)).length;
   const rejectedCount = candidates.filter((c) => c.status === "rejected").length;
 
@@ -259,7 +291,16 @@ export function computeImageReviewReadiness(input: {
 
 export function canApproveImageCandidate(image: ResearchImageCandidate): boolean {
   if (image.status === "rejected" || image.status === "applied") return false;
-  return isPreviewableImageUrl(image.original_url);
+  if (
+    isRejectedImageSourceUrl(image.original_url) ||
+    isRejectedImageSourceUrl(image.source_url)
+  ) {
+    return false;
+  }
+  if (hasDownloadFailed(image.notes)) return false;
+  // Approval requires a durable local review copy — never re-hotlink OEM CDN.
+  if (!image.storage_path?.trim()) return false;
+  return true;
 }
 
 export function sortImageReviewCards(cards: ImageReviewCard[]): ImageReviewCard[] {

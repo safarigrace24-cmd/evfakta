@@ -86,41 +86,60 @@ describe("image review quality warnings", () => {
     assert.ok(warningsB.includes("Duplicate"));
   });
 
-  it("attempts preview for real candidate image URLs", () => {
+  it("previews from Storage only — never hotlinks OEM CDN", () => {
     assert.equal(
       shouldAttemptImagePreview(
         "https://wizz.volvocars.com/images/2027/416/exterior/studio/front/exterior-studio-front_abc.png",
       ),
       true,
     );
-    assert.equal(
-      shouldAttemptImagePreview(
-        "https://www.volkswagen.no/content/dam/onehub_master/pc/models/id-3/exterior.jpg",
-      ),
-      true,
-    );
     assert.equal(shouldAttemptImagePreview("https://example.com/file.pdf"), false);
-    assert.equal(shouldAttemptImagePreview(""), false);
 
-    const card = buildImageReviewCard(
+    const withoutCopy = buildImageReviewCard(
       candidate({
         original_url:
           "https://wizz.volvocars.com/images/2027/416/exterior/studio/front/car.png",
+        storage_path: null,
       }),
       [],
     );
-    assert.equal(card.previewKind, "image");
-    assert.match(card.previewUrl, /\.png$/);
+    assert.equal(withoutCopy.previewUrl, "");
+    assert.equal(withoutCopy.previewKind, "source_page");
+
+    const withCopy = buildImageReviewCard(
+      candidate({
+        original_url:
+          "https://wizz.volvocars.com/images/2027/416/exterior/studio/front/car.png",
+        storage_path: "volvo/ex30/review-abc123.webp",
+      }),
+      [],
+    );
+    assert.match(withCopy.previewUrl, /volvo\/ex30\/review-abc123\.webp$/);
+    assert.equal(withCopy.previewKind, "image");
+    assert.ok(!withCopy.previewUrl.includes("wizz.volvocars.com"));
   });
 
-  it("blocks approve for source-page URLs", () => {
+  it("flags Download Failed and blocks approve without local review copy", () => {
+    const failed = candidate({
+      notes: "Download Failed | download-error:HTTP 403",
+      storage_path: null,
+    });
+    assert.ok(collectImageQualityWarnings(failed, [failed]).includes("Download Failed"));
+    assert.equal(canApproveImageCandidate(failed), false);
+
     assert.equal(
       canApproveImageCandidate(
         candidate({ original_url: "https://www.tesla.com/no_NO/model3" }),
       ),
       false,
     );
-    assert.equal(canApproveImageCandidate(candidate()), true);
+    assert.equal(canApproveImageCandidate(candidate()), false);
+    assert.equal(
+      canApproveImageCandidate(
+        candidate({ storage_path: "tesla/model-3/review-xyz.webp" }),
+      ),
+      true,
+    );
   });
 });
 

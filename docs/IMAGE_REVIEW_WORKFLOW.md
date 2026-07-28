@@ -2,6 +2,9 @@
 
 Editorial review for images already collected during research.
 
+**Permanent production standard:** `docs/IMAGE_PRODUCTION_STANDARD.md`  
+(source policy, storage, optimization, batch reporting, Image Ready rules)
+
 This is **not** an upload system and **not** a CMS redesign.
 
 Images are **never** automatically approved.  
@@ -150,6 +153,47 @@ These are derived views only. They do not change workflow state.
 
 ---
 
+## Failed candidates + automatic replacement
+
+When a candidate is permanently marked:
+
+- **Download Failed**
+- **HTTP 410**
+- **No local review copy**
+
+the system:
+
+1. Keeps the failed row in history (`superseded` when replaced)
+2. Queues a replacement **image-role research job** for that role (Hero / Front / Side / …)
+3. Searches the official source page for alternate downloadable assets
+4. Downloads immediately into EVFAKTA Storage
+5. Inserts a new **pending** candidate (never auto-approved, never auto-Hero)
+
+Image Review **hides** failed / superseded candidates by default.  
+Editors normally only see usable Storage-backed candidates.
+
+If no official replacement is found:
+
+> No official image available yet.
+
+---
+
+## Preview storage (critical)
+
+Image Review **never** hotlinks manufacturer CDN URLs.
+
+Flow:
+
+1. Candidate is created with `original_url` + source metadata (preserved forever)
+2. Server downloads the image immediately into Supabase Storage (`car-images`, role `review`)
+3. Image Review previews **only** the local Storage URL
+4. On approve → promote/copy the review file into the gallery path (**no re-download**)
+5. If download fails → notes marked **Download Failed** (no dead preview URL)
+
+Restarting the app does not break previews — they live in EVFAKTA Storage.
+
+---
+
 ## Safety rules
 
 - No automatic approval
@@ -157,3 +201,4 @@ These are derived views only. They do not change workflow state.
 - No automatic deletion
 - No schema redesign required
 - Manual car approval / publish remain separate
+- No OEM CDN hotlinking in Image Review

@@ -1,3 +1,4 @@
+import { canCollectAsImageCandidate, defaultCandidateRightsNotes } from "@/lib/admin/image-production";
 import { slugify } from "@/lib/admin/import/parse-csv";
 import type {
   ResearchFieldValue,
@@ -285,15 +286,18 @@ export function buildModelProposalFromText(input: {
     ...input.text.matchAll(
       /https?:\/\/[^\s"'<>]+\.(?:jpg|jpeg|png|webp)(?:\?[^\s"'<>]*)?/gi,
     ),
-  ].map((m) => m[0]);
+  ]
+    .map((m) => m[0])
+    .filter((url) => canCollectAsImageCandidate(url));
 
+  const rights = defaultCandidateRightsNotes();
   for (const url of imageUrls.slice(0, 8)) {
     proposal.images.push({
       original_url: url,
       source_name: input.sourceName ?? null,
       source_url: input.sourceUrl ?? url,
-      license_note: "Candidate only — verify manufacturer press/media usage terms.",
-      usage_terms: "Not approved for publish until admin confirms license.",
+      license_note: rights.license_note,
+      usage_terms: rights.usage_terms,
       is_primary_candidate: proposal.images.length === 0,
     });
   }

@@ -1,6 +1,8 @@
 import "server-only";
 
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
+import { hydrateCandidateReviewCopies } from "@/lib/admin/image-review-storage";
+import { processFailedImageCandidateReplacements } from "@/lib/admin/image-role-replacement";
 import { runResearchProvider } from "@/lib/admin/research/providers";
 import type {
   ResearchFieldCandidate,
@@ -336,6 +338,22 @@ async function persistProposal(
     );
     if (imageError) {
       console.error("[research] image candidates insert failed:", imageError.message);
+    } else {
+      // Download immediately into EVFAKTA Storage — Image Review must never hotlink OEM CDNs.
+      const inserted = await listResearchImageCandidates(itemId);
+      const hydrated = await hydrateCandidateReviewCopies({
+        candidates: inserted,
+        brand: proposal.brand || proposal.slug,
+        modelSlug: proposal.slug,
+      });
+      // Permanently failed downloads → queue replacement research for that image role.
+      await processFailedImageCandidateReplacements({
+        candidates: hydrated,
+        brand: proposal.brand || proposal.slug,
+        modelSlug: proposal.slug,
+        modelName: proposal.model,
+        carId: existingCarId,
+      });
     }
   }
 

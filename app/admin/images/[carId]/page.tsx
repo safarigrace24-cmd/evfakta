@@ -23,7 +23,7 @@ export default async function AdminImageReviewCarPage({
   const workspace = await loadImageReviewWorkspace(carId);
   if (!workspace) notFound();
 
-  const { car, cards, gallery, readiness } = workspace;
+  const { car, cards, gallery, readiness, emptyCandidatesMessage } = workspace;
 
   return (
     <section className="section">
@@ -55,6 +55,7 @@ export default async function AdminImageReviewCarPage({
           cards={cards}
           gallery={gallery}
           readiness={readiness}
+          emptyCandidatesMessage={emptyCandidatesMessage}
         />
       </Container>
     </section>

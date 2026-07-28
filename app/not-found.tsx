@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
+
+export const metadata: Metadata = {
+  title: "Siden ble ikke funnet",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (
@@ -10,7 +16,7 @@ export default function NotFound() {
           <Eyebrow>404</Eyebrow>
           <h1>Siden ble ikke funnet</h1>
           <p>Sjekk adressen, eller gå tilbake til modellkatalogen.</p>
-          <div className="detailActions">
+          <div className="detailActions emptyStateActions">
             <Link href="/modeller" className="button primary">
               Se modeller
             </Link>

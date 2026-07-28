@@ -10,27 +10,30 @@ export type SocialLink = {
 };
 
 /**
- * Full public IA (mobile drawer + shared destinations).
- * Unfinished stub tools stay out of navigation.
+ * Complete public platform IA (old structure + Design System 2.0).
+ * All destinations stay in navigation — unfinished pages show “Under utvikling”.
+ * Merker and “Mer” are intentionally omitted from main nav.
  */
-export const navLinks: NavLink[] = [
+export const platformNavLinks: NavLink[] = [
   { label: "Hjem", href: "/" },
   { label: "Modeller", href: "/modeller" },
-  { label: "Merker", href: "/merker" },
   { label: "Sammenlign", href: "/sammenlign" },
+  { label: "Kalkulator", href: "/kalkulator" },
+  { label: "Rimeligste", href: "/rimeligste" },
+  { label: "Verktøy", href: "/verktoy" },
+  { label: "Testdata", href: "/testdata" },
+  { label: "Ladestasjoner", href: "/ladekart" },
+  { label: "Bruktbil", href: "/bruktbil" },
+  { label: "Info", href: "/info" },
 ];
 
-/** Desktop top-level links — finished destinations only. */
-export const primaryNavLinks: NavLink[] = [
-  { label: "Modeller", href: "/modeller" },
-  { label: "Merker", href: "/merker" },
-  { label: "Sammenlign", href: "/sammenlign" },
-];
+/** Mobile drawer + desktop primary — full platform list. */
+export const navLinks: NavLink[] = platformNavLinks;
 
-/**
- * Desktop “Mer” dropdown — finished destinations not shown top-level.
- * Empty while Guider / tools are unfinished.
- */
+/** Desktop top-level links — full platform list (no Merker, no Mer). */
+export const primaryNavLinks: NavLink[] = platformNavLinks;
+
+/** @deprecated Kept empty — “Mer” dropdown removed from public IA. */
 export const moreNavLinks: NavLink[] = [];
 
 export const siteConfig = {
@@ -71,4 +74,22 @@ export const siteConfig = {
       network: "linkedin",
     },
   ] satisfies SocialLink[],
+  /** Header social row — YouTube, TikTok, LinkedIn only. */
+  headerSocialLinks: [
+    {
+      label: "EVFAKTA på YouTube",
+      href: "https://www.youtube.com/channel/UCuOYFNBVUGH_v05CbIrEnsg",
+      network: "youtube" as const,
+    },
+    {
+      label: "EVFAKTA på TikTok",
+      href: "https://www.tiktok.com/@evfakta",
+      network: "tiktok" as const,
+    },
+    {
+      label: "EVFAKTA på LinkedIn",
+      href: "https://www.linkedin.com/company/evfakta.no/?viewAsMember=true",
+      network: "linkedin" as const,
+    },
+  ],
 };

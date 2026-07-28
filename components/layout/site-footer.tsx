@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { siteConfig } from "@/config/site";
+import { platformNavLinks, siteConfig } from "@/config/site";
+import { isNavRouteUnderDevelopment } from "@/lib/public/feature-flags";
 import BrandLogo from "@/components/brand/brand-logo";
 import SocialIcon from "@/components/brand/social-icon";
+
+const exploreLinks = platformNavLinks.filter((link) => link.href !== "/");
 
 export default function SiteFooter() {
   const pathname = usePathname();
@@ -21,9 +24,24 @@ export default function SiteFooter() {
         <div className="footerLinks">
           <div className="footerCol">
             <strong>Utforsk</strong>
-            <Link href="/modeller">Modeller</Link>
-            <Link href="/merker">Merker</Link>
-            <Link href="/sammenlign">Sammenlign</Link>
+            {exploreLinks.map(({ label, href }) => {
+              const underDevelopment = isNavRouteUnderDevelopment(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={underDevelopment ? "footerLinkWithStatus" : undefined}
+                  aria-label={
+                    underDevelopment ? `${label} — Under utvikling` : undefined
+                  }
+                >
+                  <span>{label}</span>
+                  {underDevelopment ? (
+                    <span className="footerWipBadge">Under utvikling</span>
+                  ) : null}
+                </Link>
+              );
+            })}
           </div>
           <div className="footerCol">
             <strong>Konto</strong>

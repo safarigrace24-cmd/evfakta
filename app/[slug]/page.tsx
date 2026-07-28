@@ -1,19 +1,10 @@
-import Container from "@/components/layout/container";
-import EmptyState from "@/components/ui/empty-state";
+import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const title = slug.charAt(0).toUpperCase() + slug.slice(1).replaceAll("-", " ");
-
-  return (
-    <section className="section">
-      <Container>
-        <EmptyState
-          eyebrow="Kommer snart"
-          title={title}
-          description="Denne siden er klar som plassholder og kan bygges videre."
-        />
-      </Container>
-    </section>
-  );
+/**
+ * Catch-all for unknown single-segment paths.
+ * Known unfinished routes (/kalkulator, /rimeligste, etc.) have their own pages
+ * and take precedence. Arbitrary URLs must 404 — not soft “coming soon” stubs.
+ */
+export default function UnknownSlugPage() {
+  notFound();
 }

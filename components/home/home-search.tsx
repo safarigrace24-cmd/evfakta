@@ -23,6 +23,7 @@ export default function HomeSearch({ className = "" }: HomeSearchProps) {
       className={`homeSearch ${className}`.trim()}
       onSubmit={onSubmit}
       role="search"
+      aria-label="Søk i elbilkataloget"
     >
       <label htmlFor="home-search" className="visuallyHidden">
         Søk etter elbilmodell eller merke
@@ -36,6 +37,7 @@ export default function HomeSearch({ className = "" }: HomeSearchProps) {
         placeholder="Søk modell, merke eller behov…"
         autoComplete="off"
         enterKeyHint="search"
+        spellCheck={false}
       />
       <button type="submit" className="button primary homeSearchSubmit">
         Søk

@@ -77,9 +77,12 @@ describe("buildComparisonRows", () => {
 
     assert.ok(price);
     assert.deepEqual(price.bestIndexes, [1]);
+    assert.equal(price.group, "identity");
     assert.ok(range);
     assert.deepEqual(range.bestIndexes, [0]);
+    assert.equal(range.group, "range");
     assert.ok(score);
     assert.deepEqual(score.bestIndexes, [1]);
+    assert.equal(score.group, "scores");
   });
 });

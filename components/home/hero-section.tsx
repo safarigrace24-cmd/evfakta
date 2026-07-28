@@ -12,12 +12,12 @@ type HeroSectionProps = {
 
 export default function HeroSection({ modelCount, brandCount }: HeroSectionProps) {
   return (
-    <section className="hero ds2Hero">
+    <section className="hero ds2Hero homeHero" aria-labelledby="home-hero-heading">
       <Container>
         <div className="heroGrid">
           <div className="heroContent">
             <BrandLogo href={null} className="heroBrandLogo" />
-            <h1>{siteConfig.tagline}</h1>
+            <h1 id="home-hero-heading">{siteConfig.tagline}</h1>
             <p className="lead">
               Sammenlign rekkevidde, batteri og ladehastighet med tydelige kilder —
               uten støy og uten gjetting.
@@ -25,7 +25,7 @@ export default function HeroSection({ modelCount, brandCount }: HeroSectionProps
 
             <HomeSearch />
 
-            <div className="actions">
+            <div className="actions heroActions">
               <Button href="/modeller" variant="primary">
                 Se alle modeller
               </Button>
@@ -51,16 +51,21 @@ export default function HeroSection({ modelCount, brandCount }: HeroSectionProps
             )}
           </div>
 
-          <aside className="heroAside" aria-label="Kom i gang">
+          <aside className="heroAside" aria-label="Tillit og neste steg">
             <div className="heroAsideCard">
               <strong>Rolige tall. Klare valg.</strong>
               <p>
                 Hver modell viser kilder og når data sist ble sjekket — slik at du
                 kan stole på det du leser.
               </p>
-              <Link href="/merker" className="heroCardLink">
-                Utforsk merker →
-              </Link>
+              <div className="heroAsideLinks">
+                <Link href="/info" className="heroCardLink">
+                  Kilder og metode →
+                </Link>
+                <Link href="/merker" className="heroCardLink heroCardLinkSecondary">
+                  Utforsk merker →
+                </Link>
+              </div>
             </div>
           </aside>
         </div>

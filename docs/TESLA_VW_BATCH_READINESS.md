@@ -3,6 +3,7 @@
 **Checked:** 2026-07-26T12:00:00.000Z
 **Standards:** `CAR_BLUEPRINT.md`, `REFERENCE_WORKFLOW.md`, `PRODUCTION_CHECKLIST.md`
 **Rule:** Never invent specs. Never auto-publish. Approval ≠ publish.
+**Image refresh (2026-07-28):** VW ID.3 / ID.4 / ID.7 / ID. Buzz Storage review copies — see [`VW_VOLVO_IMAGE_REFRESH_REPORT.md`](./VW_VOLVO_IMAGE_REFRESH_REPORT.md).
 
 ## Status board
 

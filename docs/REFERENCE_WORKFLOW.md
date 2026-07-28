@@ -3,7 +3,7 @@
 **Status:** Production workflow reference  
 **Audience:** Editors and researchers  
 **Scope:** How to research, verify, draft, and prepare a car for review — without publishing  
-**Related docs:** `docs/CAR_BLUEPRINT.md` (editorial/technical page standard), `docs/RESEARCH_PIPELINE.md`, `docs/EVFAKTA_MASTER_CATALOG.md`
+**Related docs:** `docs/CAR_BLUEPRINT.md` (editorial/technical page standard), `docs/RESEARCH_PIPELINE.md`, `docs/EVFAKTA_MASTER_CATALOG.md`, `docs/IMAGE_PRODUCTION_STANDARD.md`, `docs/IMAGE_REVIEW_WORKFLOW.md`
 
 ---
 
@@ -32,6 +32,8 @@ Use it to learn the process. Do **not** copy Model 3 prose or numbers onto other
 5. Do not silently resolve conflicts.
 6. Do not treat page URLs as approved images.
 7. Do not redesign the CMS while producing content.
+8. Image production is mandatory for every model — follow `docs/IMAGE_PRODUCTION_STANDARD.md`.
+9. Never auto-approve images, never auto-choose Hero, never auto-publish from image workflows.
 
 ---
 
@@ -76,13 +78,19 @@ Draft against `CAR_BLUEPRINT.md` structure, typically:
 
 Mark drafts with **Draft – Requires editor review.** until a human rewrites and approves.
 
-### 6. Suggest image candidates
+### 6. Suggest image candidates (mandatory)
 
-Categorise: Front · Rear · Side · Interior · Cargo  
+Follow **`docs/IMAGE_PRODUCTION_STANDARD.md`** end-to-end.
 
-- Prefer official OEM media.  
+Categorise: Hero · Front · Side · Rear · Interior · Cargo · Charging · …
+
+- Prefer official Norwegian OEM media, then global OEM / press.  
+- Never collect Google Images, Pinterest, social reposts, or AI mock photos.  
 - Label source pages / PDFs clearly — do not approve them as image files.  
-- Do not attach until an editor downloads and approves rights.
+- Store candidates as `pending` with source name, source page URL, license/usage notes.  
+- Open **Image Review** at `/admin/images/[carId]` — no attach until the editor approves.  
+- **Image Ready** requires approved Hero + Front + Side.  
+- Batch reports must list candidates, warnings, Image Ready / Pending, and exact Image Review URLs.
 
 ### 7. Suggest official sources
 
@@ -101,7 +109,7 @@ Primary sources: OEM Norway site, Owner’s Manual, official warranty / support 
 - Import approved research as `needs_review` (never published).
 - Open Car Editor: specs tables, editorial, sources, images, variants.
 - Complete readiness report (completion %, missing, conflicts, images, editorial).
-- Ready for **approval** only when conflicts are gone, critical specs are sourced, editorial is reviewed, and images are attached with rights notes.
+- Ready for **approval** only when conflicts are gone, critical specs are sourced, editorial is reviewed, and images are **Image Ready** (Hero + Front + Side approved) with rights notes.
 - **Publish** remains a separate human action.
 
 ---

@@ -14,11 +14,12 @@ export default function PopularBrandsSection({ brands }: PopularBrandsSectionPro
   if (brands.length === 0) return null;
 
   return (
-    <section className="section sectionAlt">
+    <section className="section homeSection" aria-labelledby="popular-brands-heading">
       <Container>
         <SectionHeading
           eyebrow="Populære merker"
           title="Start med merket du kjenner"
+          titleId="popular-brands-heading"
           href="/merker"
         />
         <ul className="homeBrandGrid">
@@ -29,7 +30,7 @@ export default function PopularBrandsSection({ brands }: PopularBrandsSectionPro
                   {brand.logoUrl ? (
                     <Image
                       src={brand.logoUrl}
-                      alt={`${brand.name}-logo`}
+                      alt=""
                       fill
                       sizes="96px"
                       unoptimized

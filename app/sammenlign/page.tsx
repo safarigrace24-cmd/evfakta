@@ -44,7 +44,7 @@ export default async function ComparePage({
     );
 
   return (
-    <section className="section">
+    <section className="section comparePageShell" aria-labelledby="compare-heading">
       <Container>
         <CompareClient cars={cars} initialSelections={validInitial} />
       </Container>

@@ -2,28 +2,38 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
-import { moreNavLinks, navLinks, primaryNavLinks } from "@/config/site";
+import { useEffect, useState } from "react";
+import { navLinks, primaryNavLinks, siteConfig } from "@/config/site";
+import { isNavRouteUnderDevelopment } from "@/lib/public/feature-flags";
 import LogoutButton from "@/components/auth/logout-button";
 import BrandLogo from "@/components/brand/brand-logo";
+import SocialIcon from "@/components/brand/social-icon";
 
 type SiteHeaderProps = {
   userEmail?: string | null;
   isAdmin?: boolean;
 };
 
+function NavLabel({ label, href }: { label: string; href: string }) {
+  const underDevelopment = isNavRouteUnderDevelopment(href);
+  return (
+    <>
+      <span>{label}</span>
+      {underDevelopment ? (
+        <span className="navWipBadge">Under utvikling</span>
+      ) : null}
+    </>
+  );
+}
+
 export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHeaderProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const moreRef = useRef<HTMLDivElement>(null);
-  const moreMenuId = useId();
   const isLoggedIn = Boolean(userEmail);
   const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
     setMenuOpen(false);
-    setMoreOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -33,33 +43,13 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
     };
   }, [menuOpen]);
 
-  useEffect(() => {
-    if (!moreOpen) return;
-
-    function onPointerDown(event: MouseEvent) {
-      if (!moreRef.current?.contains(event.target as Node)) {
-        setMoreOpen(false);
-      }
-    }
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setMoreOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [moreOpen]);
-
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
+
+  const navAriaLabel = (label: string, href: string) =>
+    isNavRouteUnderDevelopment(href) ? `${label} — Under utvikling` : undefined;
 
   if (isAdminRoute) {
     return (
@@ -81,18 +71,23 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
 
   return (
     <header className="siteHeader">
-      <div className="container headerInner">
+      <div className="container headerInner headerInnerPlatform">
         <BrandLogo className="brandLogo--header" priority />
 
-        <nav className="navDesktop" aria-label="Hovedmeny">
+        <nav className="navDesktop navDesktopPlatform" aria-label="Hovedmeny">
           {primaryNavLinks.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
-              className={isActive(href) ? "navLink active" : "navLink"}
+              className={
+                isActive(href)
+                  ? "navLink navLinkWithStatus active"
+                  : "navLink navLinkWithStatus"
+              }
               aria-current={isActive(href) ? "page" : undefined}
+              aria-label={navAriaLabel(label, href)}
             >
-              {label}
+              <NavLabel label={label} href={href} />
             </Link>
           ))}
           {isAdmin && (
@@ -104,39 +99,24 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               Admin
             </Link>
           )}
-          {moreNavLinks.length > 0 && (
-            <div className="navMore" ref={moreRef}>
-              <button
-                type="button"
-                className={moreOpen ? "navMoreTrigger open" : "navMoreTrigger"}
-                aria-expanded={moreOpen}
-                aria-haspopup="menu"
-                aria-controls={moreMenuId}
-                onClick={() => setMoreOpen((open) => !open)}
-              >
-                Mer
-              </button>
-              {moreOpen && (
-                <div id={moreMenuId} className="navMoreMenu" role="menu" aria-label="Flere sider">
-                  {moreNavLinks.map(({ label, href }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      role="menuitem"
-                      className={isActive(href) ? "active" : undefined}
-                      aria-current={isActive(href) ? "page" : undefined}
-                      onClick={() => setMoreOpen(false)}
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </nav>
 
         <div className="headerActions">
+          <ul className="headerSocial" aria-label="Sosiale medier">
+            {siteConfig.headerSocialLinks.map((link) => (
+              <li key={link.network}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.label}
+                  className="headerSocialLink"
+                >
+                  <SocialIcon network={link.network} />
+                </a>
+              </li>
+            ))}
+          </ul>
           <Link
             href="/modeller"
             className="headerSearchLink"
@@ -163,9 +143,6 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               Logg inn
             </Link>
           )}
-          <Link href="/modeller" className="button buttonSm primary headerCta">
-            Se modeller
-          </Link>
           <button
             type="button"
             className="menuToggle"
@@ -206,11 +183,16 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
             <Link
               key={href}
               href={href}
-              className={isActive(href) ? "mobileNavLink active" : "mobileNavLink"}
+              className={
+                isActive(href)
+                  ? "mobileNavLink mobileNavLinkWithStatus active"
+                  : "mobileNavLink mobileNavLinkWithStatus"
+              }
               aria-current={isActive(href) ? "page" : undefined}
+              aria-label={navAriaLabel(label, href)}
               onClick={() => setMenuOpen(false)}
             >
-              {label}
+              <NavLabel label={label} href={href} />
             </Link>
           ))}
           {isAdmin && (
@@ -223,6 +205,21 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               Admin
             </Link>
           )}
+          <div className="mobileSocialRow" aria-label="Sosiale medier">
+            {siteConfig.headerSocialLinks.map((link) => (
+              <a
+                key={link.network}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                className="headerSocialLink"
+                onClick={() => setMenuOpen(false)}
+              >
+                <SocialIcon network={link.network} />
+              </a>
+            ))}
+          </div>
           {isLoggedIn ? (
             <>
               <Link

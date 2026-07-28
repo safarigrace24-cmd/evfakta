@@ -1,16 +1,24 @@
-import Container from "@/components/layout/container";
-import EmptyState from "@/components/ui/empty-state";
+import type { Metadata } from "next";
+import ComingSoonPage from "@/components/ui/coming-soon-page";
 
-export default function Page() {
+export const metadata: Metadata = {
+  title: "Kalkulator",
+  description:
+    "EVFAKTA-kalkulatoren er under utvikling. Sammenlign modeller i kataloget i mellomtiden.",
+  robots: { index: false, follow: true },
+};
+
+export default function CalculatorPage() {
   return (
-    <section className="section">
-      <Container>
-        <EmptyState
-          eyebrow="Kommer senere"
-          title="Ladekostnad-kalkulator"
-          description="Denne funksjonen er ikke klar ennå. Bla i modeller eller sammenlign elbiler i mellomtiden."
-        />
-      </Container>
-    </section>
+    <ComingSoonPage
+      eyebrow="Under utvikling"
+      title="Lade- og kostnads­kalkulator"
+      description="Kalkulatorlogikk er ikke klar i denne utgaven. Vi viser ikke estimater før beregningen er etterprøvbar."
+      reasons={[
+        "Ingen ferdig beregningsmotor i kodebasen ennå",
+        "Vi viser ikke estimater før beregningen er etterprøvbar",
+        "Bruk katalog og sammenligning for faktabaserte valg",
+      ]}
+    />
   );
 }

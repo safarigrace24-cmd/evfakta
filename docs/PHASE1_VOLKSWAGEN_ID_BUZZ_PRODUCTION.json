@@ -1,0 +1,133 @@
+{
+  "startedAt": "2026-07-28T09:58:35.988Z",
+  "buzz": {
+    "steps": [
+      "Resolved official side URL from https://www.volkswagen-newsroom.com/en/images/albums/volkswagen-id-buzz-3418",
+      "Relabeled LWB curated set (front/rear/interior); album-order side was rear 3/4",
+      "Inserted visual-verified side fa7b62bc-7cb3-422a-941c-1d0205d6c485",
+      "Applied front+hero → 3b01e1af-f136-41c1-b723-ed70bb7d65aa",
+      "Applied side → 8a68b917-c5d9-4669-9632-f6d7e561b0b9",
+      "Applied rear → b0bf7350-e7e9-46b1-b016-b0013dc8d89e",
+      "Applied interior → 6b7f3761-61cf-43b2-9ef5-27749a26c016",
+      "Editorial finalized; variants approved; unpublished"
+    ],
+    "gallery": [
+      {
+        "image_type": "front",
+        "is_primary": true,
+        "alt_text": "Volkswagen ID. Buzz i tofarget hvit/mintgrønn, front trekvart, kjørende (offisiell press)",
+        "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/hero-608f8c40-791.webp"
+      },
+      {
+        "image_type": "side",
+        "is_primary": false,
+        "alt_text": "Volkswagen ID. Buzz i tofarget hvit/lime, sideprofil (offisiell press)",
+        "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/side-5996e193-ab9.webp"
+      },
+      {
+        "image_type": "rear",
+        "is_primary": false,
+        "alt_text": "Volkswagen ID. Buzz i tofarget hvit/mintgrønn, bak trekvart, kjørende (offisiell press)",
+        "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/rear-0d0942f8-ab8.webp"
+      },
+      {
+        "image_type": "interior",
+        "is_primary": false,
+        "alt_text": "Volkswagen ID. Buzz interiør, forsete og dashbord (offisiell press)",
+        "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/interior-16bf3be3-a4d.webp"
+      }
+    ],
+    "imageReady": true,
+    "publishReady": true,
+    "publishIssues": []
+  },
+  "id5": {
+    "steps": [
+      "Marked NOT_READY; draft inventiveness removed; unpublished"
+    ]
+  },
+  "summary": [
+    {
+      "slug": "volkswagen-id-3",
+      "import_status": "approved",
+      "published": false,
+      "draft": false,
+      "imageReady": true,
+      "hasRear": true,
+      "hasInterior": false,
+      "publishReady": true,
+      "publishIssues": [],
+      "notReadyNote": false
+    },
+    {
+      "slug": "volkswagen-id-4",
+      "import_status": "approved",
+      "published": false,
+      "draft": false,
+      "imageReady": true,
+      "hasRear": true,
+      "hasInterior": true,
+      "publishReady": true,
+      "publishIssues": [],
+      "notReadyNote": false
+    },
+    {
+      "slug": "volkswagen-id-7",
+      "import_status": "approved",
+      "published": false,
+      "draft": false,
+      "imageReady": true,
+      "hasRear": true,
+      "hasInterior": false,
+      "publishReady": true,
+      "publishIssues": [],
+      "notReadyNote": false
+    },
+    {
+      "slug": "volkswagen-id-buzz",
+      "import_status": "approved",
+      "published": false,
+      "draft": false,
+      "imageReady": true,
+      "hasRear": true,
+      "hasInterior": true,
+      "publishReady": true,
+      "publishIssues": [],
+      "notReadyNote": false
+    },
+    {
+      "slug": "volkswagen-id-5",
+      "import_status": "needs_review",
+      "published": false,
+      "draft": false,
+      "imageReady": false,
+      "hasRear": false,
+      "hasInterior": false,
+      "publishReady": false,
+      "publishIssues": [
+        {
+          "code": "hero_image",
+          "message": "Godkjent hero-bilde mangler (primary galleri eller image_url)."
+        },
+        {
+          "code": "front_image",
+          "message": "Godkjent front-bilde mangler i galleriet."
+        },
+        {
+          "code": "side_image",
+          "message": "Godkjent side-bilde mangler i galleriet."
+        },
+        {
+          "code": "image",
+          "message": "Bilde mangler (bildebane eller galleri)."
+        },
+        {
+          "code": "import_status",
+          "message": "Bilen må være godkjent før publisering (godkjenning ≠ publisering)."
+        }
+      ],
+      "notReadyNote": true
+    }
+  ],
+  "finishedAt": "2026-07-28T09:58:45.332Z"
+}

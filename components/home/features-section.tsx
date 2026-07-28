@@ -18,27 +18,34 @@ const features = [
     title: "Kilder nær tallene",
     description:
       "Hver modell viser kilde og sist sjekket-dato, slik at faktaene er etterprøvbare.",
-    href: "/modeller",
+    href: "/info",
   },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section className="section sectionAlt">
+    <section className="section homeSection" aria-labelledby="features-heading">
       <Container>
-        <div className="featuresHeader">
+        <div className="featuresHeader homeSectionHeader">
           <Eyebrow>Slik fungerer EVFAKTA</Eyebrow>
-          <h2>Bygget for norske elbilkjøpere</h2>
+          <h2 id="features-heading">Bygget for norske elbilkjøpere</h2>
           <p className="lead narrow">
-            Én database. Ærlige tall. Ingen uferdige verktøy i veien.
+            Én database. Ærlige tall. Uferdige områder er synlige og merket tydelig.
           </p>
         </div>
         <div className="featuresGrid">
           {features.map((feature) => (
-            <Link key={feature.href} href={feature.href} className="featureCard">
+            <Link
+              key={feature.href}
+              href={feature.href}
+              className="featureCard"
+              aria-label={`${feature.title} — gå videre`}
+            >
               <h3>{feature.title}</h3>
               <p>{feature.description}</p>
-              <span className="featureLink">Gå videre →</span>
+              <span className="featureLink" aria-hidden="true">
+                Gå videre →
+              </span>
             </Link>
           ))}
         </div>

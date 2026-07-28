@@ -5,11 +5,14 @@ import Eyebrow from "@/components/ui/eyebrow";
 
 export default function TrustSection() {
   return (
-    <section className="section trustSection">
+    <section
+      className="section trustSection homeSection"
+      aria-labelledby="trust-heading"
+    >
       <Container>
         <div className="trustInner">
           <Eyebrow>Tillit</Eyebrow>
-          <h2>Fakta med kilder — ikke markedssnakk</h2>
+          <h2 id="trust-heading">Fakta med kilder — ikke markedssnakk</h2>
           <p className="lead narrow">
             EVFAKTA viser bare publiserte modeller med godkjente bilder og
             etterprøvbare tall. Mangler data, viser vi det — vi fyller ikke inn med
@@ -21,8 +24,8 @@ export default function TrustSection() {
             <li>Ingen falske scores eller priser før de er klare for offentlig visning</li>
           </ul>
           <div className="actions">
-            <Button href="/sammenlign" variant="primary">
-              Sammenlign modeller
+            <Button href="/info" variant="primary">
+              Kilder og metode
             </Button>
             <Link href="/modeller" className="textLink">
               Bla i katalog →

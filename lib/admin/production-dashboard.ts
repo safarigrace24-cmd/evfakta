@@ -4,6 +4,7 @@ import {
   computeImageReviewReadiness,
   type ImageReadinessLabel,
 } from "@/lib/admin/image-review";
+import { imageReviewAdminPath } from "@/lib/admin/image-production";
 import {
   containsEditorialDraftMarker,
   getLaunchContentIssues,
@@ -50,6 +51,8 @@ export type ProductionModelRow = {
   imagesPending: boolean;
   missingHero: boolean;
   missingGallery: boolean;
+  /** Exact Image Review workspace for this model. */
+  imageReviewPath: string;
   /** Content launch gates (draft + hero/front/side + SEO/source) — excludes approval. */
   launchContentReady: boolean;
   launchBlocked: boolean;
@@ -400,6 +403,7 @@ export function computeProductionModelRow(input: {
     imagesPending: !imageReadiness.imagesReady,
     missingHero: imageReadiness.missingHero,
     missingGallery: imageReadiness.missingGallery,
+    imageReviewPath: imageReviewAdminPath(car.id),
     launchContentReady,
     launchBlocked,
     hasDraftMarker,

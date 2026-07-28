@@ -1,0 +1,698 @@
+{
+  "generatedAt": "2026-07-28T08:38:25.918Z",
+  "models": [
+    {
+      "slug": "volkswagen-id-3",
+      "brand": "Volkswagen",
+      "model": "ID.3",
+      "carId": "531fa6cc-a163-4b9d-963e-814bff2bffba",
+      "imageReviewUrl": "/admin/images/531fa6cc-a163-4b9d-963e-814bff2bffba",
+      "pageUrl": "https://www.volkswagen.no/no/alle-bilmodeller/id3.html",
+      "planned": 5,
+      "inserted": [
+        {
+          "id": "6a0b0b12-acbc-4108-8f03-b3cd3cdeceed",
+          "type": "front",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/079/652/images/ebe98b7539c2bfbe926b28594ed8b88e82dcf243/DB2023AU00572_retina_2400.jpg?1708937172",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-3-6607",
+          "storage_path": "volkswagen/volkswagen-id-3/review-2569c2dcd8c8.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-3/review-2569c2dcd8c8.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "3bc5a81c-f13d-46d0-a0c1-ded6512288cd",
+          "type": "side",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/079/653/images/23e0b63204c898ed693b73ae0e40c5669004c157/DB2023AU00573_retina_2400.jpg?1708937149",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-3-6607",
+          "storage_path": "volkswagen/volkswagen-id-3/review-5ebb80f88a17.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-3/review-5ebb80f88a17.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "e409df5e-5b1a-4224-a741-394b66318644",
+          "type": "rear",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/079/656/images/a14641ff094310082743365068d4cf8aa9a0b19f/DB2023AU00576_retina_2400.jpg?1708937153",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-3-6607",
+          "storage_path": "volkswagen/volkswagen-id-3/review-c712f3c6f4fd.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-3/review-c712f3c6f4fd.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "496a4448-3380-4d28-ac54-8ab923c617bd",
+          "type": "interior",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/079/662/images/bd07559867ac3ca986853c888344a2c2db3e69c0/DB2023AU00582_retina_2400.jpg?1708937403",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-3-6607",
+          "storage_path": "volkswagen/volkswagen-id-3/review-e27ea35597bc.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-3/review-e27ea35597bc.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "7ccf4793-4459-471f-ad13-3c192d06fc35",
+          "type": "other",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/079/678/images/093c1f6a461219e2991fcaf9674f815865b26866/DB2023AU00602_retina_2400.jpg?1708937272",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-3-6607",
+          "storage_path": "volkswagen/volkswagen-id-3/review-31ba745e7313.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-3/review-31ba745e7313.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "068dc14b-2f96-4fa5-9b25-0c56b9c07997",
+        "194534d7-360e-4113-9f49-bca7b9ba3fcf",
+        "314da057-f8d6-4723-a6c4-84d0773d0c82",
+        "7df5013e-6cbd-49f6-a14e-efa1304f78a1",
+        "16c9e3c6-08ec-455a-995e-2cecfb905c55"
+      ],
+      "retainedFailed": 5,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior",
+        "other"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    },
+    {
+      "slug": "volkswagen-id-4",
+      "brand": "Volkswagen",
+      "model": "ID.4",
+      "carId": "c8c17bab-7248-46f9-8cc9-e7ed36a42706",
+      "imageReviewUrl": "/admin/images/c8c17bab-7248-46f9-8cc9-e7ed36a42706",
+      "pageUrl": "https://www.volkswagen.no/no/alle-bilmodeller/id4.html",
+      "planned": 5,
+      "inserted": [
+        {
+          "id": "8cb773d9-4b97-45cc-8d50-f25421045dd0",
+          "type": "front",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/080/258/images/5dc9f14a8af8d8243438d0b855b2b07cf78a0345/DB2023AU00848_retina_2400.jpg?1736336556",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-4-6723",
+          "storage_path": "volkswagen/volkswagen-id-4/review-ba026bba9095.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/review-ba026bba9095.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "ee65e3ed-246a-4a06-ac80-ccaa22ed9b88",
+          "type": "side",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/080/259/images/60349082749b674fabed0397a0b4d1a413872646/DB2023AU00849_retina_2400.jpg?1736336577",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-4-6723",
+          "storage_path": "volkswagen/volkswagen-id-4/review-b30f58bd62c3.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/review-b30f58bd62c3.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "4243104e-d61a-4a94-a57d-642c55e49568",
+          "type": "rear",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/080/260/images/191a45d44265d34a2143e2edc9103a5b4c3d83d0/DB2023AU00850_retina_2400.jpg?1736336577",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-4-6723",
+          "storage_path": "volkswagen/volkswagen-id-4/review-dbc03373ff76.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/review-dbc03373ff76.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "9c4a2909-49db-4d6a-91e4-914c06061edb",
+          "type": "interior",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/080/255/images/b35756c154c90d3bb73f8cf5e9d51450fa469910/DB2023AU00851_retina_2400.jpg?1736336782",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-4-6723",
+          "storage_path": "volkswagen/volkswagen-id-4/review-4186b3d0a2f1.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/review-4186b3d0a2f1.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "2477386e-dd69-45f3-a97a-cdb89a905306",
+          "type": "other",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/080/256/images/6053d7d30c8cd9414ee694815739b37abc1a7db0/DB2023AU00852_retina_2400.jpg?1736336732",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-4-6723",
+          "storage_path": "volkswagen/volkswagen-id-4/review-60627c8ca8fb.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/review-60627c8ca8fb.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "2fc8e033-6dc3-46b7-bb6d-01fc6799fd03",
+        "7a92c826-8263-40fb-a21a-8669839e42d1",
+        "3d3337b6-c415-4d9a-bcb9-3955d8035fb9",
+        "740fbb55-9e4a-441f-89a4-0cb471f8d461"
+      ],
+      "retainedFailed": 4,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior",
+        "other"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    },
+    {
+      "slug": "volkswagen-id-7",
+      "brand": "Volkswagen",
+      "model": "ID.7",
+      "carId": "2d799eaf-774d-4d1c-9d38-09da217efaaa",
+      "imageReviewUrl": "/admin/images/2d799eaf-774d-4d1c-9d38-09da217efaaa",
+      "pageUrl": "https://www.volkswagen.no/no/alle-bilmodeller/id7-fastback.html",
+      "planned": 5,
+      "inserted": [
+        {
+          "id": "8ec7d6c5-0371-4c89-9d99-4cff0f82b0a1",
+          "type": "front",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/082/765/images/657543af86eedf8e46d0b052a0d3feb20893690a/DB2024AU01449_retina_2400.jpg?1724314168",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-7-6594",
+          "storage_path": "volkswagen/volkswagen-id-7/review-baa3d1db3378.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/review-baa3d1db3378.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "50fa3f4a-7390-49e2-8218-b7741c8bc25d",
+          "type": "side",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/082/766/images/b5673c73db0a812b816631f112da020222795041/DB2024AU01450_retina_2400.jpg?1724314161",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-7-6594",
+          "storage_path": "volkswagen/volkswagen-id-7/review-9336741599b8.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/review-9336741599b8.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "177bd604-d08a-4cc8-a158-5d7a1f9dd299",
+          "type": "rear",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/082/767/images/c9e2c24778c03b4c2106d0835001ef39ca118e3a/DB2024AU01451_retina_2400.jpg?1724314177",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-7-6594",
+          "storage_path": "volkswagen/volkswagen-id-7/review-651c2e4599c2.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/review-651c2e4599c2.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "db75487b-e87c-4e86-bf54-cbe1178efe3b",
+          "type": "interior",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/082/768/images/cb45fbd09355a6bb69ad29ef856af39e92041de4/DB2024AU01452_retina_2400.jpg?1724314086",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-7-6594",
+          "storage_path": "volkswagen/volkswagen-id-7/review-1a434c707d8f.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/review-1a434c707d8f.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "a9f912ad-6d06-4c2c-82db-cbefa34c5108",
+          "type": "other",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/082/769/images/e1efd644b19c9b38c7a98a7cc14e1aa61576f50d/DB2024AU01453_retina_2400.jpg?1724314183",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-7-6594",
+          "storage_path": "volkswagen/volkswagen-id-7/review-7c53ec6f2eca.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/review-7c53ec6f2eca.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "5d68ae1d-2e4c-4109-b6eb-9fdc17ce465d"
+      ],
+      "retainedFailed": 1,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior",
+        "other"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    },
+    {
+      "slug": "volkswagen-id-buzz",
+      "brand": "Volkswagen",
+      "model": "ID. Buzz",
+      "carId": "52e06fcd-2e61-4cd7-8916-1dcf6b841f88",
+      "imageReviewUrl": "/admin/images/52e06fcd-2e61-4cd7-8916-1dcf6b841f88",
+      "pageUrl": "https://www.volkswagen.no/no/alle-bilmodeller/id-buzz.html",
+      "planned": 5,
+      "inserted": [
+        {
+          "id": "34fdc8dc-0063-4d66-8bdf-e127cf8d5740",
+          "type": "front",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/077/040/images/a40682f8e8b6c89ab2093a016de33f379a57d896/DB2023AU00663_retina_2400.jpg?1685627298",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-buzz-with-long-wheelbase-6684",
+          "storage_path": "volkswagen/volkswagen-id-buzz/review-e74e24d7a862.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/review-e74e24d7a862.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "16e01f6d-ef49-41a1-9d12-bf8b02fa7d3b",
+          "type": "side",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/077/041/images/5827afae419199ea3872076558fae3fe3a109adb/DB2023AU00664_retina_2400.jpg?1685627307",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-buzz-with-long-wheelbase-6684",
+          "storage_path": "volkswagen/volkswagen-id-buzz/review-6a28ceb8ed76.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/review-6a28ceb8ed76.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "a6a9777b-8b1c-42da-9f2b-2ef101deae32",
+          "type": "rear",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/077/042/images/5ca1c3df45d92092428c9de200dfa15eb1ca0cba/DB2023AU00665_retina_2400.jpg?1685699583",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-buzz-with-long-wheelbase-6684",
+          "storage_path": "volkswagen/volkswagen-id-buzz/review-0e887ebba293.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/review-0e887ebba293.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "b9826940-4832-4a16-9f12-0aae77fe8728",
+          "type": "interior",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/077/043/images/6db6d6454f60b85f54b9c2567163118ef122e59d/DB2023AU00666_retina_2400.jpg?1685627319",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-buzz-with-long-wheelbase-6684",
+          "storage_path": "volkswagen/volkswagen-id-buzz/review-a1d6eac72a62.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/review-a1d6eac72a62.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "b355f3f7-0825-43e7-af4e-430878b15c8d",
+          "type": "other",
+          "original_url": "https://uploads.vw-mms.de/system/production/images/vwn/077/044/images/38fa8021965c210fda57daf173db7a4e566a1070/DB2023AU00667_retina_2400.jpg?1685627321",
+          "source_url": "https://www.volkswagen-newsroom.com/en/images/albums/id-buzz-with-long-wheelbase-6684",
+          "storage_path": "volkswagen/volkswagen-id-buzz/review-bf3f77b70a51.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-buzz/review-bf3f77b70a51.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "513657a9-b65e-409d-8c38-8ae7b89eb739",
+        "804ab5c0-e267-4119-95c6-18112ea8f4ae",
+        "292e6d18-dfe8-44e2-ba37-5cc8f149b01b",
+        "50d8a43f-a28d-4c40-a7e0-f4040b68d842",
+        "82703d45-01c5-46f5-9e3d-3352ff5b24e9"
+      ],
+      "retainedFailed": 5,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior",
+        "other"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    },
+    {
+      "slug": "volvo-ex30",
+      "brand": "Volvo",
+      "model": "EX30",
+      "carId": "e491e460-4fb5-48d9-b7ce-bb87bddc4394",
+      "imageReviewUrl": "/admin/images/e491e460-4fb5-48d9-b7ce-bb87bddc4394",
+      "pageUrl": "https://www.volvocars.com/no/cars/ex30-electric/",
+      "planned": 3,
+      "inserted": [
+        {
+          "id": "8c97b4a2-e9e1-45d2-abfc-f9d9798389f8",
+          "type": "front",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/bltddc96d1f4ada84f3/6a25df7597ef4689816522a2/my27ex30-modelIntroHero-16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex30-electric/",
+          "storage_path": "volvo/volvo-ex30/review-d9d153949378.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex30/review-d9d153949378.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "0853874d-6ce4-4c80-bef9-d9177336d4ef",
+          "type": "side",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt0795f50c69e2a692/69450d036cee2500a751c7bc/my27_ex30_ext_side_left_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex30-electric/",
+          "storage_path": "volvo/volvo-ex30/review-a992d9dd0e69.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex30/review-a992d9dd0e69.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "433cdf29-763d-4ffb-95d1-2755a95f770e",
+          "type": "interior",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt2cf986425bc48bf0/69450d046cee2526f651c7c0/my27_ex30_int_isolated_seat_side_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex30-electric/",
+          "storage_path": "volvo/volvo-ex30/review-1554abac7d6a.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex30/review-1554abac7d6a.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "261a7750-bf29-4e00-a7c7-9d37ee467b2b",
+        "3b742e3c-bf42-4aef-955a-4b0f6f6c6c85",
+        "13e52882-50d5-4756-b279-b7b2ff6b53a8",
+        "f698605e-dd1f-4ae5-bf76-f5616fd1a744"
+      ],
+      "retainedFailed": 4,
+      "types": [
+        "front",
+        "side",
+        "interior"
+      ],
+      "completeCandidateSet": true,
+      "missing": [
+        "Rear"
+      ]
+    },
+    {
+      "slug": "volvo-ex40",
+      "brand": "Volvo",
+      "model": "EX40",
+      "carId": "0c67bdb4-b11d-4a69-a03b-78e8a23c5da9",
+      "imageReviewUrl": "/admin/images/0c67bdb4-b11d-4a69-a03b-78e8a23c5da9",
+      "pageUrl": "https://www.volvocars.com/no/cars/ex40-electric/",
+      "planned": 4,
+      "inserted": [
+        {
+          "id": "b595e8d8-18b7-4b15-800e-72d9bbeefea9",
+          "type": "front",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt953b99731f46ca7c/6a25df5d6b589ffbfdb053ed/my27ex40-modelIntroHero-1x1.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex40-electric/",
+          "storage_path": "volvo/volvo-ex40/review-7a730fd821dc.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex40/review-7a730fd821dc.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "a2b1f0fc-9020-4f3b-a8b2-53cd5b07ae72",
+          "type": "side",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/bltb9ae24a2f20b9084/684c305166912651b0c49a66/my26_ex40_ext_side_left_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex40-electric/",
+          "storage_path": "volvo/volvo-ex40/review-94e088867bd6.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex40/review-94e088867bd6.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "42661695-a0bd-41b2-96b5-a97655f96441",
+          "type": "rear",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt13df6f1a35ce0a48/684c2c806691262d0cc499e9/Exterior-bento-rear-4x3-EX40.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex40-electric/",
+          "storage_path": "volvo/volvo-ex40/review-a3f5d92db80a.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex40/review-a3f5d92db80a.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "1e760e56-7cb7-489c-b412-aba7af5b9706",
+          "type": "interior",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/bltb25501a698789a15/684c318f5dac7bc64b193693/my26_ex40_int_cockpit_3q_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex40-electric/",
+          "storage_path": "volvo/volvo-ex40/review-bd81dcb5ec07.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex40/review-bd81dcb5ec07.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "53a2cec4-ac4e-45ea-829a-06e4c8286234",
+        "783f1311-717c-4d65-9c56-365b652c03a1",
+        "4e7d6da9-139f-4109-8708-b42e8fea7f93",
+        "46420f0f-c700-4bd2-a168-fd4d283e1708"
+      ],
+      "retainedFailed": 4,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    },
+    {
+      "slug": "volvo-ec40",
+      "brand": "Volvo",
+      "model": "EC40",
+      "carId": "99406a6e-1480-4620-8932-2362d4025a0d",
+      "imageReviewUrl": "/admin/images/99406a6e-1480-4620-8932-2362d4025a0d",
+      "pageUrl": "https://www.volvocars.com/no/cars/ec40-electric/",
+      "planned": 4,
+      "inserted": [
+        {
+          "id": "8087ee92-a6bc-4384-8e1d-379b8b2d28ea",
+          "type": "front",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt34365c86c4850d63/6a25db419cd2853b303260c8/my27ec40-modelIntroHero-1x1.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ec40-electric/",
+          "storage_path": "volvo/volvo-ec40/review-652c48109121.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ec40/review-652c48109121.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "7f4c4abc-9601-485a-a200-4f7c567451bc",
+          "type": "side",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt0878f51736ef7514/685bf749e1745ad8ba8151e7/my26_ec40_ext_side_left_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ec40-electric/",
+          "storage_path": "volvo/volvo-ec40/review-d4e660559a1f.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ec40/review-d4e660559a1f.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "e522774e-4ec8-4a30-8825-9cecd1750d85",
+          "type": "rear",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt3d7a09c72b857ffa/685bfc4b9458147172d92ab5/Exterior-bento-rear-4x3-EC40.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ec40-electric/",
+          "storage_path": "volvo/volvo-ec40/review-0d5f84e48890.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ec40/review-0d5f84e48890.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "765fa316-b533-412a-81a8-767f0af39670",
+          "type": "interior",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt7358af0c5ca59f48/685cd498e136c95b04c673d0/my26_ec40_int_cockpit_3q_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ec40-electric/",
+          "storage_path": "volvo/volvo-ec40/review-ef5c6810bc49.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ec40/review-ef5c6810bc49.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "4e468f12-3943-4881-8261-6d9c4f3907e7",
+        "aeada667-51dc-41ec-9d83-f597aab50688",
+        "29cedf3b-82ff-4248-ba28-487f5f7b65c7"
+      ],
+      "retainedFailed": 3,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    },
+    {
+      "slug": "volvo-ex90",
+      "brand": "Volvo",
+      "model": "EX90",
+      "carId": "9f43ec39-0764-42ea-a42d-53727393a32f",
+      "imageReviewUrl": "/admin/images/9f43ec39-0764-42ea-a42d-53727393a32f",
+      "pageUrl": "https://www.volvocars.com/no/cars/ex90-electric/",
+      "planned": 3,
+      "inserted": [
+        {
+          "id": "2d30bf0e-189a-4a3b-8cb6-c196fa7a11e7",
+          "type": "front",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/bltbf09f8344a8bca8c/6a25df7c97ef4668296522a6/my27ex90-modelIntroHero-16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex90-electric/",
+          "storage_path": "volvo/volvo-ex90/review-fa8eb748901a.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex90/review-fa8eb748901a.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "978352d3-01e2-4186-bd9b-188edcb9028e",
+          "type": "side",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt27f7606314896070/69679521e27539846fa47c2a/my27_ex90_ext_side_left_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex90-electric/",
+          "storage_path": "volvo/volvo-ex90/review-fc17b1743d19.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex90/review-fc17b1743d19.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "bd0ae764-fb50-4790-8588-76d99fa31e51",
+          "type": "interior",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt4d32512e5ae238f6/6a43a311f56ab950e016b6df/SW050_EX90_BE_Interior-4-5.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/ex90-electric/",
+          "storage_path": "volvo/volvo-ex90/review-e9b1a55ea81a.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-ex90/review-e9b1a55ea81a.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "a25eadc2-0c64-47c9-a8d1-2aba699174d9",
+        "083de43d-96dd-4c28-9a8b-199ad0783770",
+        "9a88494c-fa7a-4857-9c93-e5b5a7a54451",
+        "6ac54ddb-de13-4886-b4ba-8598fcbdf4c3"
+      ],
+      "retainedFailed": 4,
+      "types": [
+        "front",
+        "side",
+        "interior"
+      ],
+      "completeCandidateSet": true,
+      "missing": [
+        "Rear"
+      ]
+    },
+    {
+      "slug": "volvo-es90",
+      "brand": "Volvo",
+      "model": "ES90",
+      "carId": "fed4fc5c-383e-4c9d-8876-6739d84a8e76",
+      "imageReviewUrl": "/admin/images/fed4fc5c-383e-4c9d-8876-6739d84a8e76",
+      "pageUrl": "https://www.volvocars.com/no/cars/es90-electric/",
+      "planned": 4,
+      "inserted": [
+        {
+          "id": "5bd41570-a1e3-42d3-ae1d-4cf460e33a8b",
+          "type": "front",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt66c607c44073abcd/6a25df5be3ad01612e0eedeb/my27es90-modelIntroHero-16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/es90-electric/",
+          "storage_path": "volvo/volvo-es90/review-e4a0861ac7fd.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-es90/review-e4a0861ac7fd.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "ffc7aad6-bf26-4759-843e-07ddfe0dc194",
+          "type": "side",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blta0a7f96b7164ba12/696794807928cbc00c9cdeb5/my27_es90_ext_side_left_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/es90-electric/",
+          "storage_path": "volvo/volvo-es90/review-2aff4a6bb9ec.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-es90/review-2aff4a6bb9ec.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "817100da-1a82-432e-9b92-9f28484a18de",
+          "type": "rear",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/blt28a30b1902e49100/6877a96c46b6501fd3ab785c/Exterior-bento-rear2-4x3-ES90.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/es90-electric/",
+          "storage_path": "volvo/volvo-es90/review-843b81fbac7a.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-es90/review-843b81fbac7a.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        },
+        {
+          "id": "9b1b26ba-a7e6-4f40-b101-fa6ff5a703dd",
+          "type": "interior",
+          "original_url": "https://www.volvocars.com/images/cs/v3/assets/blt0feaa88e629251fc/bltf25b6003202b1a1e/69679480a1438c792ac2dce6/my26_es90_int_isolated_seat_side_16x9.jpg?branch=prod_alias&format=jpg&quality=90&w=2400",
+          "source_url": "https://www.volvocars.com/no/cars/es90-electric/",
+          "storage_path": "volvo/volvo-es90/review-1a668f67b98b.webp",
+          "preview": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volvo/volvo-es90/review-1a668f67b98b.webp",
+          "storageReachable": true,
+          "hotlinksOem": false,
+          "status": "pending"
+        }
+      ],
+      "skippedDuplicates": 0,
+      "failedDownloads": [],
+      "supersededIds": [
+        "782f0fe5-4efe-435c-8487-5885ae3deb10",
+        "30f07d96-b38c-418f-b306-8faf86c665a4",
+        "0f165d6d-a99b-4430-b8d5-e6630886e747",
+        "a33aea72-e2c4-4e3b-89cb-4dc71d448d89",
+        "fafd86e6-4093-4adb-ab77-d86cfcaeda7e"
+      ],
+      "retainedFailed": 5,
+      "types": [
+        "front",
+        "side",
+        "rear",
+        "interior"
+      ],
+      "completeCandidateSet": true,
+      "missing": []
+    }
+  ],
+  "summary": {
+    "newCandidates": 38,
+    "downloadOk": 38,
+    "downloadFailed": 0,
+    "superseded": 35,
+    "completeSets": [
+      "volkswagen-id-3",
+      "volkswagen-id-4",
+      "volkswagen-id-7",
+      "volkswagen-id-buzz",
+      "volvo-ex30",
+      "volvo-ex40",
+      "volvo-ec40",
+      "volvo-ex90",
+      "volvo-es90"
+    ],
+    "missingHeroFrontSide": []
+  }
+}

@@ -10,6 +10,12 @@ import {
   type ImageReviewCard,
   type ImageReviewReadiness,
 } from "@/lib/admin/image-review";
+import { hydrateCandidateReviewCopies } from "@/lib/admin/image-review-storage";
+import { processFailedImageCandidateReplacements } from "@/lib/admin/image-role-replacement";
+import {
+  filterDefaultImageReviewCandidates,
+  NO_OFFICIAL_IMAGE_MESSAGE,
+} from "@/lib/admin/image-review-preview";
 import type { ResearchImageCandidate } from "@/lib/admin/research/types";
 import type { AdminCar } from "@/lib/admin/types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
@@ -22,9 +28,13 @@ export type ImageReviewModelSummary = {
 export type ImageReviewWorkspace = {
   car: AdminCar;
   gallery: CarImageRow[];
+  /** All candidates including history (failed / superseded). */
   candidates: ResearchImageCandidate[];
+  /** Usable candidates shown by default in Image Review. */
   cards: ImageReviewCard[];
   readiness: ImageReviewReadiness;
+  /** Empty-state copy when no usable candidates remain. */
+  emptyCandidatesMessage: string | null;
 };
 
 function dbReady() {
@@ -109,13 +119,30 @@ export async function loadImageReviewWorkspace(
   const car = await getAdminCarById(carId);
   if (!car) return null;
 
-  const [gallery, candidates] = await Promise.all([
+  const [gallery, rawCandidates] = await Promise.all([
     listAdminCarImages(car.id),
     listImageCandidatesForCar(car.id),
   ]);
 
+  // Ensure local review copies exist — never hotlink OEM CDN in Image Review.
+  const hydrated = await hydrateCandidateReviewCopies({
+    candidates: rawCandidates,
+    brand: car.brand || car.slug,
+    modelSlug: car.slug,
+  });
+
+  // Permanently failed → queue replacement research per image role (history kept).
+  const candidates = await processFailedImageCandidateReplacements({
+    candidates: hydrated,
+    brand: car.brand || car.slug,
+    modelSlug: car.slug,
+    modelName: car.model,
+    carId: car.id,
+  });
+
+  const visible = filterDefaultImageReviewCandidates(candidates);
   const cards = sortImageReviewCards(
-    candidates.map((image) => buildImageReviewCard(image, candidates)),
+    visible.map((image) => buildImageReviewCard(image, candidates)),
   );
   const readiness = computeImageReviewReadiness({
     gallery,
@@ -123,7 +150,21 @@ export async function loadImageReviewWorkspace(
     carImageUrl: car.image_url,
   });
 
-  return { car, gallery, candidates, cards, readiness };
+  const emptyCandidatesMessage =
+    visible.length === 0
+      ? rawCandidates.length > 0 || candidates.length > 0
+        ? NO_OFFICIAL_IMAGE_MESSAGE
+        : null
+      : null;
+
+  return {
+    car,
+    gallery,
+    candidates,
+    cards,
+    readiness,
+    emptyCandidatesMessage,
+  };
 }
 
 export async function loadImageReviewSummaries(): Promise<ImageReviewModelSummary[]> {

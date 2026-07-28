@@ -34,7 +34,7 @@ For each model in the batch:
 3. Failures block publication for that model.
 4. When every model passes (or is explicitly deferred out of the publish set), complete the batch gate.
 
-Recommended batch report fields: models processed, variants, populated fields, missing fields, conflicts, image candidates, completion %, readiness.
+Recommended batch report fields: models processed, variants, populated fields, missing fields, conflicts, image production (candidates, types, broken/rights/low-res warnings, Image Ready, Images Pending, `/admin/images/{carId}`), completion %, readiness.
 
 ---
 
@@ -57,17 +57,23 @@ Recommended batch report fields: models processed, variants, populated fields, m
 
 ## 2. Images
 
+**Standard:** `docs/IMAGE_PRODUCTION_STANDARD.md` (mandatory for every model batch).  
+**Review UI:** `/admin/images` and `/admin/images/[carId]`.
+
 | # | Check | Pass criteria |
 |---|--------|----------------|
-| 2.1 | Official candidates only | Candidates come from manufacturer media / official site assets |
-| 2.2 | Not auto-attached | Research image candidates were never auto-written into `car_images` |
+| 2.1 | Official candidates only | Candidates come from manufacturer media / official site assets (no Google/Pinterest/social/AI) |
+| 2.2 | Not auto-attached | Research image candidates were never auto-written into `car_images` without Approve |
 | 2.3 | Not auto-approved | No candidate marked approved without editor action |
-| 2.4 | Rights / usage | Editor verified usage terms before attaching |
-| 2.5 | Gallery ready | At least one usable primary image attached for publish (gallery and/or approved `image_url`) |
-| 2.6 | Alt text | Primary image has clear alt text |
-| 2.7 | Page URLs rejected | HTML model-page URLs are not used as image files |
+| 2.4 | Rights / usage | Editor verified usage terms before attaching; unclear rights stay pending with warning |
+| 2.5 | Image Ready | Approved Hero + Front + Side (Image Review label) |
+| 2.6 | Gallery attach | Approved images fetched server-side into Supabase Storage + `car_images` |
+| 2.7 | Alt text | Primary image has clear alt text |
+| 2.8 | Page URLs rejected | HTML model-page URLs are not used as image files |
+| 2.9 | Batch report | Brand batch doc includes candidates, types, warnings, Image Ready/Pending, `/admin/images/{carId}` |
+| 2.10 | Provenance | Each candidate retains original URL, source name, source page, license/usage notes |
 
-**Block if:** publishing with zero approved images, or with unverified / non-official media.
+**Block if:** publishing with zero approved images, missing Hero/Front/Side, or with unverified / non-official media.
 
 ---
 
@@ -131,7 +137,7 @@ Recommended batch report fields: models processed, variants, populated fields, m
 | 6.2 | Research workspace | Pending research fields for this model are approved, rejected, or marked unavailable |
 | 6.3 | Field review | Low-confidence fields inspected; confidence acceptable for publish or field cleared |
 | 6.4 | Missing-data list | Remaining gaps listed with reason (blocked OEM page, not published, multi-value conflict, etc.) |
-| 6.5 | Batch report | Brand batch doc updated (models, variants, populated/missing, conflicts, images, completion %, readiness) |
+| 6.5 | Batch report | Brand batch doc updated (models, variants, populated/missing, conflicts, **image production section**, completion %, readiness) |
 | 6.6 | Cross-check | Spot-check at least one headline number per variant against the official PDF/page |
 | 6.7 | CMS unchanged | No feature work mixed into the content pass |
 
@@ -180,7 +186,7 @@ Before closing a brand batch as production-complete:
 | B.1 | Inventory | Every intended model listed with slug + car id |
 | B.2 | Deferred models | Shells / blocked models (e.g. missing OEM PDF) explicitly deferred — not silently published |
 | B.3 | Uniform status | No accidental `is_published=true` from import/research |
-| B.4 | Report filed | Batch markdown report exists under `docs/` with conflicts and image candidates |
+| B.4 | Report filed | Batch markdown report exists under `docs/` with conflicts, image candidates, Image Ready/Pending, and Image Review URLs |
 | B.5 | Checklist signed | Editor names + date recorded for the batch (in the batch report or CMS notes) |
 
 ---

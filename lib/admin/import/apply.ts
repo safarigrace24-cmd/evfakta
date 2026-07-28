@@ -5,6 +5,11 @@ import { randomUUID } from "node:crypto";
 import type { AdminCar, ImportStatus } from "@/lib/admin/types";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCarImageType, type CarImageType } from "@/lib/admin/car-image-types";
+import {
+  buildCarImageStoragePath,
+  canCollectAsImageCandidate,
+  resolveStorageRole,
+} from "@/lib/admin/image-production";
 import { buildImportPreview, emptyImportSummary } from "@/lib/admin/import/preview";
 import type {
   FieldSources,
@@ -165,6 +170,7 @@ async function publicUrlForPath(storagePath: string): Promise<string> {
 async function importGalleryForCar(input: {
   carId: string;
   slug: string;
+  brand?: string | null;
   images: NonNullable<ImportCarRow["gallery_images"]>;
   mode: "skip" | "replace";
   summary: ImportReportSummary;
@@ -190,6 +196,11 @@ async function importGalleryForCar(input: {
   for (const image of input.images) {
     const url = image.url.trim();
     if (!url) continue;
+    if (!canCollectAsImageCandidate(url)) {
+      summary.errors += 1;
+      messages.push(`Avvist bildekilde (ikke offisiell / ikke tillatt): ${url}`);
+      continue;
+    }
 
     const duplicate = existingUrls.has(url.toLowerCase());
     if (duplicate && input.mode === "skip") {
@@ -212,12 +223,25 @@ async function importGalleryForCar(input: {
         .webp({ quality: 82 })
         .toBuffer();
 
-      const storagePath = `${input.slug}/${randomUUID()}.webp`;
+      const imageType: CarImageType = isCarImageType(image.image_type ?? "")
+        ? (image.image_type as CarImageType)
+        : "other";
+      const makePrimaryPreview =
+        Boolean(image.is_primary) || (existingImages ?? []).length === 0;
+      const storagePath = buildCarImageStoragePath({
+        brand: input.brand?.trim() || input.slug,
+        modelSlug: input.slug,
+        role: resolveStorageRole({
+          isPrimary: makePrimaryPreview,
+          imageType,
+        }),
+        uniqueId: randomUUID(),
+      });
       const { error: uploadError } = await supabase.storage
         .from(IMAGE_BUCKET)
         .upload(storagePath, webp, {
           contentType: "image/webp",
-          upsert: true,
+          upsert: false,
           cacheControl: "3600",
         });
 
@@ -228,9 +252,6 @@ async function importGalleryForCar(input: {
       }
 
       const publicUrl = await publicUrlForPath(storagePath);
-      const imageType: CarImageType = isCarImageType(image.image_type ?? "")
-        ? (image.image_type as CarImageType)
-        : "other";
 
       if (duplicate && input.mode === "replace") {
         const match = (existingImages ?? []).find(
@@ -564,6 +585,7 @@ async function applyPreviewRow(ctx: {
       const imageMessages = await importGalleryForCar({
         carId: data.id as string,
         slug: payload.slug,
+        brand: payload.brand,
         images: payload.gallery_images,
         mode: ctx.imageMode,
         summary,

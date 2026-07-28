@@ -32,7 +32,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const query = await searchParams;
   const car = await getPublishedCarBySlug(slug);
   if (!car) {
-    return { title: "Modell ikke funnet" };
+    notFound();
   }
 
   const variantSlug = resolveVariantSlug(car, firstParam(query.variant));
@@ -107,7 +107,7 @@ export default async function CarPage({ params, searchParams }: PageProps) {
   };
 
   return (
-    <section className="section">
+    <section className="section modelPage" aria-label="Modellside">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -115,9 +115,9 @@ export default async function CarPage({ params, searchParams }: PageProps) {
       <Container>
         <nav className="pageBreadcrumb" aria-label="Brødsmulesti">
           <Link href="/">Hjem</Link>
-          <span>/</span>
+          <span aria-hidden="true">/</span>
           <Link href="/modeller">Modeller</Link>
-          <span>/</span>
+          <span aria-hidden="true">/</span>
           <span aria-current="page">
             {car.brand} {car.model}
           </span>
@@ -131,8 +131,10 @@ export default async function CarPage({ params, searchParams }: PageProps) {
         />
 
         {related.length > 0 && (
-          <section className="relatedSection" aria-labelledby="related-heading">
-            <h2 id="related-heading">Lignende modeller</h2>
+          <section className="relatedSection modelRelated" aria-labelledby="related-heading">
+            <div className="modelRelatedHeader">
+              <h2 id="related-heading">Lignende modeller</h2>
+            </div>
             <CarGrid
               cars={related}
               variant="compact"

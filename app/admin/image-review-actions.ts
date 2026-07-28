@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getAuthUser } from "@/lib/auth/get-user";
 import { canApproveImageCandidate } from "@/lib/admin/image-review";
+import {
+  ensureCandidateReviewCopy,
+  hasDownloadFailed,
+} from "@/lib/admin/image-review-storage";
 import { applySingleApprovedImage } from "@/lib/admin/research/apply";
 import type { ResearchImageCandidate } from "@/lib/admin/research/types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
@@ -41,6 +45,7 @@ async function loadCandidateContext(imageId: string): Promise<{
   image: ResearchImageCandidate;
   carId: string;
   slug: string;
+  brand: string;
   itemIds: string[];
 } | null> {
   const supabase = createAdminClient();
@@ -62,7 +67,7 @@ async function loadCandidateContext(imageId: string): Promise<{
 
   const { data: car } = await supabase
     .from("cars")
-    .select("id, slug")
+    .select("id, slug, brand")
     .eq("id", item.existing_car_id)
     .maybeSingle();
 
@@ -77,6 +82,7 @@ async function loadCandidateContext(imageId: string): Promise<{
     image: image as ResearchImageCandidate,
     carId: car.id as string,
     slug: car.slug as string,
+    brand: (car.brand as string) || "",
     itemIds: (siblingItems ?? []).map((row) => row.id as string).filter(Boolean),
   };
 }
@@ -99,10 +105,27 @@ export async function approveImageCandidateAction(input: {
   if (ctx.image.status === "applied") {
     return { ok: true, message: "Bildet er allerede i galleriet." };
   }
-  if (!canApproveImageCandidate({ ...ctx.image, status: "pending" })) {
+
+  // Ensure a durable local review copy before approve (never re-hotlink OEM CDN).
+  let image = ctx.image;
+  if (!image.storage_path?.trim() && !hasDownloadFailed(image.notes)) {
+    image = await ensureCandidateReviewCopy({
+      candidate: image,
+      brand: ctx.brand || ctx.slug,
+      modelSlug: ctx.slug,
+    });
+  }
+
+  if (hasDownloadFailed(image.notes)) {
     return {
       ok: false,
-      error: "Kan ikke godkjenne kilde-side som bilde. Last opp manuelt i bildegalleriet.",
+      error: "Download Failed — originalen kunne ikke lastes ned. Last opp manuelt i bildegalleriet.",
+    };
+  }
+  if (!canApproveImageCandidate({ ...image, status: "pending" })) {
+    return {
+      ok: false,
+      error: "Kan ikke godkjenne uten lokal review-kopi. Last opp manuelt i bildegalleriet.",
     };
   }
 
@@ -119,7 +142,8 @@ export async function approveImageCandidateAction(input: {
     const applied = await applySingleApprovedImage({
       carId: ctx.carId,
       slug: ctx.slug,
-      image: { ...ctx.image, status: "approved" },
+      brand: ctx.brand,
+      image: { ...image, status: "approved" },
     });
     if (applied.ok) {
       message =

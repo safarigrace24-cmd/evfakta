@@ -1,0 +1,48 @@
+{
+  "slug": "volkswagen-id-4",
+  "startedAt": "2026-07-28T09:42:03.926Z",
+  "steps": [
+    "Superseded/rejected non-curated candidates: 0",
+    "Relabeled curated set after visual review (front/side/rear/interior; album labels were swapped)",
+    "Applied front+hero → 3083b2cd-bf55-4105-9b03-185b95dfcc76",
+    "Applied side → 38fe0a6b-8e99-41e9-9cd8-8e18d61b5334",
+    "Applied rear → 148b3fe8-8e05-444e-95f9-fbb32842f32f",
+    "Applied interior → 58755c4f-35ee-482f-8b3e-45f8ed3cef40",
+    "Editorial finalized (no draft markers); import_status=approved; remains unpublished",
+    "Variants marked approved"
+  ],
+  "finishedAt": "2026-07-28T09:42:07.384Z",
+  "gallery": [
+    {
+      "id": "3083b2cd-bf55-4105-9b03-185b95dfcc76",
+      "image_type": "front",
+      "is_primary": true,
+      "alt_text": "Volkswagen ID.4 i lys blå, front trekvart, parkert (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/hero-6e68800a-295.webp"
+    },
+    {
+      "id": "38fe0a6b-8e99-41e9-9cd8-8e18d61b5334",
+      "image_type": "side",
+      "is_primary": false,
+      "alt_text": "Volkswagen ID.4 i lys blå, sideprofil (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/side-7ba5ef2f-c65.webp"
+    },
+    {
+      "id": "148b3fe8-8e05-444e-95f9-fbb32842f32f",
+      "image_type": "rear",
+      "is_primary": false,
+      "alt_text": "Volkswagen ID.4 i lys blå, bak trekvart (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/rear-ee80bb81-4fe.webp"
+    },
+    {
+      "id": "58755c4f-35ee-482f-8b3e-45f8ed3cef40",
+      "image_type": "interior",
+      "is_primary": false,
+      "alt_text": "Volkswagen ID.4 interiør, førerplass og sentralskjerm (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-4/interior-ff0622f6-7e6.webp"
+    }
+  ],
+  "imageReady": true,
+  "hasInterior": true,
+  "publishReadyNote": "Content+images ready for human publish; is_published left false"
+}

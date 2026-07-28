@@ -52,12 +52,7 @@ export default function RegisterForm() {
       });
 
       if (signUpError) {
-        console.error("[EVFAKTA] Supabase signUp error:", signUpError);
-        setError(
-          process.env.NODE_ENV === "development"
-            ? signUpError.message || mapAuthError(signUpError)
-            : mapAuthError(signUpError),
-        );
+        setError(mapAuthError(signUpError));
         return;
       }
 
@@ -67,12 +62,7 @@ export default function RegisterForm() {
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
-      console.error("[EVFAKTA] Supabase signUp exception:", err);
-      setError(
-        process.env.NODE_ENV === "development" && err instanceof Error
-          ? err.message || mapAuthError(err)
-          : mapAuthError(err),
-      );
+      setError(mapAuthError(err));
     } finally {
       setPending(false);
     }

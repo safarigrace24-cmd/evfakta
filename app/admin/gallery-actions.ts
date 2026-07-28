@@ -6,6 +6,10 @@ import sharp from "sharp";
 import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getAuthUser } from "@/lib/auth/get-user";
 import { isCarImageType, type CarImageType } from "@/lib/admin/car-image-types";
+import {
+  buildCarImageStoragePath,
+  resolveStorageRole,
+} from "@/lib/admin/image-production";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
 
 const BUCKET = "car-images";
@@ -42,16 +46,22 @@ function revalidateCarPaths(slug: string) {
   revalidatePath("/");
 }
 
-async function getCarMeta(carId: string): Promise<{ id: string; slug: string } | null> {
+async function getCarMeta(
+  carId: string,
+): Promise<{ id: string; slug: string; brand: string } | null> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("cars")
-    .select("id, slug")
+    .select("id, slug, brand")
     .eq("id", carId)
     .maybeSingle();
 
   if (error || !data) return null;
-  return { id: data.id as string, slug: data.slug as string };
+  return {
+    id: data.id as string,
+    slug: data.slug as string,
+    brand: (data.brand as string) || "",
+  };
 }
 
 async function syncPrimaryToCarImageUrl(carId: string, imageUrl: string | null) {
@@ -130,8 +140,12 @@ export async function uploadGalleryImageAction(input: {
 
   const nextOrder = existing?.[0] ? Number(existing[0].sort_order) + 1 : 0;
   const makePrimary = Boolean(input.makePrimary) || (existing?.length ?? 0) === 0;
-  const fileName = `${randomUUID()}.webp`;
-  const storagePath = `${car.slug}/${fileName}`;
+  const storagePath = buildCarImageStoragePath({
+    brand: car.brand || car.slug,
+    modelSlug: car.slug,
+    role: resolveStorageRole({ isPrimary: makePrimary, imageType }),
+    uniqueId: randomUUID(),
+  });
 
   const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, webp, {
     contentType: "image/webp",
@@ -207,8 +221,15 @@ export async function replaceGalleryImageAction(input: {
   const webp = await toWebpBuffer(String(input.base64 ?? ""));
   if ("error" in webp) return { ok: false, error: webp.error };
 
-  const fileName = `${randomUUID()}.webp`;
-  const storagePath = `${car.slug}/${fileName}`;
+  const storagePath = buildCarImageStoragePath({
+    brand: car.brand || car.slug,
+    modelSlug: car.slug,
+    role: resolveStorageRole({
+      isPrimary: Boolean(row.is_primary),
+      imageType: row.image_type as string,
+    }),
+    uniqueId: randomUUID(),
+  });
   const oldPath = row.storage_path as string;
 
   const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, webp, {

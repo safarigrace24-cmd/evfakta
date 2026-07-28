@@ -37,8 +37,8 @@ export default function AdminImageCandidatePreview({
     return (
       <div className="adminImageReviewPreview is-error">
         <div className="adminImageReviewPlaceholder">
-          <strong>No image URL</strong>
-          <span>Broken URL</span>
+          <strong>No local review copy</strong>
+          <span>Download Failed or pending — OEM CDN is never hotlinked</span>
         </div>
       </div>
     );

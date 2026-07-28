@@ -52,12 +52,14 @@ export default function CarCard({
             : [{ value: formatKwh(display.batteryKwh), label: "Batteri" }]),
         ]);
 
-  const Heading = variant === "compact" ? "h3" : "h2";
+  // Catalog / list contexts sit under a page h1 — keep card titles as h3.
+  const Heading = "h3";
   const altBrand = car.brand;
   const altModel = car.model;
+  const driveLabel = display.drive?.trim() || "";
 
   return (
-    <article className="carCard">
+    <article className={`carCard carCard--${variant}`}>
       <FavoriteButton
         carSlug={car.slug}
         initialIsFavorite={isFavorite}
@@ -73,16 +75,24 @@ export default function CarCard({
           <div className="carVisual">
             <CarImage car={car} variant="card" />
           </div>
-          {display.drive ? <Badge>{display.drive}</Badge> : null}
+          {driveLabel ? <Badge>{driveLabel}</Badge> : null}
         </div>
         <div className="carCardBody">
           <span className="carBrand">{car.brand}</span>
-          <Heading>{car.model}</Heading>
+          <Heading>
+            {car.model}
+            {car.year ? <span className="carYear"> ({car.year})</span> : null}
+          </Heading>
+          {driveLabel && variant === "full" ? (
+            <p className="carDriveMeta">{driveLabel}</p>
+          ) : null}
           {specs.length > 0 ? <SpecRow items={specs} /> : null}
           {variant === "full" && PUBLIC_SHOW_PRICES && display.priceNok > 0 && (
             <strong className="carPrice">Fra {formatNok(display.priceNok)}</strong>
           )}
-          <span className="carCardCta">Se fakta →</span>
+          <span className="carCardCta" aria-hidden="true">
+            Se fakta →
+          </span>
         </div>
       </Link>
     </article>

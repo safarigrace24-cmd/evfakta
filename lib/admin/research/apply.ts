@@ -1,9 +1,12 @@
 import "server-only";
 
-import sharp from "sharp";
-import { randomUUID } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCarImageType, type CarImageType } from "@/lib/admin/car-image-types";
+import { resolveStorageRole } from "@/lib/admin/image-production";
+import {
+  promoteReviewCopyToGalleryPath,
+  publicUrlForCarImagePath,
+} from "@/lib/admin/image-review-storage";
 import type {
   ResearchFieldCandidate,
   ResearchImageCandidate,
@@ -11,13 +14,6 @@ import type {
   ResearchJobSummary,
   ResearchVariantProposal,
 } from "@/lib/admin/research/types";
-
-const IMAGE_BUCKET = "car-images";
-
-function publicUrlForPath(storagePath: string): string {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
-  return `${base}/storage/v1/object/public/${IMAGE_BUCKET}/${storagePath}`;
-}
 
 function buildFieldSources(
   fields: ResearchFieldCandidate[],
@@ -163,12 +159,14 @@ async function upsertVariants(
 
 /**
  * Attach one human-approved candidate into car_images.
+ * Promotes the already-stored review copy — does not re-fetch OEM CDN URLs.
  * Never auto-approves; caller must set status=approved first.
  * Does not publish the car.
  */
 export async function applySingleApprovedImage(input: {
   carId: string;
   slug: string;
+  brand?: string | null;
   image: ResearchImageCandidate;
   sortOrder?: number;
 }): Promise<{ ok: true; galleryImageId: string } | { ok: false; error: string }> {
@@ -179,33 +177,31 @@ export async function applySingleApprovedImage(input: {
   if (image.applied_image_id) {
     return { ok: true, galleryImageId: image.applied_image_id };
   }
+  if (!image.storage_path?.trim()) {
+    return {
+      ok: false,
+      error: "Mangler lokal review-kopi. Last ned på nytt fra Image Review.",
+    };
+  }
 
   const supabase = createAdminClient();
   try {
-    const response = await fetch(image.original_url, { redirect: "follow" });
-    if (!response.ok) {
-      return { ok: false, error: "Kunne ikke hente bilde-URL." };
-    }
-    const buffer = Buffer.from(await response.arrayBuffer());
-    const webp = await sharp(buffer)
-      .rotate()
-      .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 82 })
-      .toBuffer();
-
-    const storagePath = `${input.slug}/${randomUUID()}.webp`;
-    const { error: uploadError } = await supabase.storage
-      .from(IMAGE_BUCKET)
-      .upload(storagePath, webp, {
-        contentType: "image/webp",
-        upsert: true,
-        cacheControl: "3600",
-      });
-    if (uploadError) {
-      return { ok: false, error: "Kunne ikke laste opp bildet." };
+    const role = resolveStorageRole({
+      isPrimary: image.is_primary_candidate,
+      imageType: image.image_type,
+    });
+    const promoted = await promoteReviewCopyToGalleryPath({
+      reviewStoragePath: image.storage_path,
+      brand: input.brand?.trim() || input.slug.split("-")[0] || "brand",
+      modelSlug: input.slug,
+      role,
+    });
+    if (!promoted.ok) {
+      return { ok: false, error: promoted.error };
     }
 
-    const publicUrl = publicUrlForPath(storagePath);
+    const storagePath = promoted.storagePath;
+    const publicUrl = publicUrlForCarImagePath(storagePath);
     const imageType: CarImageType = isCarImageType(image.image_type ?? "")
       ? (image.image_type as CarImageType)
       : "other";
@@ -243,12 +239,14 @@ export async function applySingleApprovedImage(input: {
       .update({
         status: "applied",
         applied_image_id: inserted.id,
+        // Keep gallery path; original_url provenance remains on the row.
         storage_path: storagePath,
         notes: [
           image.notes,
           image.license_note,
           image.usage_terms,
           `original:${image.original_url}`,
+          `review-promoted-from:${image.storage_path}`,
         ]
           .filter(Boolean)
           .join(" | "),
@@ -265,6 +263,7 @@ export async function applySingleApprovedImage(input: {
 async function applyApprovedImages(input: {
   carId: string;
   slug: string;
+  brand?: string | null;
   images: ResearchImageCandidate[];
 }): Promise<number> {
   let applied = 0;
@@ -275,6 +274,7 @@ async function applyApprovedImages(input: {
     const result = await applySingleApprovedImage({
       carId: input.carId,
       slug: input.slug,
+      brand: input.brand,
       image,
       sortOrder,
     });
@@ -394,6 +394,7 @@ export async function applyApprovedResearchItems(input: {
       await applyApprovedImages({
         carId: upserted.id as string,
         slug: upserted.slug as string,
+        brand: item.brand,
         images: (images ?? []) as ResearchImageCandidate[],
       });
 

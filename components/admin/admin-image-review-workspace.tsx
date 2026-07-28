@@ -23,6 +23,7 @@ type Props = {
   cards: ImageReviewCard[];
   gallery: CarImageRow[];
   readiness: ImageReviewReadiness;
+  emptyCandidatesMessage?: string | null;
 };
 
 function statusClass(status: ImageReviewCard["status"]): string {
@@ -60,7 +61,7 @@ function CandidateCard({
   return (
     <li className="adminImageReviewCard">
       <AdminImageCandidatePreview
-        url={card.previewUrl || card.originalUrl}
+        url={card.previewUrl}
         alt={card.altText || `${car.brand} ${car.model} ${card.imageTypeLabel}`}
         isHero={card.isHeroCandidate}
         onOpenFullSize={onOpenFullSize}
@@ -121,12 +122,16 @@ function CandidateCard({
               isPending ||
               card.status === "Approved" ||
               card.status === "Rejected" ||
-              previewFailed
+              previewFailed ||
+              !card.previewUrl ||
+              warnings.includes("Download Failed")
             }
             title={
-              previewFailed
-                ? "Preview failed — fix URL or upload manually before approving"
-                : undefined
+              warnings.includes("Download Failed")
+                ? "Download Failed — upload manually in the gallery"
+                : previewFailed || !card.previewUrl
+                  ? "Local review copy missing — cannot approve OEM hotlink"
+                  : undefined
             }
             onClick={() =>
               onAction(() =>
@@ -166,7 +171,9 @@ function CandidateCard({
             type="button"
             className="button ghost buttonSm"
             disabled={!card.previewUrl || previewFailed}
-            onClick={() => onOpenFullSize(card.previewUrl || card.originalUrl)}
+            onClick={() => {
+              if (card.previewUrl) onOpenFullSize(card.previewUrl);
+            }}
           >
             Preview Full Size
           </button>
@@ -190,6 +197,7 @@ export default function AdminImageReviewWorkspace({
   cards,
   gallery,
   readiness,
+  emptyCandidatesMessage = null,
 }: Props) {
   const router = useRouter();
   const [isPending, begin] = useTransition();
@@ -278,13 +286,16 @@ export default function AdminImageReviewWorkspace({
       <section className="adminImageReviewSection" aria-labelledby="candidates-heading">
         <div className="adminProductionSectionHeader">
           <h2 id="candidates-heading">Image candidates</h2>
-          <p className="adminHint">{cards.length} collected during research</p>
+          <p className="adminHint">
+            {cards.length} usable candidate{cards.length === 1 ? "" : "s"} (failed downloads kept in
+            history)
+          </p>
         </div>
 
         {cards.length === 0 ? (
           <p className="adminEmpty">
-            No research image candidates for this model yet. Collect them via Research, then
-            review here.
+            {emptyCandidatesMessage ||
+              "No research image candidates for this model yet. Collect them via Research, then review here."}
           </p>
         ) : (
           <ul className="adminImageReviewGrid">

@@ -38,12 +38,74 @@ type CarVariantDetailProps = {
   isLoggedIn: boolean;
 };
 
+type TechRow = { label: string; value: string };
+
+type TechGroup = {
+  id: string;
+  title: string;
+  labels: string[];
+};
+
+const TECH_GROUPS: TechGroup[] = [
+  {
+    id: "identity",
+    title: "Identitet",
+    labels: ["Variant", "Trim", "Generasjon", "Årsmodell", "Kjøretøytype", "Karosseri"],
+  },
+  {
+    id: "battery",
+    title: "Batteri og forbruk",
+    labels: ["Batteri totalt", "Batteri brukbart", "Batterikjemi", "Forbruk"],
+  },
+  {
+    id: "charging",
+    title: "Lading",
+    labels: ["Ladetid 10–80 %", "AC-kontakt", "DC-kontakt"],
+  },
+  {
+    id: "performance",
+    title: "Ytelse",
+    labels: ["Effekt", "Moment", "0–100 km/t", "Toppfart"],
+  },
+  {
+    id: "practical",
+    title: "Praktisk",
+    labels: [
+      "Seter",
+      "Bagasjerom",
+      "Frunk",
+      "Tilhengervekt",
+      "Lengde",
+      "Bredde",
+      "Høyde",
+      "Akselavstand",
+      "Egenvekt",
+      "Totalvekt",
+    ],
+  },
+  {
+    id: "equipment",
+    title: "Utstyr og garanti",
+    labels: [
+      "Varmepumpe",
+      "V2L",
+      "V2G",
+      "Apple CarPlay",
+      "Android Auto",
+      "Head-up display",
+      "Panoramatak",
+      "OTA-oppdateringer",
+      "Garanti",
+    ],
+  },
+];
+
 function formatOptional(value: string | number | null | undefined, suffix = "") {
   if (value == null || value === "" || value === 0) return null;
   return `${value}${suffix}`;
 }
 
-function buildTechRows(car: Car): Array<{ label: string; value: string | null }> {
+function buildTechRows(car: Car): TechRow[] {
   return [
     { label: "Variant", value: car.variant ?? null },
     { label: "Trim", value: car.trimLevel ?? null },
@@ -51,15 +113,17 @@ function buildTechRows(car: Car): Array<{ label: string; value: string | null }>
     { label: "Årsmodell", value: formatOptional(car.year) },
     {
       label: "Batteri totalt",
-      value: car.batteryTotalKwh != null && car.batteryTotalKwh > 0
-        ? `${car.batteryTotalKwh} kWh`
-        : null,
+      value:
+        car.batteryTotalKwh != null && car.batteryTotalKwh > 0
+          ? `${car.batteryTotalKwh} kWh`
+          : null,
     },
     {
       label: "Batteri brukbart",
-      value: car.batteryUsableKwh != null && car.batteryUsableKwh > 0
-        ? `${car.batteryUsableKwh} kWh`
-        : null,
+      value:
+        car.batteryUsableKwh != null && car.batteryUsableKwh > 0
+          ? `${car.batteryUsableKwh} kWh`
+          : null,
     },
     { label: "Batterikjemi", value: car.batteryChemistry ?? null },
     {
@@ -157,21 +221,48 @@ function buildTechRows(car: Car): Array<{ label: string; value: string | null }>
     { label: "Garanti", value: car.warranty ?? null },
     { label: "Kjøretøytype", value: car.vehicleType ?? null },
     { label: "Karosseri", value: car.bodyStyle ?? null },
-  ].filter((row) => row.value);
+  ].filter((row): row is TechRow => Boolean(row.value));
+}
+
+function groupTechRows(rows: TechRow[]) {
+  const byLabel = new Map(rows.map((row) => [row.label, row]));
+  const grouped = TECH_GROUPS.map((group) => ({
+    ...group,
+    rows: group.labels
+      .map((label) => byLabel.get(label))
+      .filter((row): row is TechRow => Boolean(row)),
+  })).filter((group) => group.rows.length > 0);
+
+  const groupedLabels = new Set(TECH_GROUPS.flatMap((group) => group.labels));
+  const leftovers = rows.filter((row) => !groupedLabels.has(row.label));
+  if (leftovers.length > 0) {
+    grouped.push({
+      id: "other",
+      title: "Øvrig",
+      labels: leftovers.map((row) => row.label),
+      rows: leftovers,
+    });
+  }
+  return grouped;
 }
 
 function ListBlock({
   title,
   items,
   id,
+  className = "",
 }: {
   title: string;
   items: string[];
   id: string;
+  className?: string;
 }) {
   if (items.length === 0) return null;
   return (
-    <section className="detailListSection" aria-labelledby={id}>
+    <section
+      className={`detailListSection modelContentCard ${className}`.trim()}
+      aria-labelledby={id}
+    >
       <h2 id={id}>{title}</h2>
       <ul>
         {items.map((item) => (
@@ -211,6 +302,11 @@ export default function CarVariantDetail({
       : null;
   const showWinter = Boolean(winterRange);
 
+  const consumptionValue =
+    display.consumptionKwh100km != null && display.consumptionKwh100km > 0
+      ? `${display.consumptionKwh100km} kWh/100 km`
+      : null;
+
   const chargeFacts = [
     {
       label: "DC-lading",
@@ -225,17 +321,19 @@ export default function CarVariantDetail({
       value:
         display.chargeTime1080Minutes != null && display.chargeTime1080Minutes > 0
           ? `${display.chargeTime1080Minutes} min`
-          : "—",
+          : null,
     },
     {
       label: "AC-kontakt",
-      value: display.chargingConnectorAc || "—",
+      value: display.chargingConnectorAc || null,
     },
     {
       label: "DC-kontakt",
-      value: display.chargingConnectorDc || "—",
+      value: display.chargingConnectorDc || null,
     },
-  ].filter((fact) => fact.value !== "—");
+  ].filter((fact): fact is { label: string; value: string } =>
+    Boolean(fact.value && fact.value !== "—"),
+  );
 
   const keyFacts = [
     ...(PUBLIC_SHOW_PRICES && display.priceNok > 0
@@ -248,11 +346,17 @@ export default function CarVariantDetail({
     },
     { label: "Batteri", value: formatKwh(display.batteryKwh) },
     { label: "DC-lading", value: formatKw(display.dcKw) },
+    ...(consumptionValue
+      ? [{ label: "Forbruk", value: consumptionValue }]
+      : []),
     { label: "AC-lading", value: formatKw(display.acKw) },
-    { label: "Drivhjul", value: display.drive },
+    { label: "Drivlinje", value: display.drive },
   ].filter((fact) => fact.value && fact.value !== "—");
 
-  const techRows = useMemo(() => buildTechRows(display), [display]);
+  const techGroups = useMemo(
+    () => groupTechRows(buildTechRows(display)),
+    [display],
+  );
 
   const compareHref = buildCompareHref([
     {
@@ -277,60 +381,91 @@ export default function CarVariantDetail({
     });
   }
 
+  const selectedVariantName =
+    variants.find((variant) => variant.slug === selectedSlug)?.name ?? null;
+
   return (
-    <>
-      <div className="detailHeader">
-        <Eyebrow>{car.brand}</Eyebrow>
-        <h1>{car.model}</h1>
-        {hasRenderablePublicCopy(description) && (
-          <p className="lead narrow">{description}</p>
-        )}
-
-        {variants.length > 0 && (
-          <div className="variantSelector" role="group" aria-label="Velg variant">
-            <label className="variantSelectorLabel" htmlFor="variant-select">
-              Variant
-            </label>
-            <select
-              id="variant-select"
-              className="variantSelect"
-              value={selectedSlug ?? ""}
-              onChange={(event) => selectVariant(event.target.value)}
-            >
-              {variants.map((variant) => (
-                <option key={variant.id} value={variant.slug}>
-                  {variant.name}
-                  {variant.isDefault ? " (standard)" : ""}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        <div className="detailHeaderActions">
-          <FavoriteButton
-            carSlug={car.slug}
-            initialIsFavorite={isFavorite}
-            isLoggedIn={isLoggedIn}
-            variant="labeled"
-          />
-          <Button href={compareHref} variant="secondary">
-            Sammenlign
-          </Button>
+    <div className="modelDetail">
+      <div className="modelHero">
+        <div className="modelHeroMedia">
+          <CarGallery car={car} />
         </div>
+
+        <aside className="modelHeroAside" aria-labelledby="model-heading">
+          <div className="modelHeroIdentity">
+            <Eyebrow>{car.brand}</Eyebrow>
+            <h1 id="model-heading">
+              {car.model}
+              {car.year ? <span className="carYear"> ({car.year})</span> : null}
+            </h1>
+            {selectedVariantName ? (
+              <p className="modelVariantMeta">{selectedVariantName}</p>
+            ) : display.drive ? (
+              <p className="modelVariantMeta">{display.drive}</p>
+            ) : null}
+            {hasRenderablePublicCopy(description) && (
+              <p className="lead narrow modelHeroLead">{description}</p>
+            )}
+          </div>
+
+          {variants.length > 0 && (
+            <div className="variantSelector" role="group" aria-label="Velg variant">
+              <label className="variantSelectorLabel" htmlFor="variant-select">
+                Variant
+              </label>
+              <select
+                id="variant-select"
+                className="variantSelect"
+                value={selectedSlug ?? ""}
+                onChange={(event) => selectVariant(event.target.value)}
+              >
+                {variants.map((variant) => (
+                  <option key={variant.id} value={variant.slug}>
+                    {variant.name}
+                    {variant.isDefault ? " (standard)" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {keyFacts.length > 0 && (
+            <div className="modelKeyFacts">
+              <h2 id="key-facts-heading" className="visuallyHidden">
+                Nøkkeltall
+              </h2>
+              <FactGrid facts={keyFacts} labelledBy="key-facts-heading" />
+            </div>
+          )}
+
+          <div className="detailHeaderActions modelHeroActions">
+            <Button href={compareHref} variant="primary">
+              Sammenlign
+            </Button>
+            <FavoriteButton
+              carSlug={car.slug}
+              initialIsFavorite={isFavorite}
+              isLoggedIn={isLoggedIn}
+              variant="labeled"
+            />
+          </div>
+        </aside>
       </div>
 
-      <div className="detailGrid">
-        <CarGallery car={car} />
-        {keyFacts.length > 0 && <FactGrid facts={keyFacts} />}
-      </div>
+      {(pros.length > 0 || cons.length > 0) && (
+        <div className="modelProsCons">
+          <ListBlock title="Fordeler" items={pros} id="pros-heading" className="isPros" />
+          <ListBlock title="Ulemper" items={cons} id="cons-heading" className="isCons" />
+        </div>
+      )}
 
-      <ListBlock title="Fordeler" items={pros} id="pros-heading" />
-      <ListBlock title="Ulemper" items={cons} id="cons-heading" />
       <ListBlock title="Passer for" items={suitableFor} id="suitable-heading" />
 
       {chargeFacts.length > 0 && (
-        <section className="detailListSection" aria-labelledby="charging-heading">
+        <section
+          className="detailListSection modelContentCard"
+          aria-labelledby="charging-heading"
+        >
           <h2 id="charging-heading">Lading</h2>
           <dl className="techList">
             {chargeFacts.map((fact) => (
@@ -344,25 +479,40 @@ export default function CarVariantDetail({
       )}
 
       {showWinter && winterRange && (
-        <section className="detailListSection" aria-labelledby="winter-heading">
+        <section
+          className="detailListSection modelContentCard"
+          aria-labelledby="winter-heading"
+        >
           <h2 id="winter-heading">Vinter</h2>
-          <p>
-            <strong>Vinterrekkevidde:</strong> {winterRange}
+          <p className="modelWinterLine">
+            <span>Vinterrekkevidde</span>
+            <strong>{winterRange}</strong>
           </p>
         </section>
       )}
 
-      {techRows.length > 0 && (
-        <section className="techSection" aria-labelledby="tech-heading">
+      {techGroups.length > 0 && (
+        <section className="techSection modelTechSection" aria-labelledby="tech-heading">
           <h2 id="tech-heading">Tekniske data</h2>
-          <dl className="techList">
-            {techRows.map((row) => (
-              <div key={row.label} className="techRow">
-                <dt>{row.label}</dt>
-                <dd>{row.value}</dd>
-              </div>
+          <div className="modelTechGroups">
+            {techGroups.map((group) => (
+              <section
+                key={group.id}
+                className="modelTechGroup"
+                aria-labelledby={`tech-group-${group.id}`}
+              >
+                <h3 id={`tech-group-${group.id}`}>{group.title}</h3>
+                <dl className="techList">
+                  {group.rows.map((row) => (
+                    <div key={row.label} className="techRow">
+                      <dt>{row.label}</dt>
+                      <dd>{row.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
             ))}
-          </dl>
+          </div>
         </section>
       )}
 
@@ -377,30 +527,40 @@ export default function CarVariantDetail({
         </Button>
       </div>
 
-      <div className="sourceBox">
-        <strong>Kilder og oppdatering</strong>
-        <p>
-          Sist oppdatert i databasen: {car.updated}.
-          {display.dataLastCheckedAt
-            ? ` Sist sjekket: ${display.dataLastCheckedAt}.`
-            : ""}
-        </p>
-        {(display.sourceName || display.sourceUrl) && (
+      <aside className="sourceBox modelSourceBox" aria-labelledby="sources-heading">
+        <h2 id="sources-heading">Kilder og oppdatering</h2>
+        <dl className="modelSourceMeta">
+          <div>
+            <dt>Sist oppdatert</dt>
+            <dd>{car.updated}</dd>
+          </div>
+          {display.dataLastCheckedAt ? (
+            <div>
+              <dt>Sist sjekket</dt>
+              <dd>{display.dataLastCheckedAt}</dd>
+            </div>
+          ) : null}
+          {(display.sourceName || display.sourceUrl) && (
+            <div>
+              <dt>Kilde</dt>
+              <dd>
+                {display.sourceUrl ? (
+                  <a href={display.sourceUrl} target="_blank" rel="noopener noreferrer">
+                    {display.sourceName || display.sourceUrl}
+                  </a>
+                ) : (
+                  display.sourceName
+                )}
+              </dd>
+            </div>
+          )}
+        </dl>
+        {!display.sourceName && !display.sourceUrl && (
           <p>
-            Kilde:{" "}
-            {display.sourceUrl ? (
-              <a href={display.sourceUrl} target="_blank" rel="noreferrer">
-                {display.sourceName || display.sourceUrl}
-              </a>
-            ) : (
-              display.sourceName
-            )}
+            Kontroller tall mot norske produsentkilder før du stoler på dem.
           </p>
         )}
-        {!display.sourceName && !display.sourceUrl && (
-          <p>Kontroller tall mot norske produsentkilder før du stoler på dem.</p>
-        )}
-      </div>
-    </>
+      </aside>
+    </div>
   );
 }

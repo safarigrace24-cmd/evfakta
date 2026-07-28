@@ -1,0 +1,39 @@
+{
+  "slug": "volkswagen-id-7",
+  "steps": [
+    "Relabeled front; rejected mislabeled album-order candidates (no true side/interior in first 5)",
+    "Inserted visual-verified side 2dd6dfee-18e4-472f-9e0f-abe1a63eccba",
+    "Inserted visual-verified rear 7b7c4704-2a74-45e3-9722-9346b8952755",
+    "Applied front+hero → 2ae1fd50-bb54-48f4-95f3-ad99b9f42501",
+    "Applied side → dd87ad49-03df-40c9-9aa8-d396a5eaa6fa",
+    "Applied rear → b80e5d0a-83f8-4443-a200-ee528f14779d",
+    "Editorial finalized; variants approved; unpublished"
+  ],
+  "finishedAt": "2026-07-28T09:48:26.459Z",
+  "gallery": [
+    {
+      "id": "2ae1fd50-bb54-48f4-95f3-ad99b9f42501",
+      "image_type": "front",
+      "is_primary": true,
+      "alt_text": "Volkswagen ID.7 i mørk blå, front trekvart, kjørende (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/hero-ed99e22c-468.webp"
+    },
+    {
+      "id": "dd87ad49-03df-40c9-9aa8-d396a5eaa6fa",
+      "image_type": "side",
+      "is_primary": false,
+      "alt_text": "Volkswagen ID.7 i mørk blå, sideprofil (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/side-ed8dedb9-87e.webp"
+    },
+    {
+      "id": "b80e5d0a-83f8-4443-a200-ee528f14779d",
+      "image_type": "rear",
+      "is_primary": false,
+      "alt_text": "Volkswagen ID.7 i mørk blå, rett bakfra (offisiell press)",
+      "image_url": "https://maxoxdvwlmshasubnoet.supabase.co/storage/v1/object/public/car-images/volkswagen/volkswagen-id-7/rear-73b69c16-1dc.webp"
+    }
+  ],
+  "imageReady": true,
+  "hasInterior": false,
+  "note": "True side+rear sourced from album images beyond first-5 heuristic; interior still missing"
+}
