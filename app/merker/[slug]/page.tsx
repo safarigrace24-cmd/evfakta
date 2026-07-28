@@ -9,6 +9,7 @@ import CarGrid from "@/components/cars/car-grid";
 import { getAuthUser } from "@/lib/auth/get-user";
 import { getActiveBrandBySlug } from "@/lib/brands/get-active-brands";
 import { getPublishedCarsForBrand } from "@/lib/cars/get-published-cars";
+import { sanitizePublicCopy } from "@/lib/public/sanitize-public-copy";
 import { getFavoriteSlugs } from "@/lib/favorites/get-favorites";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!brand) return { title: "Merke ikke funnet" };
 
   const description =
-    brand.description?.trim() ||
+    sanitizePublicCopy(brand.description) ||
     `Se publiserte elbiler fra ${brand.name} i EVFAKTA-databasen.`;
 
   return {
@@ -50,13 +51,15 @@ export default async function BrandDetailPage({ params }: PageProps) {
     getFavoriteSlugs(),
   ]);
 
+  const publicDescription = sanitizePublicCopy(brand.description);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Brand",
     name: brand.name,
     url: `https://www.evfakta.no/merker/${brand.slug}`,
     logo: brand.logoUrl || undefined,
-    description: brand.description || undefined,
+    description: publicDescription || undefined,
   };
 
   return (
@@ -79,7 +82,7 @@ export default async function BrandDetailPage({ params }: PageProps) {
             {brand.logoUrl ? (
               <Image
                 src={brand.logoUrl}
-                alt=""
+                alt={`${brand.name}-logo`}
                 fill
                 sizes="140px"
                 unoptimized
@@ -95,7 +98,7 @@ export default async function BrandDetailPage({ params }: PageProps) {
             <Eyebrow>Merke</Eyebrow>
             <h1>{brand.name}</h1>
             {brand.country && <p className="lead narrow">{brand.country}</p>}
-            {brand.description && <p className="lead narrow">{brand.description}</p>}
+            {publicDescription && <p className="lead narrow">{publicDescription}</p>}
             {brand.websiteUrl && (
               <p>
                 <a href={brand.websiteUrl} target="_blank" rel="noreferrer">

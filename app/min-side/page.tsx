@@ -22,7 +22,7 @@ export default async function AccountPage() {
 
   return (
     <section className="section">
-      <Container>
+      <Container className="authNarrow">
         <div className="pageHeader accountHeader">
           <Eyebrow>Min side</Eyebrow>
           <h1>Velkommen tilbake</h1>
@@ -39,27 +39,15 @@ export default async function AccountPage() {
           </div>
         </div>
 
-        <div className="accountGrid">
-          <section className="accountCard accountCardWide">
-            <h2>Favorittbiler</h2>
-            <FavoriteCarsList cars={favoriteCars} />
-          </section>
+        <section className="accountCard accountCardWide">
+          <h2>Favorittbiler</h2>
+          <FavoriteCarsList cars={favoriteCars} />
+        </section>
 
-          <section className="accountCard">
-            <h2>Lagrede sammenligninger</h2>
-            <p>
-              Lagrede modellsammenligninger dukker opp her når funksjonen er klar.
-            </p>
-          </section>
-
-          <section className="accountCard">
-            <h2>Kalkulatorhistorikk</h2>
-            <p>
-              Tidligere ladekostnadsberegninger blir listet her når kalkulatoren er koblet til
-              kontoen din.
-            </p>
-          </section>
-        </div>
+        <p className="accountHint">
+          Tips: Bruk <Link href="/sammenlign">Sammenlign</Link> for å legge
+          favoritter side om side.
+        </p>
       </Container>
     </section>
   );

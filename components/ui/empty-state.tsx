@@ -1,12 +1,19 @@
+import type { ReactNode } from "react";
 import Eyebrow from "./eyebrow";
 
 type EmptyStateProps = {
   eyebrow: string;
   title: string;
   description: string;
+  children?: ReactNode;
 };
 
-export default function EmptyState({ eyebrow, title, description }: EmptyStateProps) {
+export default function EmptyState({
+  eyebrow,
+  title,
+  description,
+  children,
+}: EmptyStateProps) {
   return (
     <div className="emptyState">
       <div className="emptyStateIcon" aria-hidden="true">
@@ -18,6 +25,8 @@ export default function EmptyState({ eyebrow, title, description }: EmptyStatePr
       <Eyebrow>{eyebrow}</Eyebrow>
       <h1>{title}</h1>
       <p>{description}</p>
+      {children ? <div className="emptyStateActions">{children}</div> : null}
     </div>
   );
 }
+

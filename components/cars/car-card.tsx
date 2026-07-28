@@ -15,6 +15,12 @@ type CarCardProps = {
   isFavorite?: boolean;
 };
 
+function omitDash(
+  items: Array<{ value: string; label: string }>,
+): Array<{ value: string; label: string }> {
+  return items.filter((item) => item.value && item.value !== "—");
+}
+
 export default function CarCard({
   car,
   variant = "full",
@@ -22,22 +28,33 @@ export default function CarCard({
   isFavorite = false,
 }: CarCardProps) {
   const display = withDefaultVariantSpecs(car);
+  const consumption =
+    display.consumptionKwh100km != null && display.consumptionKwh100km > 0
+      ? `${display.consumptionKwh100km} kWh/100 km`
+      : null;
+
   const specs =
     variant === "compact"
-      ? [
+      ? omitDash([
           { value: formatKm(display.rangeKm), label: "WLTP" },
           { value: formatKw(display.dcKw), label: "DC-lading" },
           ...(PUBLIC_SHOW_PRICES
             ? [{ value: formatNok(display.priceNok), label: "Fra pris" }]
-            : [{ value: display.drive, label: "Drivhjul" }]),
-        ]
-      : [
+            : consumption
+              ? [{ value: consumption, label: "Forbruk" }]
+              : [{ value: formatKwh(display.batteryKwh), label: "Batteri" }]),
+        ])
+      : omitDash([
           { value: formatKm(display.rangeKm), label: "WLTP" },
-          { value: formatKwh(display.batteryKwh), label: "Batteri" },
           { value: formatKw(display.dcKw), label: "DC-lading" },
-        ];
+          ...(consumption
+            ? [{ value: consumption, label: "Forbruk" }]
+            : [{ value: formatKwh(display.batteryKwh), label: "Batteri" }]),
+        ]);
 
   const Heading = variant === "compact" ? "h3" : "h2";
+  const altBrand = car.brand;
+  const altModel = car.model;
 
   return (
     <article className="carCard">
@@ -47,24 +64,26 @@ export default function CarCard({
         isLoggedIn={isLoggedIn}
         variant="icon"
       />
-      <Link className="carCardLink" href={`/modeller/${car.slug}`}>
+      <Link
+        className="carCardLink"
+        href={`/modeller/${car.slug}`}
+        aria-label={`${altBrand} ${altModel} – se fakta`}
+      >
         <div className="carCardTop">
           <div className="carVisual">
             <CarImage car={car} variant="card" />
           </div>
-          <Badge>{display.drive}</Badge>
+          {display.drive ? <Badge>{display.drive}</Badge> : null}
         </div>
         <div className="carCardBody">
           <span className="carBrand">{car.brand}</span>
           <Heading>{car.model}</Heading>
-          <SpecRow items={specs} />
-          {variant === "full" && PUBLIC_SHOW_PRICES && (
+          {specs.length > 0 ? <SpecRow items={specs} /> : null}
+          {variant === "full" && PUBLIC_SHOW_PRICES && display.priceNok > 0 && (
             <strong className="carPrice">Fra {formatNok(display.priceNok)}</strong>
           )}
+          <span className="carCardCta">Se fakta →</span>
         </div>
-        <span className="carCardArrow" aria-hidden="true">
-          →
-        </span>
       </Link>
     </article>
   );

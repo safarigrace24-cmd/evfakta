@@ -12,6 +12,7 @@ import {
 import { applyVariantToCar, resolveVariantSlug } from "@/lib/cars/variants";
 import { getRelatedCars } from "@/lib/cars/related-cars";
 import { getFavoriteSlugs, isFavoriteSlug } from "@/lib/favorites/get-favorites";
+import { sanitizePublicCopy } from "@/lib/public/sanitize-public-copy";
 import { PUBLIC_SHOW_PRICES } from "@/lib/public/display-policy";
 
 export const dynamic = "force-dynamic";
@@ -41,8 +42,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
       ? `${car.brand} ${car.model} ${display.variant}`
       : `${car.brand} ${car.model}`;
   const description =
-    car.description?.trim() ||
-    `${car.brand} ${car.model}: rekkevidde, pris, lading og EVFAKTA Score.`;
+    sanitizePublicCopy(car.description) ||
+    `${car.brand} ${car.model}: rekkevidde, batteri og ladehastighet.`;
 
   const canonical =
     variantSlug && variantSlug !== resolveVariantSlug(car, null)
@@ -89,7 +90,7 @@ export default async function CarPage({ params, searchParams }: PageProps) {
         ? `${car.brand} ${car.model} ${display.variant}`
         : `${car.brand} ${car.model}`,
     brand: { "@type": "Brand", name: car.brand },
-    description: car.description,
+    description: sanitizePublicCopy(car.description) || undefined,
     image: car.imageUrl || undefined,
     vehicleConfiguration: display.drive,
     fuelType: "Electric",

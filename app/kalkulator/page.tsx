@@ -6,9 +6,9 @@ export default function Page() {
     <section className="section">
       <Container>
         <EmptyState
-          eyebrow="Neste funksjon"
+          eyebrow="Kommer senere"
           title="Ladekostnad-kalkulator"
-          description="Her kan vi regne ut kostnad hjemme og på hurtiglader."
+          description="Denne funksjonen er ikke klar ennå. Bla i modeller eller sammenlign elbiler i mellomtiden."
         />
       </Container>
     </section>

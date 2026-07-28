@@ -1,32 +1,30 @@
 import Link from "next/link";
 import Button from "@/components/ui/button";
-import Eyebrow from "@/components/ui/eyebrow";
 import Container from "@/components/layout/container";
+import HomeSearch from "@/components/home/home-search";
+import BrandLogo from "@/components/brand/brand-logo";
+import { siteConfig } from "@/config/site";
 
 type HeroSectionProps = {
   modelCount: number;
+  brandCount: number;
 };
 
-export default function HeroSection({ modelCount }: HeroSectionProps) {
+export default function HeroSection({ modelCount, brandCount }: HeroSectionProps) {
   return (
-    <section className="hero">
-      <div className="heroBg" aria-hidden="true">
-        <div className="heroOrb heroOrb1" />
-        <div className="heroOrb heroOrb2" />
-        <div className="heroGridPattern" />
-      </div>
+    <section className="hero ds2Hero">
       <Container>
         <div className="heroGrid">
           <div className="heroContent">
-            <Eyebrow>Uavhengig elbil-fakta for Norge</Eyebrow>
-            <h1>
-              Finn elbilen
-              <br />
-              <span className="heroAccent">som passer deg</span>
-            </h1>
+            <BrandLogo href={null} className="heroBrandLogo" />
+            <h1>{siteConfig.tagline}</h1>
             <p className="lead">
-              Sammenlign pris, rekkevidde, batteri og ladehastighet på ett sted – med tydelige kilder og oppdaterte tall.
+              Sammenlign rekkevidde, batteri og ladehastighet med tydelige kilder —
+              uten støy og uten gjetting.
             </p>
+
+            <HomeSearch />
+
             <div className="actions">
               <Button href="/modeller" variant="primary">
                 Se alle modeller
@@ -35,36 +33,36 @@ export default function HeroSection({ modelCount }: HeroSectionProps) {
                 Sammenlign biler
               </Button>
             </div>
-            <div className="heroStats">
-              <div className="heroStat">
-                <strong>{modelCount}</strong>
-                <span>modeller i databasen</span>
-              </div>
-              <div className="heroStat">
-                <strong>100%</strong>
-                <span>uavhengig kildebasert</span>
-              </div>
-              <div className="heroStat">
-                <strong>Gratis</strong>
-                <span>for alle brukere</span>
-              </div>
-            </div>
+
+            {(modelCount > 0 || brandCount > 0) && (
+              <p className="heroMeta" aria-live="polite">
+                {modelCount > 0 && (
+                  <span>
+                    {modelCount} publiserte {modelCount === 1 ? "modell" : "modeller"}
+                  </span>
+                )}
+                {modelCount > 0 && brandCount > 0 && <span aria-hidden="true"> · </span>}
+                {brandCount > 0 && (
+                  <span>
+                    {brandCount} {brandCount === 1 ? "merke" : "merker"}
+                  </span>
+                )}
+              </p>
+            )}
           </div>
 
-          <div className="heroCard">
-            <div className="heroCardIcon" aria-hidden="true">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          <aside className="heroAside" aria-label="Kom i gang">
+            <div className="heroAsideCard">
+              <strong>Rolige tall. Klare valg.</strong>
+              <p>
+                Hver modell viser kilder og når data sist ble sjekket — slik at du
+                kan stole på det du leser.
+              </p>
+              <Link href="/merker" className="heroCardLink">
+                Utforsk merker →
+              </Link>
             </div>
-            <div className="heroCardContent">
-              <strong>Alt du trenger for å velge riktig elbil</strong>
-              <p>Pris, rekkevidde, batteristørrelse og ladehastighet – samlet i én oversiktlig database.</p>
-            </div>
-            <Link href="/kalkulator" className="heroCardLink">
-              Prøv ladekalkulatoren →
-            </Link>
-          </div>
+          </aside>
         </div>
       </Container>
     </section>

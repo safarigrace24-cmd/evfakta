@@ -246,7 +246,10 @@ export default function CompareClient({
                         row.bestIndexes.includes(index) ? "compareBest" : undefined
                       }
                     >
-                      {value}
+                      <span className="compareCellValue">{value}</span>
+                      {row.bestIndexes.includes(index) && (
+                        <span className="compareBestLabel">Best</span>
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -254,8 +257,8 @@ export default function CompareClient({
             </tbody>
           </table>
           <p className="compareHint">
-            Beste tallverdi markeres når sammenligningen er meningsfull (f.eks. lengst
-            rekkevidde, lavest pris).
+            Beste tallverdi markeres med etiketten «Best» når sammenligningen er
+            meningsfull (f.eks. lengst rekkevidde). Manglende verdier vises som —.
           </p>
         </div>
       )}

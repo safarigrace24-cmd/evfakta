@@ -1,4 +1,5 @@
 :root {
+  /* Legacy defaults (adminApp locks these explicitly too) */
   --bg: #f4f8f5;
   --bg-alt: #eaf2ec;
   --surface: #ffffff;
@@ -21,8 +22,86 @@
   --shadow-sm: 0 1px 3px rgba(15, 26, 20, 0.06);
   --shadow-md: 0 8px 30px rgba(15, 26, 20, 0.08);
   --shadow-lg: 0 20px 50px rgba(15, 26, 20, 0.12);
-  --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), var(--font-dm-sans), system-ui, -apple-system, sans-serif;
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --ink: var(--text);
+  --ink-secondary: var(--text-secondary);
+  --ink-muted: var(--muted);
+  --bg-elevated: var(--surface);
+  --bg-subtle: var(--bg-alt);
+  --brand-hover: var(--brand-dark);
+  --brand-soft: var(--brand-light);
+  --accent-data: #1a6fbf;
+  --success: #1f7a4d;
+  --warning: #a65f00;
+  --danger: #b42318;
+  --focus: var(--brand);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+}
+
+/* Design System 2.0 — public only */
+.publicApp {
+  --bg: #f7f8f6;
+  --bg-alt: #eef1ed;
+  --bg-subtle: #eef1ed;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --text: #0c1210;
+  --ink: #0c1210;
+  --text-secondary: #3a4540;
+  --ink-secondary: #3a4540;
+  --muted: #6b776f;
+  --ink-muted: #6b776f;
+  --brand: #0f6b45;
+  --brand-dark: #0b5536;
+  --brand-hover: #0b5536;
+  --brand-light: #e3f2ea;
+  --brand-soft: #e3f2ea;
+  --brand-glow: rgba(15, 107, 69, 0.12);
+  --line: #d7ded8;
+  --line-soft: #e8ede9;
+  --accent-data: #1a6fbf;
+  --success: #1f7a4d;
+  --warning: #a65f00;
+  --danger: #b42318;
+  --focus: #0f6b45;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --shadow-sm: 0 1px 2px rgba(12, 18, 16, 0.04);
+  --shadow-md: 0 8px 24px rgba(12, 18, 16, 0.08);
+  --shadow-lg: 0 24px 48px rgba(12, 18, 16, 0.14);
+  --transition: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Preserve pre-DS2 look for admin CMS */
+.adminApp {
+  --bg: #f4f8f5;
+  --bg-alt: #eaf2ec;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --text: #0f1a14;
+  --text-secondary: #3d4f44;
+  --muted: #5c6d62;
+  --brand: #14804a;
+  --brand-dark: #0d5c35;
+  --brand-light: #e8f5ee;
+  --brand-glow: rgba(20, 128, 74, 0.15);
+  --line: #d8e4dc;
+  --line-soft: #e8f0eb;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
 }
 
 *,
@@ -4443,3 +4522,611 @@ h3 {
   gap: 1.25rem;
 }
 
+
+/* ═══════════════════════════════════════════
+   Design System 2.0 — public additions
+   ═══════════════════════════════════════════ */
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.publicApp :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.publicApp .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.publicApp .wordmark--sm { font-size: 1rem; }
+.publicApp .wordmark--md { font-size: 1.125rem; }
+.publicApp .wordmark--lg { font-size: 1.35rem; }
+
+.publicApp .wordmarkMark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--brand);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.publicApp .wordmark--sm .wordmarkMark {
+  width: 32px;
+  height: 32px;
+}
+
+.publicApp .wordmarkDomain {
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.publicApp .siteHeader {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--line-soft);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.publicApp .headerSearchLink {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  color: var(--ink-secondary);
+}
+
+.publicApp .headerSearchLink:hover {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.publicApp .mobileSearch {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.publicApp .mobileSearch input {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0 14px;
+  font: inherit;
+  background: var(--bg-elevated);
+}
+
+.publicApp .ds2Hero {
+  padding: 64px 0 72px;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(15, 107, 69, 0.08), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(26, 111, 191, 0.05), transparent 50%),
+    var(--bg);
+}
+
+.publicApp .ds2Hero .heroGrid {
+  display: grid;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .publicApp .ds2Hero .heroGrid {
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 64px;
+  }
+}
+
+.publicApp .heroBrandSignal {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 16px;
+}
+
+.publicApp .ds2Hero h1 {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  max-width: 14ch;
+  margin-bottom: 16px;
+}
+
+.publicApp .ds2Hero .lead {
+  max-width: 38ch;
+  color: var(--ink-secondary);
+  font-size: 1.125rem;
+  margin-bottom: 28px;
+}
+
+.publicApp .homeSearch {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 560px;
+}
+
+.publicApp .homeSearch input {
+  min-height: 56px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 0 18px;
+  font: inherit;
+  font-size: 1rem;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.publicApp .homeSearchSubmit {
+  min-height: 56px;
+  padding-inline: 24px;
+}
+
+.publicApp .heroMeta {
+  margin-top: 20px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.publicApp .heroAsideCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.publicApp .heroAsideCard strong {
+  display: block;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.publicApp .heroAsideCard p {
+  color: var(--ink-secondary);
+  margin-bottom: 16px;
+}
+
+.publicApp .carCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.publicApp .carCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.publicApp .carVisual {
+  aspect-ratio: 16 / 10;
+  background: var(--bg-subtle);
+}
+
+.publicApp .carCardCta {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.publicApp .specRow {
+  font-variant-numeric: tabular-nums;
+}
+
+.publicApp .homeBrandGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .publicApp .homeBrandGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .publicApp .homeBrandGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.publicApp .homeBrandCard {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  min-height: 100%;
+}
+
+.publicApp .homeBrandCard:hover {
+  border-color: var(--brand);
+}
+
+.publicApp .homeBrandLogo {
+  position: relative;
+  width: 72px;
+  height: 48px;
+  background: var(--bg-subtle);
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+
+.publicApp .homeBrandLogoImg {
+  object-fit: contain;
+  padding: 6px;
+}
+
+.publicApp .homeBrandCard span {
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+}
+
+.publicApp .trustSection {
+  background: var(--bg-elevated);
+  border-block: 1px solid var(--line-soft);
+}
+
+.publicApp .trustInner {
+  max-width: 640px;
+}
+
+.publicApp .trustList {
+  margin: 20px 0 28px;
+  padding-left: 1.2rem;
+  color: var(--ink-secondary);
+}
+
+.publicApp .trustList li + li {
+  margin-top: 8px;
+}
+
+.publicApp .textLink {
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.publicApp .featureCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  padding: 28px;
+}
+
+.publicApp .catalogToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.publicApp .catalogFilterToggle {
+  display: inline-flex;
+  min-height: 44px;
+}
+
+@media (min-width: 1024px) {
+  .publicApp .catalogFilterToggle {
+    display: none;
+  }
+}
+
+.publicApp .catalogFiltersDesktop {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .publicApp .catalogFiltersDesktop {
+    display: block;
+  }
+}
+
+.publicApp .catalogFilterSheet {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 120;
+  max-height: min(85vh, 720px);
+  overflow: auto;
+  background: var(--bg-elevated);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 20px 20px 28px;
+  box-shadow: var(--shadow-lg);
+}
+
+.publicApp .catalogFilterSheetHeader,
+.publicApp .catalogFilterSheetActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.publicApp .catalogFilterSheetActions {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.publicApp .catalogFilterOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  border: 0;
+  background: rgba(12, 18, 16, 0.35);
+}
+
+.publicApp .filterChipList {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 0;
+}
+
+.publicApp .filterChip,
+.publicApp .filterChipClear {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--brand-soft);
+  color: var(--brand-hover);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.publicApp .filterChipClear {
+  background: transparent;
+  color: var(--ink-secondary);
+}
+
+.publicApp .detailListSection {
+  margin-top: 40px;
+}
+
+.publicApp .detailListSection h2 {
+  font-size: 1.35rem;
+  margin-bottom: 12px;
+}
+
+.publicApp .detailListSection ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--ink-secondary);
+}
+
+.publicApp .detailListSection li + li {
+  margin-top: 8px;
+}
+
+.publicApp .compareTableWrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  background: var(--bg-elevated);
+}
+
+.publicApp .compareTable th:first-child,
+.publicApp .compareTable td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--bg-elevated);
+}
+
+.publicApp .compareTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--bg-subtle);
+}
+
+.publicApp .compareTable thead th:first-child {
+  z-index: 4;
+}
+
+.publicApp .compareBest {
+  background: rgba(31, 122, 77, 0.08);
+}
+
+.publicApp .compareCellValue {
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.publicApp .compareBestLabel {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--success);
+}
+
+.publicApp .authPanel,
+.publicApp .authNarrow {
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.publicApp .authPanel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-xl);
+  padding: 32px 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.publicApp .accountCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.publicApp .accountHint {
+  margin-top: 24px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.publicApp .footerDisclaimer {
+  margin-top: 8px;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  max-width: 52ch;
+}
+
+.publicApp .heroBrandLogo {
+  margin-bottom: 20px;
+}
+
+.publicApp .heroBrandLogo .brandLogoImg--full {
+  display: block;
+  height: 56px;
+  max-width: min(280px, 85vw);
+}
+
+.publicApp .heroBrandLogo .brandLogoImg--compact {
+  display: none;
+}
+
+.publicApp .emptyStateActions {
+  margin-top: 20px;
+}
+
+/* ── Official brand logo ── */
+
+.brandLogo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.brandLogoImg {
+  width: auto;
+  height: 40px;
+  max-width: min(200px, 46vw);
+  object-fit: contain;
+  object-position: left center;
+}
+
+.brandLogo--light .brandLogoImg {
+  height: 48px;
+  max-width: min(220px, 70vw);
+}
+
+.brandLogoImg--compact {
+  display: none;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+}
+
+.brandLogoIconImg {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .brandLogo--header .brandLogoImg--full {
+    display: none;
+  }
+
+  .brandLogo--header .brandLogoImg--compact {
+    display: block;
+  }
+}
+
+.footerSocial {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.footerSocialLink {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  color: #c5d4cb;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.footerSocialLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.publicApp .footerTagline {
+  margin-top: 14px;
+  color: #c5d4cb;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 28ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .publicApp *,
+  .publicApp *::before,
+  .publicApp *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

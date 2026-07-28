@@ -31,7 +31,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <Eyebrow>Konto</Eyebrow>
             <h1>Logg inn</h1>
             <p className="lead narrow">
-              Logg inn for å lagre favoritter, sammenligninger og kalkulatorhistorikk.
+              Logg inn for å lagre favoritter og få tilgang til Min side.
             </p>
           </div>
           <LoginForm nextPath={nextPath} initialError={loginErrorMessage(params.error)} />

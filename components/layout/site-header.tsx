@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { moreNavLinks, navLinks, primaryNavLinks } from "@/config/site";
 import LogoutButton from "@/components/auth/logout-button";
+import BrandLogo from "@/components/brand/brand-logo";
 
 type SiteHeaderProps = {
   userEmail?: string | null;
@@ -18,6 +19,7 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
   const moreRef = useRef<HTMLDivElement>(null);
   const moreMenuId = useId();
   const isLoggedIn = Boolean(userEmail);
+  const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
     setMenuOpen(false);
@@ -59,13 +61,28 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
     return pathname.startsWith(href);
   };
 
+  if (isAdminRoute) {
+    return (
+      <header className="siteHeader siteHeaderAdmin">
+        <div className="container headerInner">
+          <BrandLogo className="brandLogo--header" priority />
+          <nav className="navDesktop" aria-label="Admin-snarveier">
+            <Link href="/admin" className="navLink active">
+              Admin
+            </Link>
+            <Link href="/" className="navLink">
+              Offentlig side
+            </Link>
+          </nav>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="siteHeader">
       <div className="container headerInner">
-        <Link href="/" className="brand">
-          <span className="brandMark">EV</span>
-          <span className="brandText">FAKTA.no</span>
-        </Link>
+        <BrandLogo className="brandLogo--header" priority />
 
         <nav className="navDesktop" aria-label="Hovedmeny">
           {primaryNavLinks.map(({ label, href }) => (
@@ -120,6 +137,16 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
         </nav>
 
         <div className="headerActions">
+          <Link
+            href="/modeller"
+            className="headerSearchLink"
+            aria-label="Søk i modeller"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
+            </svg>
+          </Link>
           {isLoggedIn ? (
             <div className="headerAuth">
               <Link
@@ -160,6 +187,21 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
         aria-hidden={!menuOpen}
       >
         <nav aria-label="Mobilmeny">
+          <form className="mobileSearch" action="/modeller" method="get" role="search">
+            <label htmlFor="mobile-search" className="visuallyHidden">
+              Søk modeller
+            </label>
+            <input
+              id="mobile-search"
+              type="search"
+              name="q"
+              placeholder="Søk modell eller merke…"
+              autoComplete="off"
+            />
+            <button type="submit" className="button primary buttonSm">
+              Søk
+            </button>
+          </form>
           {navLinks.map(({ label, href }) => (
             <Link
               key={href}

@@ -11,7 +11,7 @@ export default function RegisterPage() {
             <Eyebrow>Konto</Eyebrow>
             <h1>Registrer deg</h1>
             <p className="lead narrow">
-              Opprett en gratis konto for å bruke personlige funksjoner på EVFAKTA.no.
+              Opprett en gratis konto for å lagre favoritter på EVFAKTA.no.
             </p>
           </div>
           <RegisterForm />

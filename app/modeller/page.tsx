@@ -10,12 +10,12 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Alle elbilmodeller i Norge",
   description:
-    "Søk og filtrer elbiler etter pris, rekkevidde, merke, drivlinje og EVFAKTA Score.",
+    "Søk og filtrer elbiler etter merke, rekkevidde og drivlinje i EVFAKTA-databasen.",
   alternates: { canonical: "/modeller" },
   openGraph: {
     title: "Alle elbilmodeller i Norge | EVFAKTA.no",
     description:
-      "Søk og filtrer elbiler etter pris, rekkevidde, merke, drivlinje og EVFAKTA Score.",
+      "Søk og filtrer elbiler etter merke, rekkevidde og drivlinje i EVFAKTA-databasen.",
     url: "/modeller",
   },
 };

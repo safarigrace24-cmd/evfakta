@@ -19,7 +19,7 @@ export default function PopularModelsSection({
       <Container>
         <SectionHeading
           eyebrow="Populære modeller"
-          title="Start sammenligningen"
+          title="Utforsk publiserte elbiler"
           href="/modeller"
         />
         <CarGrid
