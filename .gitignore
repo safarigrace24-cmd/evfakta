@@ -5,3 +5,9 @@ node_modules
 .DS_Store
 .tmp-live
 tmp-live
+
+# Temporary research / scratch (do not commit)
+docs/_tmp_*/
+tsconfig.tsbuildinfo
+scripts/_*-temp.*
+scripts/_tmp-*
