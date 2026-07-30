@@ -258,6 +258,118 @@ describe("computeEditorialCompletion", () => {
     assert.equal(completion.publishIssues.length, 0);
   });
 
+  it("counts documented honesty for unavailable interior and no towing", () => {
+    const completion = computeEditorialCompletion({
+      car: baseCar({
+        towing_kg: null,
+        score_notes: `## Hvem bilen passer for
+Pendling.
+
+## Vinter
+Ikke gjettet.
+
+## Lading
+AC/DC dokumentert.
+
+## Langtur
+Planlegg ladestopp.
+
+## Interiør
+Offisiell interiørfoto mangler — ikke tilgjengelig / ikke verifisert. Left empty.
+
+## Bak
+Offisiell bakfoto mangler — ikke tilgjengelig / ikke verifisert. Left empty.
+
+## Tilhenger
+Tilhenger ikke mulig ifølge tekniske data.
+
+## FAQ
+**Har Model 3 varme pumpe?** Ja.`,
+      }),
+      images: [
+        image("front", "1", true),
+        image("side", "2", false),
+      ],
+      variants: [variant({ towing_kg: null })],
+    });
+
+    assert.ok(!completion.missing.includes("Interior (when available)"));
+    assert.ok(!completion.missing.includes("Rear (when available)"));
+    assert.ok(!completion.missing.includes("Tow capacity (or documented none)"));
+  });
+
+  it("counts documented honesty for Tesla Norge-blocked energy and dual towing", () => {
+    const completion = computeEditorialCompletion({
+      car: baseCar({
+        battery_usable_kwh: null,
+        battery_total_kwh: null,
+        battery_kwh: null,
+        battery_chemistry: null,
+        range_km: null,
+        dc_charging_kw: null,
+        ac_charging_kw: null,
+        charge_time_10_80_minutes: null,
+        consumption_kwh_100km: null,
+        towing_kg: null,
+        score_notes: `## Hvem bilen passer for
+Pendling.
+
+## Vinter
+Ingen offisiell vinterrekkevidde — ikke gjettet. WLTP er laboratoriemål.
+
+## Batteri
+Batterikapasitet er ikke bekreftet mot Tesla Norge live-side — ikke gjettet.
+
+## Batteritype
+Batterikjemi er ikke oppgitt i Owner's Manual — ikke gjettet.
+
+## Rekkevidde
+WLTP-rekkevidde er ikke bekreftet mot Tesla Norge live-side — ikke gjettet.
+
+## Lading
+AC/DC-effekt og 10–80 er ikke bekreftet mot Tesla Norge live-side — ikke gjettet.
+
+## Forbruk
+WLTP-forbruk er ikke oppgitt her — ikke gjettet.
+
+## Tilhenger
+Owner's Manual oppgir 750 / 1000 kg avhengig av tilhengerbrems — ikke én bilnivåverdi.
+
+## Langtur
+Planlegg ladestopp når varianttall er bekreftet.
+
+## FAQ
+**Er tallene fra Tesla Norge?** Live-side var blokkert (403) — tall ikke gjettet.`,
+      }),
+      images: [
+        image("front", "1", true),
+        image("side", "2", false),
+        image("rear", "3", false),
+        image("interior", "4", false),
+      ],
+      variants: [
+        variant({
+          battery_usable_kwh: null,
+          battery_total_kwh: null,
+          range_km: null,
+          dc_charging_kw: null,
+          ac_charging_kw: null,
+          charge_time_10_80_minutes: null,
+          consumption_kwh_100km: null,
+          towing_kg: null,
+        }),
+      ],
+    });
+
+    assert.ok(!completion.missingItemIds.includes("battery"));
+    assert.ok(!completion.missingItemIds.includes("range"));
+    assert.ok(!completion.missingItemIds.includes("charging"));
+    assert.ok(!completion.missingItemIds.includes("consumption"));
+    assert.ok(!completion.missingItemIds.includes("battery_chemistry"));
+    assert.ok(!completion.missingItemIds.includes("towing"));
+    assert.ok(completion.percent >= LAUNCH_COMPLETION_THRESHOLD);
+  });
+
   it("blocks publish only for required publish fields when description missing", () => {
     const completion = computeEditorialCompletion({
       car: baseCar({

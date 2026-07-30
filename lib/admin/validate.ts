@@ -212,6 +212,27 @@ export function validateAdminCarInput(
   }
   const import_status = importStatusRaw as ImportStatus;
 
+  if (import_status === "approved") {
+    if (!vehicleType) {
+      return {
+        ok: false,
+        error: "Godkjente biler må ha kjøretøytype (ikke «Velg type»).",
+      };
+    }
+    if (!bodyStyle) {
+      return {
+        ok: false,
+        error: "Godkjente biler må ha karosseri (ikke «Velg karosseri»).",
+      };
+    }
+    if (!drivetrain) {
+      return {
+        ok: false,
+        error: "Godkjente biler må ha drivlinje (ikke «Velg drivlinje»).",
+      };
+    }
+  }
+
   const imageUrl = emptyToNull(input.image_url);
   if (imageUrl && !imageUrl.startsWith("/")) {
     try {

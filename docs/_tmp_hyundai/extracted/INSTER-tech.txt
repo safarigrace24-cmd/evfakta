@@ -1,0 +1,65 @@
+Hyundai INSTER
+Standard Range 
+FWD 4-seter
+Long Range 
+FWD 4-seter
+Long Range Cross 
+FWD 4-seter
+Motor Elektrisk Elektrisk Elektrisk
+Gir Automat (shift by wire) Automat (shift by wire) Automat (shift by wire)
+Drivverkstype Forhjulstrekk Forhjulstrekk Forhjulstrekk
+Maksimal effekt (hestekrefter) 97 115 115
+Maksimal dreiemoment (Nm) 147 147 147
+Maksimal hastighet, km/t 140 150 150
+Akselerasjon 0-100 km/t, sek. 11,7 10,6 10,6
+Forbruk (WLTP), kWt/100 km (m/ takkurv) 14,3 15": 14,9 / 17": 15,1 15,1 (18,8)
+Utslipp CO2 g/km 0 0 0
+Utslipp NOx mg/km 0 0 0
+Egenvekt med fører, kg 1 305 - 1393 1 335 - 1 423 1 358 - 1 453
+Min. nyttelast, kg (inkl. fører) 337 322 337
+Max nyttelast, kg (inkl. fører) 425 410 432
+Totalvekt, kg 1 730 1 745 1 790
+Tilhengervekt ubremset, kg - - -
+Tilhengervekt bremset, kg - - -
+Lastekule for vertikal last, kg 75 75 75
+Taklast, kg 75 75 75
+Typegodkjente vektintervaller er veiledende, og utstyr vil kunne gi avvik.
+Utvendig lengde, mm 3 825 3 825 3 845
+Utvendig bredde, mm 1 610 1 610 1 610
+Utvendig høyde uten antenne, mm (m/ takkurv) 1 575 1 575 1575 (1715)
+Utvendig høyde med antenne, mm (m/ takkurv) 1 614 1 614 1614 (1715)
+Akselavstand, mm 2 580 2 580 2 580
+Bakkeklaring, mm 144 144 144
+Bakkeklaring til batteripakke, mm 153 153 153
+Svingradius, m 5,3 5,3 5,3
+Lasterom, l (VDA 211) (Justerbart) 280 280 (238-351) 280 (238-351)
+Maks lasterom, l (VDA 214) 1 059 1 059 1 059
+Bagasjerom foran, frunk, l - - -
+Hjuloppheng foran McPherson McPherson McPherson
+Hjuloppheng bak CTBA CTBA CTBA
+Parkeringsbrems Elektrisk Elektrisk Elektrisk
+Felg
+Stålfelg m/ kapsel 
+/ Lettmetallfelg Lettmetallfelg Lettmetallfelg
+Felgdimensjon 15" 15" / 17" 17"
+Dekkdimensjon 15" 185/65R15 185/65R15 -
+Dekkdimensjon 17" - 205/45R17 205/45R17
+Ombordlader (kW), enfas / trefas 7 / 11 (10,5) 7 / 11 (10,5) 7 / 11 (10,5)
+Lynlading (10-80%), minimum ladetid 30 min 30 min 30 min
+Ladeport i bilen (standard) Type2 Type2 Type2
+Ladeport DC lading Type2 CCS kombo Type2 CCS kombo Type2 CCS kombo
+Batteristørrelse i kWt 42 49 49
+Batterispenning i Volt 266 310 310
+Batterivekt, kg 275 305 305
+Elektrisk rekkevidde i kilometer (WLTP kombinert) med 15", inntil 327 370 -
+Elektrisk rekkevidde i kilometer (WLTP kombinert) med 17", inntil (m/ takkurv) - 360 360 (293)
+Tekniske data er oppgitt etter WLTP. Egenskaper som ladetid og rekkevidde vil variere avhengig av en rekke faktorer.
+Det tas forbehold om eventuelle feil, trykkfeil, avvik eller endringer.
+TEKNISK
+Dekk og felg
+Batteri og lading
+Ytelse, forbruk og utslipp 
+Vekter (kg) 
+Dimensjoner
+Bremser og understell
+Drivverk

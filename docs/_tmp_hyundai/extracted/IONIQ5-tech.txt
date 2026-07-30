@@ -1,0 +1,57 @@
+Hyundai IONIQ 5
+Standard Range RWD Long Range RWD Long Range AWD Long Range AWD 
+(N Line)
+Motor Elektrisk Elektrisk Elektrisk Elektrisk
+Gir Automat (shift by wire) Automat (shift by wire) Automat (shift by wire) Automat (shift by wire)
+Drivverkstype Bakhjulstrekk Bakhjulstrekk Firehjulsdrift Firehjulsdrift
+Maksimal effekt (hestekrefter) 170 229 325 325
+Maksimal dreiemoment (Nm) 350 350 605 605
+Maksimal hastighet, km/t 185 185 185 185
+Akselerasjon 0-100 km/t, sek. 8,5 7,5 5,3 5,3
+Forbruk (WLTP), kWt/100 km 19" / 20" 15,6 16,0 / 17,0 16,8 / 18,2 18,1
+Utslipp CO2 g/km 0 0 0 0
+Utslipp NOx mg/km 0 0 0 0
+Egenvekt med fører, kg 1 955 - 2 035 2 060 - 2 150 2 165 - 2 255 2 185 - 2 265
+Min. nyttelast, kg (inkl. fører) 510 515 505 495
+Maks. nyttelast, kg (inkl. fører) 590 605 595 575
+Totalvekt, kg 2 470 2 590 2 685 2 685
+Tilhengervekt ubremset, kg 750 750 750 750
+Tilhengervekt bremset, kg 750 1 600 1 600 1 600
+Taklast, kg 80 80 80 80
+Typegodkjente vektintervaller er veiledende, og utstyr vil kunne gi avvik.
+Utvendig lengde, mm 4 655 4 655 4 655 4 655
+Utvendig bredde, mm 1 890 1 890 1 890 1 890
+Utvendig høyde, mm 1 605 1 605 1 605 1 605
+Akselavstand, mm 3 000 3 000 3 000 3 000
+Bakkeklaring, mm 160 160 160 160
+Bakkeklaring til batteripakke, mm 170 170 170 170
+Svingradius, m 5,99 5,99 5,99 5,99
+Lasterom, l (VDA 211) 520 520 520 520
+Maks lasterom, l (VDA 214) 1 580 1 580 1 580 1 580
+Bagasjerom foran, frunk, l 57 57 24 24
+Hjuloppheng foran Macpherson Strut Macpherson Strut Macpherson Strut Macpherson Strut
+Hjuloppheng bak Multi-Link Multi-Link Multi-Link Multi-Link
+Parkeringsbrems Elektrisk Elektrisk Elektrisk Elektrisk
+Felg Lettmetallfelg Lettmetallfelg Lettmetallfelg Lettmetallfelg
+Felgdimensjon 19" 19" 19" / 20" 20"
+Dekkdimensjon 19" 235/55R19 235/55R19 235/55R19 -
+Dekkdimensjon 20" - - 255/45R20 255/45R20
+Ombordlader (kW), enfas / trefas 7 / 11 (10,5) 7 / 11 (10,5) 7 / 11 (10,5) 7 / 11 (10,5)
+Lynlading (10-80%), minimum ladetid 18 min 18 min 18 min 18 min
+Ladeport i bilen (standard) Type2 Type2 Type2 Type2
+Ladeport DC lading Type2 CCS kombo Type2 CCS kombo Type2 CCS kombo Type2 CCS kombo
+Batteristørrelse i kWt 63 84 84 84
+Batterispenning i Volt 523 697 697 697
+Batterivekt, kg 368,6 476,2 476,2 476,2
+Elektrisk rekkevidde i kilometer (WLTP kombinert) med 19", inntil 440 570 546 -
+Elektrisk rekkevidde i kilometer (WLTP kombinert) med 20", inntil - - 500 495
+Tekniske data er oppgitt etter WLTP. Egenskaper som ladetid og rekkevidde vil variere avhengig av en rekke faktorer.
+Det tas forbehold om eventuelle feil, trykkfeil, avvik eller endringer.
+TEKNISK
+Dekk og felg
+Batteri og lading
+Ytelse, forbruk og utslipp 
+Vekter (kg) 
+Dimensjoner
+Bremser og understell
+Drivverk

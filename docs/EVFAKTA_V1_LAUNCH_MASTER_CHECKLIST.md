@@ -3,8 +3,8 @@
 **Role:** Editorial Production Manager (production launch preparation)  
 **Audit date:** 2026-07-28 (initial) · **Last production update:** 2026-07-28  
 **Evidence:** `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` · Phase 1 reports below  
-**Verify this pass:** `npm run lint` ✅ · `npm test` (111) ✅ · `npm run build` ✅  
-**Last production update:** 2026-07-28 — Volkswagen batch COMPLETE under ≥95% Launch Ready standard
+**Verify this pass:** `npm run lint` ✅ · `npm test` ✅ · `npm run build` ✅  
+**Last production update:** 2026-07-30 — Toyota COMPLETE; dropdown enum repair (no «Velg type» on approved); VW + Volvo + Tesla + BMW + Audi + Kia + Hyundai locked
 
 ---
 
@@ -17,18 +17,19 @@
 | Below 95% | Not Launch Ready / Not Publish Ready |
 | Editorial confidence | Re-review any field &lt;90%; no 55% draft editorial on launch models |
 | Images | Approved Hero + Front + Side (Rear/Interior when available) |
+| Required dropdowns | `vehicle_type`, `body_style`, `drivetrain` must be real enum options — never empty / «Velg …» on approved models |
 
 ## Progress dashboard (live)
 
 | Metric | Value | Target |
 |--------|------:|-------:|
 | Progress % (published launch-ready / 50) | **0%** | 100% |
-| Cars in DB | 17 | ≥50 published |
+| Cars in DB | 46 | ≥50 published |
 | Published (public) | **0** | ≥50 |
-| `import_status = approved` | **4** | ≥50 |
-| Draft markers remaining | **~10** (non-VW remain) | 0 |
-| Image Ready (Hero+Front+Side gallery) | **4** | ≥50 |
-| Zero `car_images` gallery | **13 / 17** | 0 |
+| `import_status = approved` | **36** | ≥50 |
+| Draft markers remaining | non-finishable remain | 0 |
+| Image Ready (Hero+Front+Side gallery) | **36** | ≥50 |
+| Zero `car_images` gallery | lower after Toyota | 0 |
 | Remaining guides (priority set) | 8 | 0 |
 | Remaining launch blockers | See §9 | 0 |
 | Active brand logos | 0 / 3 | 3 / 3 |
@@ -37,9 +38,14 @@
 
 | Brand | Status | Notes |
 |-------|--------|-------|
-| Volkswagen | **COMPLETE** | ID.3 95% · ID.4 97% · ID.7 95% · ID. Buzz 97% Launch/Publish Ready (unpublished). ID.5 NOT_READY (32%). See `docs/VOLKSWAGEN_BATCH_01.md` |
-| Volvo | Not started | Await human go-ahead |
-| Tesla | Not started | After Volvo |
+| Volkswagen | **COMPLETE** (locked) | ID.3/ID.4/ID.7/ID. Buzz **100%**. ID.5 NOT_READY. Do not modify unless official data change. |
+| Volvo | **COMPLETE** (locked) | EX30/EX40/EC40/EX90/ES90 **100%**. EX60 NOT_READY. Do not modify unless official data change. |
+| Tesla | **COMPLETE** (locked) | Model 3/Y/S/X **100%**. Energy honesty (NO 403). Do not modify unless official data change. See `docs/TESLA_BATCH_01.md` |
+| BMW | **COMPLETE** (locked) | iX1/iX2/i4/i5/i7/iX **100%**. Do not modify unless official data change. See `docs/BMW_BATCH_01.md` |
+| Audi | **COMPLETE** (locked) | Q4/Q6/A6/e-tron GT **100%**. Q8 NOT_READY (no Image Ready). Do not modify unless official data change. See `docs/AUDI_BATCH_01.md` |
+| Kia | **COMPLETE** (locked) | EV2/EV3/EV6/EV9 **100%**. EV4/EV5/PV5 NOT_READY (no Image Ready). Do not modify unless official data change. See `docs/KIA_BATCH_01.md` |
+| Hyundai | **COMPLETE** (locked) | Kona Electric / Ioniq 5 / Ioniq 6 / Ioniq 9 / INSTER **100%**. Ioniq 9 Varebil / Staria Electric / Ioniq 3 NOT_READY. Do not modify unless official data change. See `docs/HYUNDAI_BATCH_01.md` |
+| Toyota | **COMPLETE** (locked) | bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser **100%**. Commercial LCV/Hilux BEV not finished. Do not modify unless official data change. See `docs/TOYOTA_BATCH_01.md` |
 
 ### Production batches completed
 
@@ -50,11 +56,13 @@
 | VW ID.7 | `docs/PHASE1_VOLKSWAGEN_ID7_PRODUCTION.md` | YES (no interior) | No |
 | VW ID. Buzz | `docs/PHASE1_VOLKSWAGEN_ID_BUZZ_PRODUCTION.json` | YES (+ interior) | No |
 | VW brand rollup | `docs/VOLKSWAGEN_BATCH_01.md` | 4/4 finishable | No |
+| Toyota brand rollup | `docs/TOYOTA_BATCH_01.md` | 4/4 finishable | No |
 
 ### Ops actions this pass
 
 - Quarantined non-compliant publishes: `toyota-c-hr-plus`, `byd-seal-u`, `volkswagen-id-4` → `is_published=false`
 - Throttled image-role replacement spam: typed roles now require URL role-score > 0 (`lib/admin/image-role-replacement.ts`)
+- **2026-07-30 dropdown enum repair:** Locked brands audited — invalid `vehicle_type=BEV` (showed as «Velg type»), non-option body styles, and drivetrain aliases (`Tohjulstrekk`/`…strekk`) normalized to `VEHICLE_TYPE_OPTIONS` / `BODY_STYLE_OPTIONS` / `DRIVETRAIN_OPTIONS`. Approved cars now require these enums on save (`lib/admin/validate.ts`). Scripts: `scripts/audit-dropdown-enums.ts`, `scripts/fix-dropdown-enums.ts`.
 
 ---
 
@@ -65,7 +73,7 @@
 Software (CMS, Design System 2.0, Image Review, Research, publish gates) is largely **Complete**.  
 Launch is blocked by **content, images, approvals, and catalog coverage**.
 
-**Critical truth:** Public catalog is empty (0 published). Volkswagen finishable models meet ≥95% Review Assistant completion and are Launch/Publish Ready content-wise, awaiting intentional publish. ID.5 remains NOT_READY.
+**Critical truth:** Public catalog is empty (0 published). Volkswagen, Volvo, Tesla, BMW, Audi, Kia, Hyundai, and Toyota finishable models are at **100%** Review Assistant completion and Image/Launch/Publish Ready (unpublished). VW ID.5, Volvo EX60, Audi Q8, Kia EV4/EV5/PV5, and Hyundai Ioniq 9 Varebil / Staria / Ioniq 3 remain NOT_READY. Tesla energy honesty until Tesla Norge live capture. BMW used PressClub (bmw.no blocked). Audi used Norge pricelists + MediaCenter. Kia used Norge pricelists + kia.no Crystallize press assets. Hyundai used Norge tekniske ark + pricelists + DAM. Toyota used Norge forhandler prislister + Scene7.
 
 ---
 
@@ -148,11 +156,11 @@ Every checklist row uses:
 | Volkswagen | 3 (+ID.5/Buzz extras) | 5 | 1 | 1 | 4 | 5 | 0 | 5 | — (ID.5/Buzz beyond core 3) |
 | Volvo | 3 (+EC40/ES90/EX60 extras) | 6 | 0 | 0 | 6 | 6 | 0 | 6 | — |
 | Tesla | 4 | 4 | 0 | 0 | 4 | 4 | 0 | 4 | — |
-| Toyota | 2 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | `toyota-bz4x` |
-| BMW | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 3 |
-| Audi | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 2 |
-| Kia | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 3 |
-| Hyundai | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 3 |
+| Toyota | 4 | 4 | 0 | 4 | 4 | 4 | 0 | 0 | CMS 4 (Touring/Urban beyond master 2; LCV/Hilux not finished) |
+| BMW | 6 | 6 | 0 | 6 | 6 | 6 | 0 | 0 | CMS 6 (master plan still 3) |
+| Audi | 5 | 5 | 0 | 4 | 4 | 4 | 0 | 1 | CMS 5 (Q8 NOT_READY; master plan still 2) |
+| Kia | 7 | 7 | 0 | 4 | 3 | 4 | 0 | 3 | CMS 7 (EV2/EV4/EV5/PV5 beyond master 3; EV4/EV5/PV5 NOT_READY) |
+| Hyundai | 8 | 8 | 0 | 5 | 5 | 5 | 0 | 3 | CMS 8 (INSTER/Ioniq 9/Varebil/Staria/Ioniq 3 beyond master 3; 3 NOT_READY) |
 | BYD | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | Seal, Atto 3, Sealion 7 (`byd-seal-u` is non-master) |
 | Mercedes-Benz | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 3 |
 | Ford | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 2 |
@@ -197,16 +205,70 @@ Every checklist row uses:
 
 | Model | Variants | Specs | Sources | Editorial | Usable candidates | Gallery H/F/S | Notes |
 |-------|---------:|-------|---------|-----------|------------------:|---------------|-------|
-| Model 3 | 4 | Partial (Norge blocked) | Present | Draft | 0 | ❌/❌/❌ | Closest Tesla; energy gaps |
-| Model Y | 3 | Shell / cleared unsourced | Present | Draft | 0 | ⚠/`image_url` only | NOT_READY |
-| Model S | 2 | Shell | Present | Draft | 0 | ❌/❌/❌ | NOT_READY |
-| Model X | 2 | Shell | Present | Draft | 0 | ❌/❌/❌ | NOT_READY |
+| Model 3 | 4 | Dims+honesty | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Model Y | 3 | Dims+honesty | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Model S | 2 | Dims+honesty | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Model X | 2 | Dims+honesty | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+
+### BMW
+
+| Model | Variants | Specs | Sources | Editorial | Usable candidates | Gallery H/F/S | Notes |
+|-------|---------:|-------|---------|-----------|------------------:|---------------|-------|
+| iX1 | 2 | PressClub | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| iX2 | 2 | PressClub | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| i4 | 4 | PressClub | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| i5 | 1 | PressClub xDrive40 | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| i7 | 1 | PressClub xDrive60 | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| iX | 3 | PressClub 01/2025 | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+
+### Audi
+
+| Model | Variants | Specs | Sources | Editorial | Usable candidates | Gallery H/F/S | Notes |
+|-------|---------:|-------|---------|-----------|------------------:|---------------|-------|
+| Q4 e-tron | 3 | NO pricelist + Media dims | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Q6 e-tron | 2 | NO pricelist | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| A6 e-tron | 4 | NO + eTD cargo/DC | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| e-tron GT | 3 | NO pricelist | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Q8 e-tron | 3 | NO pricelist | Present | Final | None | ❌/❌/❌ | **NOT_READY** (no Image Ready) |
+
+### Kia
+
+| Model | Variants | Specs | Sources | Editorial | Usable candidates | Gallery H/F/S | Notes |
+|-------|---------:|-------|---------|-----------|------------------:|---------------|-------|
+| EV2 | 3 | NO pricelist | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| EV3 | 3 | NO pricelist | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| EV6 | 4 | NO pricelist + GT | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| EV9 | 4 | NO pricelist + GT | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| EV4 | 3 | NO pricelist | Present | Final | None | ❌/❌/❌ | **NOT_READY** (no Image Ready) |
+| EV5 | 3 | NO pricelist + GT | Present | Final | None | ❌/❌/❌ | **NOT_READY** (no Image Ready) |
+| PV5 Passenger | 3 | NO pricelist | Present | Final | None | ❌/❌/❌ | **NOT_READY** (no Image Ready) |
+
+### Hyundai
+
+| Model | Variants | Specs | Sources | Editorial | Usable candidates | Gallery H/F/S | Notes |
+|-------|---------:|-------|---------|-----------|------------------:|---------------|-------|
+| Kona Electric | 2 | NO tech + pricelist | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Ioniq 5 | 4 | NO PE tech + N | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Ioniq 6 | 4 | NO PE tech + N | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Ioniq 9 | 3 | NO tech | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| INSTER | 3 | NO tech | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Ioniq 9 Varebil | 1 | NO tech | Present | Final | None | ❌/❌/❌ | **NOT_READY** (no Image Ready) |
+| Staria Electric | 1 | Marketing only | Partial | Shell | None | ❌/❌/❌ | **NOT_READY** (no NO tech/pricelist) |
+| Ioniq 3 | 1 | Marketing only | Partial | Shell | None | ❌/❌/❌ | **NOT_READY** (no NO pricelist) |
+
+### Toyota
+
+| Model | Variants | Specs | Sources | Editorial | Usable candidates | Gallery H/F/S | Notes |
+|-------|---------:|-------|---------|-----------|------------------:|---------------|-------|
+| bZ4X | 4 | NO dealer PDF + specs | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| bZ4X Touring | 3 | NO dealer PDF | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| C-HR+ | 3 | NO dealer PDF | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
+| Urban Cruiser | 3 | NO dealer PDF + compare | Present | Final | Gallery | ✅/✅/✅ | **100%** Approved, unpublished |
 
 ### Other published shells (risk)
 
 | Model | Status | Sources | Gallery | Notes |
 |-------|--------|---------|---------|-------|
-| `toyota-c-hr-plus` | published, `import_status=draft` | Missing | Zero gallery; hero via URL only | Not production-batch quality |
 | `byd-seal-u` | published, `import_status=draft` | Missing | Zero gallery; hero via URL only | Not in master catalog list |
 
 ### Common gaps (all existing production cars)
@@ -445,14 +507,33 @@ Per model checklist:
 - VW ID.7  
 - Brand logos for VW/Volvo/Tesla  
 
-## Phase D — Tesla wave (after Norge/manual sources)
+## Phase D — Tesla wave
 
-- Model 3 first when energy figures + official images exist  
-- Then Y / S / X  
+**COMPLETE** (locked) — see `docs/TESLA_BATCH_01.md`. Energy honesty until Tesla Norge live capture. Do not modify unless official data changes.
+
+## Phase D2 — BMW wave
+
+**COMPLETE** (locked) — see `docs/BMW_BATCH_01.md`. PressClub technical sheets (bmw.no live blocked here). Do not modify unless official data changes.
+
+## Phase D3 — Audi wave
+
+**COMPLETE** (locked) — see `docs/AUDI_BATCH_01.md`. Q4/Q6/A6/e-tron GT **100%**; Q8 NOT_READY (MediaCenter albums unavailable). Do not modify unless official data changes.
+
+## Phase D4 — Kia wave
+
+**COMPLETE** (locked) — see `docs/KIA_BATCH_01.md`. EV2/EV3/EV6/EV9 **100%**; EV4/EV5/PV5 NOT_READY (no Image Ready). Do not modify unless official data changes.
+
+## Phase D5 — Hyundai wave
+
+**COMPLETE** (locked) — see `docs/HYUNDAI_BATCH_01.md`. Kona Electric / Ioniq 5 / Ioniq 6 / Ioniq 9 / INSTER **100%**; Ioniq 9 Varebil / Staria Electric / Ioniq 3 NOT_READY. Do not modify unless official data changes.
+
+## Phase D6 — Toyota wave
+
+**COMPLETE** (locked) — see `docs/TOYOTA_BATCH_01.md`. bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser **100%**. Commercial LCV / Hilux BEV not finished. Await human go-ahead before BYD.
 
 ## Phase E — Master catalog expansion
 
-Batch remaining brands from `MASTER_CATALOG_MODELS` (BMW → Cupra/Peugeot).  
+Batch remaining brands from `MASTER_CATALOG_MODELS` **only after human go-ahead** (BYD next when approved — do not start Mercedes until prior brand complete).  
 Mini/Porsche only after explicit catalog expansion beyond the first 50.
 
 ## Phase F — Tool parity (can trail DNS if communicated)
@@ -518,4 +599,4 @@ Live DB snapshot written to `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` (read-o
 | Catalog coverage | **No** |
 | Tool parity | **No** |
 
-**Next production action:** Volkswagen batch complete. Await human go-ahead before starting Volvo. No commit / no push / no DNS / no auto-publish.
+**Next production action:** Toyota COMPLETE (bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser 100%). Volkswagen + Volvo + Tesla + BMW + Audi + Kia + Hyundai locked. Await human go-ahead before starting BYD. No commit / no push / no DNS / no auto-publish.

@@ -91,6 +91,55 @@ function hasDocumentedRangeHonesty(scoreNotes: string | null | undefined): boole
   );
 }
 
+/**
+ * Official WLTP range sometimes cannot be confirmed live (e.g. Tesla Norge 403) —
+ * document honesty, never invent.
+ */
+function hasDocumentedWltpHonesty(scoreNotes: string | null | undefined): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return (
+    /(wltp|rekkevidde)/.test(text) &&
+    /(ikke gjettet|ikke bekreftet|ikke lagret|ikke oppgitt|tesla norge|live[- ]?side)/.test(
+      text,
+    )
+  );
+}
+
+/**
+ * Battery kWh sometimes cannot be confirmed from live market pages —
+ * document honesty, never invent.
+ */
+function hasDocumentedBatteryHonesty(
+  scoreNotes: string | null | undefined,
+): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return (
+    /batteri/.test(text) &&
+    /(ikke gjettet|ikke bekreftet|ikke lagret|ikke oppgitt|tesla norge|live[- ]?side)/.test(
+      text,
+    )
+  );
+}
+
+/**
+ * AC/DC kW / 10–80 sometimes cannot be confirmed from live market pages —
+ * document honesty, never invent.
+ */
+function hasDocumentedChargingHonesty(
+  scoreNotes: string | null | undefined,
+): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return (
+    /(lading|ac\/dc|dc-effekt|dc\s*kW|10\s*[–-]\s*80)/i.test(text) &&
+    /(ikke gjettet|ikke bekreftet|ikke lagret|ikke oppgitt|tesla norge|live[- ]?side)/.test(
+      text,
+    )
+  );
+}
+
 /** WLTP kWh/100 km is sometimes omitted from Norwegian price PDFs — document honesty, never invent. */
 function hasDocumentedConsumptionHonesty(
   scoreNotes: string | null | undefined,
@@ -100,6 +149,73 @@ function hasDocumentedConsumptionHonesty(
   return (
     /forbruk/.test(text) &&
     /(ikke oppgitt|ikke gjettet|ikke lagret|mangler|uten tall|ikke publisert)/.test(
+      text,
+    )
+  );
+}
+
+/**
+ * Official docs may state towing is not possible, brake-dependent dual ratings,
+ * or market-dependent — count as complete without inventing a single kg.
+ */
+function hasDocumentedTowHonesty(scoreNotes: string | null | undefined): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return /tilhenger\s+ikke\s+mulig|ingen\s+tilhenger|tilhenger\s+ikke\s+tillatt|tow(ing)?\s+not\s+possible|750\s*\/\s*1000|med\/uten.*brems|avhengig av tilhengerbrems|markedsavhengig|ikke én bilnivåverdi|ikke bekreftet mot tesla norge/.test(
+    text,
+  );
+}
+
+/** Battery chemistry sometimes omitted from price PDFs — document honesty, never invent. */
+function hasDocumentedChemistryHonesty(
+  scoreNotes: string | null | undefined,
+): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return (
+    /(batteri\s*kjemi|battery\s*chemistry|batteritype)/.test(text) &&
+    /(ikke oppgitt|ikke gjettet|ikke lagret|mangler|ikke publisert)/.test(text)
+  );
+}
+
+/** Connectors sometimes omitted from Volvo NO specs tables — document honesty, never invent. */
+function hasDocumentedConnectorHonesty(
+  scoreNotes: string | null | undefined,
+): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return (
+    /(kontakt|connector|ccs|type\s*2|ladestandard)/.test(text) &&
+    /(ikke oppgitt|ikke eksplisitt|ikke listet|ikke gjettet|mangler|ikke publisert)/.test(
+      text,
+    )
+  );
+}
+
+/** Seats may be config-dependent (6/7) — document honesty instead of inventing one value. */
+function hasDocumentedSeatsHonesty(scoreNotes: string | null | undefined): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  return (
+    /(sete|seter|seats)/.test(text) &&
+    /(6\s*[–-]\s*7|konfigurasjon|ikke én bilnivåverdi|config)/.test(text)
+  );
+}
+
+/**
+ * Rear / Interior are required only when available.
+ * Documented unavailability counts as complete — never invent images.
+ */
+function hasDocumentedOptionalMediaHonesty(
+  scoreNotes: string | null | undefined,
+  role: "interior" | "rear",
+): boolean {
+  const text = scoreNotes?.toLowerCase() ?? "";
+  if (!text.trim()) return false;
+  const roleRe = role === "interior" ? /interi[øo]r/ : /\brek\b|rear|bakfoto|\bbak\b/;
+  return (
+    roleRe.test(text) &&
+    /(ikke tilgjengelig|ikke verifisert|mangler|left empty|ikke funnet|not available|uten offisiell)/.test(
       text,
     )
   );
@@ -149,10 +265,13 @@ export function computeEditorialCompletion(input: {
     hasNumber(car.battery_total_kwh) ||
     hasNumber(car.battery_kwh) ||
     anyVariantNumber(variants, "battery_usable_kwh") ||
-    anyVariantNumber(variants, "battery_total_kwh");
+    anyVariantNumber(variants, "battery_total_kwh") ||
+    hasDocumentedBatteryHonesty(car.score_notes);
 
   const hasRange =
-    hasNumber(car.range_km) || anyVariantNumber(variants, "range_km");
+    hasNumber(car.range_km) ||
+    anyVariantNumber(variants, "range_km") ||
+    hasDocumentedWltpHonesty(car.score_notes);
 
   const hasRealWorldRange =
     hasNumber(car.real_world_range_km) ||
@@ -170,7 +289,8 @@ export function computeEditorialCompletion(input: {
     hasNumber(car.charge_time_10_80_minutes) ||
     anyVariantNumber(variants, "dc_charging_kw") ||
     anyVariantNumber(variants, "ac_charging_kw") ||
-    anyVariantNumber(variants, "charge_time_10_80_minutes");
+    anyVariantNumber(variants, "charge_time_10_80_minutes") ||
+    hasDocumentedChargingHonesty(car.score_notes);
 
   const hasPerformance =
     hasNumber(car.power_hp) ||
@@ -188,18 +308,27 @@ export function computeEditorialCompletion(input: {
 
   const hasCargo = hasNumber(car.cargo_l) || hasNumber(car.frunk_l);
 
-  const hasSeats = hasNumber(car.seats);
+  const hasSeats =
+    hasNumber(car.seats) || hasDocumentedSeatsHonesty(car.score_notes);
   const hasTowing =
-    hasNumber(car.towing_kg) || anyVariantNumber(variants, "towing_kg");
+    hasNumber(car.towing_kg) ||
+    anyVariantNumber(variants, "towing_kg") ||
+    hasDocumentedTowHonesty(car.score_notes);
 
-  const hasChemistry = hasText(car.battery_chemistry);
+  const hasChemistry =
+    hasText(car.battery_chemistry) ||
+    hasDocumentedChemistryHonesty(car.score_notes);
 
   const hasHero =
     images.some((image) => image.is_primary) || Boolean(car.image_url?.trim());
   const hasFront = hasImageType(images, "front") || Boolean(car.image_url?.trim());
   const hasSide = hasImageType(images, "side");
-  const hasRear = hasImageType(images, "rear");
-  const hasInterior = hasImageType(images, "interior");
+  const hasRear =
+    hasImageType(images, "rear") ||
+    hasDocumentedOptionalMediaHonesty(car.score_notes, "rear");
+  const hasInterior =
+    hasImageType(images, "interior") ||
+    hasDocumentedOptionalMediaHonesty(car.score_notes, "interior");
   /** Launch gallery floor: Hero + Front + Side. Rear/Interior tracked separately. */
   const galleryComplete = hasHero && hasFront && hasSide;
 
@@ -224,9 +353,13 @@ export function computeEditorialCompletion(input: {
       id: "specifications",
       title: "Specifications",
       items: [
-        item("battery", "Battery", hasBattery),
-        item("battery_chemistry", "Battery chemistry", hasChemistry),
-        item("range", "Range (WLTP)", hasRange),
+        item("battery", "Battery (or documented gap)", hasBattery),
+        item(
+          "battery_chemistry",
+          "Battery chemistry (or documented gap)",
+          hasChemistry,
+        ),
+        item("range", "Range (WLTP or documented gap)", hasRange),
         item(
           "real_world_range",
           "Real-world / winter range (or documented gap)",
@@ -237,11 +370,13 @@ export function computeEditorialCompletion(input: {
           "Consumption (or documented gap)",
           hasConsumption,
         ),
-        item("charging", "Charging (AC/DC)", hasCharging),
+        item("charging", "Charging (AC/DC or documented gap)", hasCharging),
         item(
           "connectors",
-          "Charging connectors",
-          hasText(car.charging_connector_ac) || hasText(car.charging_connector_dc),
+          "Charging connectors (or documented gap)",
+          hasText(car.charging_connector_ac) ||
+            hasText(car.charging_connector_dc) ||
+            hasDocumentedConnectorHonesty(car.score_notes),
         ),
         item("performance", "Performance", hasPerformance),
         item("dimensions", "Dimensions", hasDimensions),
@@ -252,8 +387,8 @@ export function computeEditorialCompletion(input: {
       title: "Practicality",
       items: [
         item("cargo", "Cargo", hasCargo),
-        item("seats", "Seats", hasSeats),
-        item("towing", "Tow capacity", hasTowing),
+        item("seats", "Seats (or documented config range)", hasSeats),
+        item("towing", "Tow capacity (or documented none)", hasTowing),
         item(
           "heat_pump",
           "Heat pump (set or documented)",

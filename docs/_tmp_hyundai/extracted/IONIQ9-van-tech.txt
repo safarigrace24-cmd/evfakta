@@ -1,0 +1,58 @@
+Hyundai IONIQ 9 Varebil
+Long Range 
+AWD
+Motor Elektrisk
+Gir Automat (shift by wire)
+Drivverkstype Firehjulstrekk
+Maksimal effekt (hestekrefter) 313
+Maksimal dreiemoment (Nm) 605
+Maksimal hastighet, km/t 200
+Akselerasjon 0-100 km/t, sek. 6,7
+Forbruk (WLTP), kWt/100 km 19" / 20'': 20,4
+Utslipp CO2 g/km 0
+Utslipp NOx mg/km 0
+Egenvekt uten fører, kg 2 590
+Maksimal nyttelast, kg (inkl. 75 kg for fører) 710
+Totalvekt, kg 3 300
+Tilhengervekt ubremset, kg 750
+Tilhengervekt bremset, kg 2 500
+Lastekule for vertikal last, kg 125
+Taklast, kg 100
+Typegodkjente vektintervaller er veiledende, og utstyr vil kunne gi avvik.
+Utvendig lengde, mm 5 060
+Utvendig bredde, mm 1 980
+Utvendig høyde, mm 1 790
+Akselavstand, mm 3 130
+Bakkeklaring, mm 174
+Svingradius, m 6,24
+Lengde lasterom (til skillevegg), mm 2 150
+Bredde i lasterom ved bakdører, mm 1 357
+Bredde i lasterom bak hjulbuer, mm 1 329
+Bagasjerom foran, frunk, l 52
+Hjuloppheng foran McPherson
+Hjuloppheng bak 5 Multi Link
+Parkeringsbrems Elektrisk
+Støtdempere Smart Frequency + HRS
+Felg Lettmetallfelg
+Felgdimensjon 19'' / 20''
+Dekkdimensjon 19" 255/60 R19
+TEKNISK
+Dekk og felg
+Ytelse, forbruk og utslipp 
+Vekter (kg) 
+Dimensjoner
+Bremser og understell
+Drivverk
+Dekkdimensjon 20" 275/50 R20
+Ombordlader (kW), enfas / trefas 7 / 11 (10,5)
+Lynlading (10-80%), minimum ladetid 24 min
+Ladeport i bilen (standard) Type2
+Ladeport DC lading Type2 CCS kombo
+Batteristørrelse i kWt 110,3
+Batterispenning i Volt 610
+Batterivekt, kg 625,3
+Elektrisk rekkevidde i kilometer (WLTP kombinert) med 19", inntil 606
+Elektrisk rekkevidde i kilometer (WLTP kombinert) med 20", inntil 606
+Tekniske data er oppgitt etter WLTP. Egenskaper som ladetid og rekkevidde vil variere avhengig av en rekke faktorer.
+Det tas forbehold om eventuelle feil, trykkfeil, avvik eller endringer.
+Batteri og lading
