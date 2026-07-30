@@ -29,6 +29,8 @@ export type PublishReadinessInput = Pick<
   score_notes?: string | null;
   has_gallery_image?: boolean;
   gallery_images?: GalleryImageRef[];
+  /** Review Assistant completion % — Launch/Publish Ready require ≥95 when provided. */
+  completion_percent?: number | null;
 };
 
 export type PublishReadinessOptions = {
@@ -37,9 +39,12 @@ export type PublishReadinessOptions = {
    * Set false for content launch checklist / production dashboard content gates.
    */
   requireApproved?: boolean;
+  /** Override default 95% completion floor when completion_percent is provided. */
+  minCompletionPercent?: number;
 };
 
 const MIN_SEO_DESCRIPTION_CHARS = 40;
+export const MIN_LAUNCH_COMPLETION_PERCENT = 95;
 
 export function containsEditorialDraftMarker(value: unknown): boolean {
   if (typeof value === "string") {
@@ -192,6 +197,19 @@ export function getPublishIssues(
     issues.push({
       code: "import_status",
       message: "Bilen må være godkjent før publisering (godkjenning ≠ publisering).",
+    });
+  }
+
+  const minCompletion =
+    options.minCompletionPercent ?? MIN_LAUNCH_COMPLETION_PERCENT;
+  if (
+    typeof car.completion_percent === "number" &&
+    Number.isFinite(car.completion_percent) &&
+    car.completion_percent < minCompletion
+  ) {
+    issues.push({
+      code: "completion_below_threshold",
+      message: `Fullføringsgrad ${Math.round(car.completion_percent)}% er under kravet på ${minCompletion}% for Launch Ready / Publish Ready.`,
     });
   }
 

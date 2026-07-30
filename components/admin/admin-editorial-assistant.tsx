@@ -134,8 +134,20 @@ export default function AdminEditorialAssistant({
             <strong>{completion.percent}% Complete</strong>
             <span>
               {completion.completedCount} of {completion.totalCount} checklist items
+              {" · "}target ≥{completion.launchCompletionThreshold}%
             </span>
           </p>
+          {completion.meetsCompletionThreshold ? (
+            <p className="adminSuccess" role="status">
+              Completion meets the {completion.launchCompletionThreshold}% Launch Ready
+              standard.
+            </p>
+          ) : (
+            <p className="adminNotice" role="status">
+              Below {completion.launchCompletionThreshold}% — not Launch Ready / Publish
+              Ready. Continue reviewing incomplete fields.
+            </p>
+          )}
         </div>
         {variant === "sidebar" ? null : (
           <CompletionRing percent={completion.percent} />
@@ -163,8 +175,9 @@ export default function AdminEditorialAssistant({
 
       <p className="adminHint">
         Fills only empty fields via the research pipeline. Existing values are never
-        overwritten. Conflicts and image candidates stay for manual review. Publish
-        blockers are unchanged.
+        overwritten. Conflicts and image candidates stay for manual review. Launch Ready
+        and Publish Ready require at least {completion.launchCompletionThreshold}%
+        completion — do not stop at required-field minimums.
       </p>
 
       {message && (
@@ -203,12 +216,18 @@ export default function AdminEditorialAssistant({
       <div className="adminEditorialPublish">
         {completion.canPublish ? (
           <p className="adminSuccess" role="status">
-            Required fields for publishing are complete. Remaining items improve
-            catalog quality but do not block publish.
+            Publish Ready: hard gates pass and completion is ≥
+            {completion.launchCompletionThreshold}%. Remains unpublished until you publish
+            intentionally.
+          </p>
+        ) : completion.canLaunchReady ? (
+          <p className="adminSuccess" role="status">
+            Launch Ready content gates pass (≥{completion.launchCompletionThreshold}%).
+            Approval may still be required before Publish Ready.
           </p>
         ) : (
           <div className="adminNotice" role="status">
-            <strong>Publishing blocked</strong>
+            <strong>Launch / Publish blocked</strong>
             <ul className="adminEditorialMissingList">
               {completion.publishIssues.map((issue) => (
                 <li key={issue.code}>{issue.message}</li>

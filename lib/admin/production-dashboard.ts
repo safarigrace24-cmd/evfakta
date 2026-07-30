@@ -332,6 +332,7 @@ export function computeProductionModelRow(input: {
     score_notes: car.score_notes,
     has_gallery_image: images.length > 0,
     gallery_images: galleryRefs,
+    completion_percent: completion.percent,
   };
   const launchIssues = getLaunchContentIssues(readinessInput);
   const publishIssues = getPublishIssues(readinessInput);
@@ -341,25 +342,19 @@ export function computeProductionModelRow(input: {
     containsEditorialDraftMarker(car.cons) ||
     containsEditorialDraftMarker(car.suitable_for) ||
     containsEditorialDraftMarker(car.score_notes);
+
+  // Review Assistant completion is the launch quality score (threshold 95%).
+  const completionPercent = completion.percent;
+  const meetsCompletionThreshold = completion.meetsCompletionThreshold;
+
   const launchContentReady = launchIssues.length === 0;
   const launchBlocked = !launchContentReady;
   const publishReady = publishIssues.length === 0;
   const launchBlockerCodes = [...new Set(launchIssues.map((issue) => issue.code))];
 
-  // Prefer production-weighted completion over raw editorial checklist
-  // (editorial checklist treats approved as required, which understates ready drafts).
-  const completionPercent = Math.round(
-    (editorialPercent +
-      imagesPercent +
-      specsPercent +
-      sourcesPercent +
-      reviewPercent +
-      Math.min(completion.percent, 100)) /
-      6,
-  );
-
   let nextAction = "Open Edit";
   if (hasDraftMarker) nextAction = "Rewrite Draft";
+  else if (!meetsCompletionThreshold) nextAction = "Raise Completion ≥95%";
   else if (
     launchBlockerCodes.includes("hero_image") ||
     launchBlockerCodes.includes("front_image") ||

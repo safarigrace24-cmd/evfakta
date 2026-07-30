@@ -10,19 +10,33 @@ import {
 } from "@/lib/admin/types";
 import {
   formatPublishIssues,
-  getPublishIssues,
   type GalleryImageRef,
 } from "@/lib/admin/publish-readiness";
+import { computeEditorialCompletion } from "@/lib/admin/editorial-completion";
+import type { CarImageRow } from "@/lib/admin/car-image-types";
+import type { AdminCarVariant } from "@/lib/admin/variant-types";
 import { mapAdminDbError, validateAdminCarInput } from "@/lib/admin/validate";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
 
-async function loadGalleryImageRefs(carId: string): Promise<GalleryImageRef[]> {
+async function loadPublishContext(carId: string): Promise<{
+  images: CarImageRow[];
+  variants: AdminCarVariant[];
+  gallery_images: GalleryImageRef[];
+}> {
   const supabase = createAdminClient();
-  const { data } = await supabase
-    .from("car_images")
-    .select("image_type, is_primary")
-    .eq("car_id", carId);
-  return (data ?? []) as GalleryImageRef[];
+  const [{ data: images }, { data: variants }] = await Promise.all([
+    supabase.from("car_images").select("*").eq("car_id", carId),
+    supabase.from("car_variants").select("*").eq("car_id", carId),
+  ]);
+  const rows = (images ?? []) as CarImageRow[];
+  return {
+    images: rows,
+    variants: (variants ?? []) as AdminCarVariant[],
+    gallery_images: rows.map((image) => ({
+      image_type: image.image_type,
+      is_primary: image.is_primary,
+    })),
+  };
 }
 
 export type AdminActionResult =
@@ -66,11 +80,11 @@ export async function createAdminCarAction(
   if (!validated.ok) return validated;
 
   if (validated.data.is_published) {
-    const issues = getPublishIssues({
-      ...validated.data,
-      gallery_images: [],
-      has_gallery_image: false,
-    });
+    const issues = computeEditorialCompletion({
+      car: { ...validated.data, id: "new" } as AdminCar,
+      images: [],
+      variants: [],
+    }).publishIssues;
     if (issues.length > 0) {
       return { ok: false, error: formatPublishIssues(issues) };
     }
@@ -127,12 +141,12 @@ export async function updateAdminCarAction(
     if (!adminDbReady()) {
       return { ok: false, error: ADMIN_MESSAGES.unavailable };
     }
-    const gallery_images = await loadGalleryImageRefs(id);
-    const issues = getPublishIssues({
-      ...validated.data,
-      gallery_images,
-      has_gallery_image: gallery_images.length > 0,
-    });
+    const ctx = await loadPublishContext(id);
+    const issues = computeEditorialCompletion({
+      car: { ...validated.data, id } as AdminCar,
+      images: ctx.images,
+      variants: ctx.variants,
+    }).publishIssues;
     if (issues.length > 0) {
       return { ok: false, error: formatPublishIssues(issues) };
     }
@@ -196,12 +210,12 @@ export async function setAdminCarPublishedAction(
         return { ok: false, error: ADMIN_MESSAGES.notFound };
       }
 
-      const gallery_images = await loadGalleryImageRefs(id);
-      const issues = getPublishIssues({
-        ...(existing as AdminCar),
-        gallery_images,
-        has_gallery_image: gallery_images.length > 0,
-      });
+      const ctx = await loadPublishContext(id);
+      const issues = computeEditorialCompletion({
+        car: existing as AdminCar,
+        images: ctx.images,
+        variants: ctx.variants,
+      }).publishIssues;
 
       if (issues.length > 0) {
         return { ok: false, error: formatPublishIssues(issues) };

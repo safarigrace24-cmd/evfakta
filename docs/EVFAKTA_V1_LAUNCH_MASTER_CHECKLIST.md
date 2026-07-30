@@ -3,10 +3,20 @@
 **Role:** Editorial Production Manager (production launch preparation)  
 **Audit date:** 2026-07-28 (initial) · **Last production update:** 2026-07-28  
 **Evidence:** `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` · Phase 1 reports below  
-**Verify this pass:** `npm run lint` ✅ · `npm test` (108) ✅ · `npm run build` ✅  
-**Last production update:** 2026-07-28 — Volkswagen batch COMPLETE
+**Verify this pass:** `npm run lint` ✅ · `npm test` (111) ✅ · `npm run build` ✅  
+**Last production update:** 2026-07-28 — Volkswagen batch COMPLETE under ≥95% Launch Ready standard
 
 ---
+
+## Quality standard (Launch / Publish Ready)
+
+| Rule | Value |
+|------|------:|
+| Minimum Review Assistant completion | **95%** |
+| Preferred completion | **100%** |
+| Below 95% | Not Launch Ready / Not Publish Ready |
+| Editorial confidence | Re-review any field &lt;90%; no 55% draft editorial on launch models |
+| Images | Approved Hero + Front + Side (Rear/Interior when available) |
 
 ## Progress dashboard (live)
 
@@ -27,8 +37,8 @@
 
 | Brand | Status | Notes |
 |-------|--------|-------|
-| Volkswagen | **COMPLETE** | ID.3/ID.4/ID.7/ID. Buzz Publish Ready (unpublished). ID.5 NOT_READY. See `docs/VOLKSWAGEN_BATCH_01.md` |
-| Volvo | Not started | Do not start until VW complete (done) — await human go-ahead |
+| Volkswagen | **COMPLETE** | ID.3 95% · ID.4 97% · ID.7 95% · ID. Buzz 97% Launch/Publish Ready (unpublished). ID.5 NOT_READY (32%). See `docs/VOLKSWAGEN_BATCH_01.md` |
+| Volvo | Not started | Await human go-ahead |
 | Tesla | Not started | After Volvo |
 
 ### Production batches completed
@@ -55,7 +65,7 @@
 Software (CMS, Design System 2.0, Image Review, Research, publish gates) is largely **Complete**.  
 Launch is blocked by **content, images, approvals, and catalog coverage**.
 
-**Critical truth:** Public catalog is empty (0 published). Volkswagen finishable models are content+image Publish Ready and await intentional publish. ID.5 remains NOT_READY.
+**Critical truth:** Public catalog is empty (0 published). Volkswagen finishable models meet ≥95% Review Assistant completion and are Launch/Publish Ready content-wise, awaiting intentional publish. ID.5 remains NOT_READY.
 
 ---
 

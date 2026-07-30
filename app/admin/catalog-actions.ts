@@ -5,21 +5,35 @@ import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getAuthUser } from "@/lib/auth/get-user";
 import {
   formatPublishIssues,
-  getPublishIssues,
   type GalleryImageRef,
 } from "@/lib/admin/publish-readiness";
+import { computeEditorialCompletion } from "@/lib/admin/editorial-completion";
+import type { CarImageRow } from "@/lib/admin/car-image-types";
 import { ADMIN_MESSAGES, type AdminCar, type ImportStatus } from "@/lib/admin/types";
+import type { AdminCarVariant } from "@/lib/admin/variant-types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
 
-async function loadGalleryImageRefs(
+async function loadPublishContext(
   supabase: ReturnType<typeof createAdminClient>,
   carId: string,
-): Promise<GalleryImageRef[]> {
-  const { data } = await supabase
-    .from("car_images")
-    .select("image_type, is_primary")
-    .eq("car_id", carId);
-  return (data ?? []) as GalleryImageRef[];
+): Promise<{
+  images: CarImageRow[];
+  variants: AdminCarVariant[];
+  gallery_images: GalleryImageRef[];
+}> {
+  const [{ data: images }, { data: variants }] = await Promise.all([
+    supabase.from("car_images").select("*").eq("car_id", carId),
+    supabase.from("car_variants").select("*").eq("car_id", carId),
+  ]);
+  const rows = (images ?? []) as CarImageRow[];
+  return {
+    images: rows,
+    variants: (variants ?? []) as AdminCarVariant[],
+    gallery_images: rows.map((image) => ({
+      image_type: image.image_type,
+      is_primary: image.is_primary,
+    })),
+  };
 }
 
 export type CatalogBulkResult =
@@ -116,12 +130,12 @@ export async function bulkPublishCarsAction(
 
     for (const car of (cars ?? []) as AdminCar[]) {
       if (publish) {
-        const gallery_images = await loadGalleryImageRefs(supabase, car.id);
-        const issues = getPublishIssues({
-          ...car,
-          gallery_images,
-          has_gallery_image: gallery_images.length > 0,
-        });
+        const ctx = await loadPublishContext(supabase, car.id);
+        const issues = computeEditorialCompletion({
+          car,
+          images: ctx.images,
+          variants: ctx.variants,
+        }).publishIssues;
         if (issues.length > 0) {
           skipped += 1;
           continue;
@@ -316,12 +330,12 @@ export async function explainPublishBlockersAction(id: string) {
   const { data } = await supabase.from("cars").select("*").eq("id", id).maybeSingle();
   if (!data) return { ok: false as const, error: ADMIN_MESSAGES.notFound };
 
-  const gallery_images = await loadGalleryImageRefs(supabase, id);
-  const issues = getPublishIssues({
-    ...(data as AdminCar),
-    gallery_images,
-    has_gallery_image: gallery_images.length > 0,
-  });
+  const ctx = await loadPublishContext(supabase, id);
+  const issues = computeEditorialCompletion({
+    car: data as AdminCar,
+    images: ctx.images,
+    variants: ctx.variants,
+  }).publishIssues;
 
   return {
     ok: true as const,

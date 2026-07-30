@@ -295,7 +295,7 @@ describe("production dashboard readiness", () => {
     assert.equal(row.nextAction, "Rewrite Draft");
   });
 
-  it("reports launch content ready when draft cleared and hero/front/side attached", () => {
+  it("blocks launch ready below 95% completion even with hero/front/side", () => {
     const row = computeProductionModelRow({
       car: baseCar({
         description:
@@ -334,6 +334,91 @@ describe("production dashboard readiness", () => {
       variants: [baseVariant()],
     });
     assert.equal(row.hasDraftMarker, false);
+    assert.ok(row.completionPercent < 95);
+    assert.equal(row.launchContentReady, false);
+    assert.equal(row.publishReady, false);
+    assert.ok(row.launchBlockerCodes.includes("completion_below_threshold"));
+    assert.equal(row.nextAction, "Raise Completion ≥95%");
+  });
+
+  it("reports launch content ready when completion ≥95% and hero/front/side attached", () => {
+    const row = computeProductionModelRow({
+      car: baseCar({
+        description:
+          "Volkswagen ID.3 er en kompakt elbil med dokumenterte norske spesifikasjoner for rekkevidde og lading.",
+        pros: ["Kompakt format", "CCS-lading"],
+        cons: ["Begrenset bagasje"],
+        suitable_for: ["Pendlerne"],
+        heat_pump: true,
+        year: 2025,
+        import_status: "needs_review",
+        image_url: null,
+        score_notes: `## Hvem bilen passer for
+Pendling og daglig bruk.
+
+## Vinter
+Ingen offisiell vinterrekkevidde — ikke gjettet. WLTP er laboratoriemål.
+
+## Lading
+AC/DC dokumentert per variant.
+
+## Langtur
+Planlegg ladestopp.
+
+## FAQ
+**Har ID.3 varme pumpe?** Ja i denne testkatalogen.
+**Hva er reell rekkevidde?** Ikke testet av EVFAKTA.`,
+      }),
+      images: [
+        {
+          id: "img-1",
+          car_id: "car-1",
+          image_url: "/front.webp",
+          storage_path: "front",
+          image_type: "front",
+          alt_text: "front",
+          sort_order: 0,
+          is_primary: true,
+          created_at: "2026-07-26T00:00:00.000Z",
+        },
+        {
+          id: "img-2",
+          car_id: "car-1",
+          image_url: "/side.webp",
+          storage_path: "side",
+          image_type: "side",
+          alt_text: "side",
+          sort_order: 1,
+          is_primary: false,
+          created_at: "2026-07-26T00:00:00.000Z",
+        },
+        {
+          id: "img-3",
+          car_id: "car-1",
+          image_url: "/rear.webp",
+          storage_path: "rear",
+          image_type: "rear",
+          alt_text: "rear",
+          sort_order: 2,
+          is_primary: false,
+          created_at: "2026-07-26T00:00:00.000Z",
+        },
+        {
+          id: "img-4",
+          car_id: "car-1",
+          image_url: "/interior.webp",
+          storage_path: "interior",
+          image_type: "interior",
+          alt_text: "interior",
+          sort_order: 3,
+          is_primary: false,
+          created_at: "2026-07-26T00:00:00.000Z",
+        },
+      ],
+      variants: [baseVariant({ towing_kg: 1000 })],
+    });
+    assert.equal(row.hasDraftMarker, false);
+    assert.ok(row.completionPercent >= 95);
     assert.equal(row.launchContentReady, true);
     assert.equal(row.publishReady, false);
     assert.equal(Array.isArray(row.launchBlockerCodes), true);
