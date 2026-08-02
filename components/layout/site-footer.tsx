@@ -53,6 +53,7 @@ export default function SiteFooter() {
             <strong>Kontakt</strong>
             <p>Tips, rettelser eller ønske om ny modell?</p>
             <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+            <Link href="/personvern">Personvern</Link>
             <ul className="footerSocial" aria-label="Sosiale medier">
               {siteConfig.socialLinks.map((link) => (
                 <li key={link.network}>
@@ -72,7 +73,11 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="container copyright">
-        <p>© 2026 {siteConfig.legalName}</p>
+        <p>
+          © 2026 {siteConfig.legalName}
+          {" · "}
+          <Link href="/personvern">Personvern</Link>
+        </p>
         <p className="footerDisclaimer">
           Spesifikasjoner er hentet fra oppgitte kilder og kan endres. WLTP-tall er
           laboratoriemål, ikke garantert reell rekkevidde.

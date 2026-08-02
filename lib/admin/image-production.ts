@@ -36,6 +36,7 @@ export type ImageSourceCategory =
   | "official_configurator_cdn"
   | "owner_upload"
   | "explicit_reusable_license"
+  | "ai_generated"
   | "unknown"
   | "rejected";
 

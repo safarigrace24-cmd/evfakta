@@ -8,6 +8,7 @@ import type { Car } from "@/data/cars";
 import {
   buildCompareHref,
   buildComparisonRows,
+  filterComparisonRows,
   groupComparisonRows,
   resolveCompareCars,
   selectionKey,
@@ -44,6 +45,9 @@ export default function CompareClient({
   );
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [differencesOnly, setDifferencesOnly] = useState(false);
+  const [replaceIndex, setReplaceIndex] = useState<number | null>(null);
+  const [shareNote, setShareNote] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const selectedCars = useMemo(
@@ -51,7 +55,10 @@ export default function CompareClient({
     [cars, selected],
   );
 
-  const rows = useMemo(() => buildComparisonRows(selectedCars), [selectedCars]);
+  const rows = useMemo(() => {
+    const all = buildComparisonRows(selectedCars);
+    return filterComparisonRows(all, differencesOnly);
+  }, [selectedCars, differencesOnly]);
   const sections = useMemo(() => groupComparisonRows(rows), [rows]);
 
   const popularCars = useMemo(() => cars.slice(0, 6), [cars]);
@@ -77,21 +84,45 @@ export default function CompareClient({
 
   function toggleCar(car: Car) {
     setError(null);
+    setShareNote(null);
     const selection = defaultSelectionForCar(car);
     setSelected((current) => {
+      if (replaceIndex != null) {
+        const next = current.map((item, index) =>
+          index === replaceIndex ? selection : item,
+        );
+        setReplaceIndex(null);
+        syncUrl(next);
+        return next;
+      }
       if (carHasAnySelection(car.slug)) {
         const next = current.filter((item) => item.slug !== car.slug);
         syncUrl(next);
         return next;
       }
       if (current.length >= 3) {
-        setError("Du kan sammenligne maksimalt tre biler.");
+        setError(
+          "Du kan sammenligne maksimalt tre biler. Velg «Erstatt» på en bil først.",
+        );
         return current;
       }
       const next = [...current, selection];
       syncUrl(next);
       return next;
     });
+  }
+
+  function copyCompareLink() {
+    const href = buildCompareHref(selected);
+    const full =
+      typeof window !== "undefined"
+        ? `${window.location.origin}${href}`
+        : href;
+    void navigator.clipboard?.writeText(full).then(
+      () => setShareNote("Sammenligningslenke kopiert."),
+      () => setShareNote("Oppdaterte adresselinjen — kopier manuelt om nødvendig."),
+    );
+    syncUrl(selected);
   }
 
   function removeAt(index: number) {
@@ -154,16 +185,54 @@ export default function CompareClient({
               <span className="comparePending"> Oppdaterer…</span>
             ) : null}
           </strong>
-          {selected.length > 0 && (
-            <button
-              type="button"
-              className="button ghost buttonSm"
-              onClick={clearAll}
-            >
-              Nullstill
-            </button>
-          )}
+          <div className="compareToolbar">
+            {selected.length >= 2 ? (
+              <label className="compareDiffToggle">
+                <input
+                  type="checkbox"
+                  checked={differencesOnly}
+                  onChange={(e) => setDifferencesOnly(e.target.checked)}
+                />
+                <span>Vis bare forskjeller</span>
+              </label>
+            ) : null}
+            {selected.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  className="button ghost buttonSm"
+                  onClick={copyCompareLink}
+                >
+                  Kopier lenke
+                </button>
+                <button
+                  type="button"
+                  className="button ghost buttonSm"
+                  onClick={() => window.print()}
+                >
+                  Skriv ut
+                </button>
+                <button
+                  type="button"
+                  className="button ghost buttonSm"
+                  onClick={clearAll}
+                >
+                  Nullstill
+                </button>
+              </>
+            ) : null}
+          </div>
         </div>
+        {replaceIndex != null ? (
+          <p className="adminHint" role="status">
+            Velg en ny modell for å erstatte bil #{replaceIndex + 1}.
+          </p>
+        ) : null}
+        {shareNote ? (
+          <p className="adminSuccess" role="status">
+            {shareNote}
+          </p>
+        ) : null}
 
         {selectedCars.length > 0 && (
           <ul className="compareSelectedList" aria-label="Valgte modeller">
@@ -385,14 +454,24 @@ export default function CompareClient({
                             </select>
                           </label>
                         )}
-                        <button
-                          type="button"
-                          className="compareRemoveBtn compareRemoveBtnInline"
-                          onClick={() => removeAt(index)}
-                          aria-label={`Fjern ${car.brand} ${car.model}`}
-                        >
-                          Fjern
-                        </button>
+                        <div className="compareHeadActions">
+                          <button
+                            type="button"
+                            className="compareRemoveBtn compareRemoveBtnInline"
+                            onClick={() => setReplaceIndex(index)}
+                            aria-label={`Erstatt ${car.brand} ${car.model}`}
+                          >
+                            Erstatt
+                          </button>
+                          <button
+                            type="button"
+                            className="compareRemoveBtn compareRemoveBtnInline"
+                            onClick={() => removeAt(index)}
+                            aria-label={`Fjern ${car.brand} ${car.model}`}
+                          >
+                            Fjern
+                          </button>
+                        </div>
                       </div>
                     </th>
                   );
@@ -412,7 +491,8 @@ export default function CompareClient({
           </table>
           <p className="compareHint">
             Beste tallverdi markeres med «✓ Best» når sammenligningen er
-            meningsfull (f.eks. lengst rekkevidde). Manglende verdier vises som —.
+            meningsfull (f.eks. lengst rekkevidde). Manglende verdier vises som
+            «Ikke oppgitt» — aldri som 0.
           </p>
         </div>
       )}

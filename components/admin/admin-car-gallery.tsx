@@ -11,6 +11,7 @@ import {
   updateGalleryImageTypeAction,
   uploadGalleryImageAction,
 } from "@/app/admin/gallery-actions";
+import AdminAiImageGeneratorModal from "@/components/admin/admin-ai-image-generator-modal";
 import {
   CAR_IMAGE_TYPE_LABELS,
   CAR_IMAGE_TYPE_OPTIONS,
@@ -22,6 +23,10 @@ type AdminCarGalleryProps = {
   carId: string;
   carSlug: string;
   initialImages: CarImageRow[];
+  brand?: string;
+  model?: string;
+  variant?: string | null;
+  year?: number | null;
 };
 
 function readFileAsBase64(file: File): Promise<string> {
@@ -45,6 +50,10 @@ export default function AdminCarGallery({
   carId,
   carSlug,
   initialImages,
+  brand = "",
+  model = "",
+  variant = null,
+  year = null,
 }: AdminCarGalleryProps) {
   const router = useRouter();
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -55,7 +64,13 @@ export default function AdminCarGallery({
   const [replaceId, setReplaceId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const heroImage =
+    images.find((image) => image.is_primary)?.image_url ||
+    images[0]?.image_url ||
+    null;
 
   useEffect(() => {
     setImages(initialImages);
@@ -233,15 +248,38 @@ export default function AdminCarGallery({
           onChange={(e) => onReplaceFile(e.target.files)}
         />
 
-        <button
-          type="button"
-          className="button primary buttonSm"
-          onClick={() => uploadRef.current?.click()}
-          disabled={isPending}
-        >
-          {isPending ? "Jobber…" : "Last opp bilder"}
-        </button>
+        <div className="adminGalleryActionButtons">
+          <button
+            type="button"
+            className="button primary buttonSm"
+            onClick={() => uploadRef.current?.click()}
+            disabled={isPending}
+          >
+            {isPending ? "Jobber…" : "Last opp bilder"}
+          </button>
+          <button
+            type="button"
+            className="button secondary buttonSm"
+            onClick={() => setAiModalOpen(true)}
+            disabled={isPending}
+          >
+            ✨ Lag AI-bilde
+          </button>
+        </div>
       </div>
+
+      <AdminAiImageGeneratorModal
+        open={aiModalOpen}
+        onClose={() => setAiModalOpen(false)}
+        vehicle={{
+          carId,
+          brand,
+          model,
+          variant,
+          year,
+          heroImageUrl: heroImage,
+        }}
+      />
 
       {images.length === 0 ? (
         <p className="adminImageHint">Ingen galleribilder ennå.</p>

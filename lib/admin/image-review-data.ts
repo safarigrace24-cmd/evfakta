@@ -10,6 +10,10 @@ import {
   type ImageReviewCard,
   type ImageReviewReadiness,
 } from "@/lib/admin/image-review";
+import {
+  archiveAiIllustrationsWhenOfficialAvailable,
+  galleryHasOfficialManufacturerImage,
+} from "@/lib/admin/ai-image-candidate-service";
 import { hydrateCandidateReviewCopies } from "@/lib/admin/image-review-storage";
 import { processFailedImageCandidateReplacements } from "@/lib/admin/image-role-replacement";
 import {
@@ -132,7 +136,7 @@ export async function loadImageReviewWorkspace(
   });
 
   // Permanently failed → queue replacement research per image role (history kept).
-  const candidates = await processFailedImageCandidateReplacements({
+  const afterReplacement = await processFailedImageCandidateReplacements({
     candidates: hydrated,
     brand: car.brand || car.slug,
     modelSlug: car.slug,
@@ -140,9 +144,22 @@ export async function loadImageReviewWorkspace(
     carId: car.id,
   });
 
+  // Official photography preferred: archive AI illustrations automatically (never delete).
+  const candidates = await archiveAiIllustrationsWhenOfficialAvailable({
+    candidates: afterReplacement,
+    gallery,
+  });
+
+  const officialImageAvailable = galleryHasOfficialManufacturerImage(
+    gallery,
+    candidates,
+  );
+
   const visible = filterDefaultImageReviewCandidates(candidates);
   const cards = sortImageReviewCards(
-    visible.map((image) => buildImageReviewCard(image, candidates)),
+    visible.map((image) =>
+      buildImageReviewCard(image, candidates, { officialImageAvailable }),
+    ),
   );
   const readiness = computeImageReviewReadiness({
     gallery,

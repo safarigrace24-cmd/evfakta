@@ -6,8 +6,9 @@ export const dynamic = "force-dynamic";
 
 /**
  * Indexable public routes only.
- * Unfinished / noindex tools (/kalkulator, /rimeligste, /verktoy, /testdata, /ladekart)
+ * Unfinished / noindex tools (/rimeligste, /verktoy, /testdata, /ladekart)
  * stay reachable but are excluded until launch-ready.
+ * Live calculator (/kalkulator) and privacy (/personvern) are included.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
@@ -15,8 +16,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/`, changeFrequency: "daily", priority: 1 },
     { url: `${base}/modeller`, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/sammenlign`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/kalkulator`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/bruktbil`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/info`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/personvern`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/merker`, changeFrequency: "weekly", priority: 0.5 },
   ];
 

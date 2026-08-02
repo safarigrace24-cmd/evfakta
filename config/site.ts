@@ -33,9 +33,6 @@ export const navLinks: NavLink[] = platformNavLinks;
 /** Desktop top-level links — full platform list (no Merker, no Mer). */
 export const primaryNavLinks: NavLink[] = platformNavLinks;
 
-/** @deprecated Kept empty — “Mer” dropdown removed from public IA. */
-export const moreNavLinks: NavLink[] = [];
-
 export const siteConfig = {
   name: "EVFAKTA",
   legalName: "EVFAKTA.no",

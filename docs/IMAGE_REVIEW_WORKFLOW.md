@@ -5,6 +5,8 @@ Editorial review for images already collected during research.
 **Permanent production standard:** `docs/IMAGE_PRODUCTION_STANDARD.md`  
 (source policy, storage, optimization, batch reporting, Image Ready rules)
 
+**AI illustrations (secondary):** `docs/AI_IMAGE_CANDIDATE_WORKFLOW.md`  
+— never replace official photography; never auto-approve; never auto-hero; always labeled.
 This is **not** an upload system and **not** a CMS redesign.
 
 Images are **never** automatically approved.  

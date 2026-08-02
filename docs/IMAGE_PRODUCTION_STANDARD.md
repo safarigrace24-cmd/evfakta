@@ -44,7 +44,8 @@ Do **not** use:
 - Dealer photos without clear permission  
 - Watermarked images  
 - Stock photos pretending to show the exact model  
-- AI-generated images presented as factual vehicle photography  
+- AI-generated images presented as factual / official manufacturer photography  
+  (safe AI illustration candidates are allowed only via `docs/AI_IMAGE_CANDIDATE_WORKFLOW.md`, always labeled, never auto-approved)  
 
 Code enforcement (soft + hard):
 

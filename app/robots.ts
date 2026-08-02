@@ -5,7 +5,15 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/admin/", "/min-side", "/login", "/registrer", "/oppdater-passord"],
+      disallow: [
+        "/admin",
+        "/admin/",
+        "/min-side",
+        "/login",
+        "/registrer",
+        "/glemt-passord",
+        "/oppdater-passord",
+      ],
     },
     sitemap: "https://www.evfakta.no/sitemap.xml",
     host: "https://www.evfakta.no",

@@ -3164,6 +3164,334 @@ h3 {
   gap: 16px;
 }
 
+.adminGalleryActionButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.adminAiGeneratorOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(15, 23, 20, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.adminAiGeneratorModal {
+  width: min(880px, 100%);
+  max-height: min(92vh, 980px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #d7ddd8;
+  padding: 1.1rem 1.25rem 1.35rem;
+  box-shadow: 0 18px 50px rgba(15, 40, 30, 0.18);
+}
+
+.adminAiGeneratorHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.adminAiGeneratorHeader h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+}
+
+.adminAiGeneratorBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+
+.adminAiGeneratorVehicle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.55rem;
+  margin: 0 0 0.85rem;
+  padding: 0.7rem 0.8rem;
+  background: #f7f8f6;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+}
+
+.adminAiGeneratorVehicle div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.adminAiGeneratorVehicle dt {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.adminAiGeneratorVehicle dd {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.adminAiGeneratorHero {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.adminAiGeneratorHeroFrame {
+  position: relative;
+  width: 220px;
+  height: 124px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #d7ddd8;
+  background: #f3f4f3;
+}
+
+.adminAiGeneratorSteps {
+  display: flex;
+  gap: 0.35rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.adminAiGeneratorSteps button {
+  border: 1px solid #c5cdc7;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.adminAiGeneratorSteps button.is-active {
+  background: #0f6b45;
+  border-color: #0f6b45;
+  color: #fff;
+}
+
+.adminAiGeneratorSection h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+}
+
+.adminAiGeneratorTypeList {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.35rem;
+}
+
+.adminAiGeneratorTypeList label {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.adminAiGeneratorRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.adminAiGeneratorPreviewFrame {
+  margin: 0.5rem 0 0.85rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f7f8f6;
+}
+
+.adminAiGeneratorPreviewFrame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: contain;
+}
+
+.adminAiGeneratorStatus {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0.85rem;
+  margin: 0 0 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  background: #f7f8f6;
+}
+
+.adminAiGeneratorStatus strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.86rem;
+}
+
+.adminAiGeneratorStatus p {
+  margin: 0.15rem 0;
+  font-size: 0.88rem;
+}
+
+.adminAiCostAmount {
+  font-size: 1.05rem !important;
+  font-weight: 650;
+}
+
+.adminAiOfficialBanner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0 0 0.9rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #fdba74;
+  border-radius: 6px;
+  background: #fff7ed;
+}
+
+.adminAiOfficialBanner strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.adminAiOfficialThumbs {
+  list-style: none;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.adminAiOfficialThumbs li {
+  display: grid;
+  gap: 0.25rem;
+  width: 96px;
+  font-size: 0.72rem;
+  color: #4b5563;
+}
+
+.adminAiOfficialThumbFrame {
+  position: relative;
+  width: 96px;
+  height: 64px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #d7ddd8;
+  background: #f3f4f3;
+}
+
+.adminAiGeneratorHistory {
+  margin: 0.85rem 0;
+  padding: 0.75rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.adminAiGeneratorHistoryHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+
+.adminAiGeneratorHistoryHeader h4,
+.adminAiComparePanel h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.adminAiGeneratorHistoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.adminAiHistoryItem {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 0.55rem;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  background: #f7f8f6;
+  padding: 0.4rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.adminAiHistoryItem img,
+.adminAiHistoryPlaceholder {
+  width: 72px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #e5e7eb;
+}
+
+.adminAiHistoryPlaceholder {
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.adminAiComparePanel {
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem;
+  border: 1px solid #c5cdc7;
+  border-radius: 6px;
+  background: #f7f8f6;
+}
+
+.adminAiCompareFrames {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+}
+
+.adminAiCompareFrames img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+  .adminAiGeneratorRow {
+    grid-template-columns: 1fr;
+  }
+
+  .adminAiGeneratorStatus,
+  .adminAiCompareFrames {
+    grid-template-columns: 1fr;
+  }
+}
+
 .adminGalleryUpload .authField {
   min-width: 200px;
   margin: 0;
@@ -3261,6 +3589,16 @@ h3 {
 .carGalleryThumbImg {
   object-fit: cover;
   object-position: center;
+}
+
+.carGalleryThumbLetter {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-weight: 700;
+  color: var(--muted, #6b7280);
+  background: #eef1ef;
 }
 
 @media (max-width: 720px) {
@@ -4509,6 +4847,167 @@ h3 {
   padding: 1.5rem;
 }
 
+.adminAiIllustrationPanel {
+  border-top: 1px solid #d7ddd8;
+  padding-top: 1.25rem;
+}
+
+.adminAiIllustrationForm {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 42rem;
+}
+
+.adminAiIllustrationForm label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.adminAiIllustrationForm input[type="text"],
+.adminAiIllustrationForm textarea,
+.adminAiIllustrationForm select {
+  width: 100%;
+  border: 1px solid #c5cdc7;
+  border-radius: 6px;
+  padding: 0.55rem 0.65rem;
+  background: #fff;
+}
+
+.adminAiIllustrationCheck {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.adminAiIllustrationCheck input {
+  margin-top: 0.2rem;
+}
+
+.adminAiPromptDetails {
+  margin-top: 0.75rem;
+}
+
+.adminAiPrompt {
+  white-space: pre-wrap;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  background: #f7f8f6;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  padding: 0.75rem;
+  max-height: 14rem;
+  overflow: auto;
+}
+
+.adminImageReviewCard.isAiIllustration {
+  outline: 1px solid #0f6b45;
+  outline-offset: 0;
+}
+
+.adminAiUploadLabel {
+  cursor: pointer;
+}
+
+.adminAiBadge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: #e8f2ec;
+  color: #0f6b45;
+  border: 1px solid #b7d4c4;
+}
+
+.adminAiBadge.isWarning {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: #fdba74;
+}
+
+.adminAiQualityPanel {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.35rem 0 0.75rem;
+}
+
+.adminAiQualityMeta {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  background: #f7f8f6;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+}
+
+.adminAiQualityMeta div {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+}
+
+.adminAiQualityMeta dt {
+  margin: 0;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.adminAiQualityMeta dd {
+  margin: 0;
+}
+
+.adminAiVisualChecklist {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  border: 1px solid #c5cdc7;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.adminAiVisualChecklist legend {
+  padding: 0 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: #0f6b45;
+}
+
+.adminAiVisualChecklist ul {
+  list-style: none;
+  margin: 0.35rem 0 0.75rem;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.adminAiVisuallyVerified {
+  margin-top: 0.35rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.adminAiChangeRequest {
+  margin: 0.5rem 0;
+}
+
+.adminAiChangeRequest label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+}
+
+.adminAiChangeRequest input {
+  width: 100%;
+  border: 1px solid #c5cdc7;
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+}
+
 .adminImageReviewLightbox img {
   max-width: min(1100px, 100%);
   max-height: 80vh;
@@ -4588,18 +5087,45 @@ h3 {
   -webkit-backdrop-filter: blur(12px);
 }
 
-.publicApp .headerSearchLink {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--r-md);
-  color: var(--ink-secondary);
+.publicApp .headerSearchForm {
+  display: none;
+  align-items: center;
+  gap: 6px;
 }
 
-.publicApp .headerSearchLink:hover {
+.publicApp .headerSearchForm input {
+  width: min(180px, 28vw);
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0 12px;
+  font: inherit;
+  background: var(--bg-elevated);
+  color: var(--ink);
+}
+
+.publicApp .headerSearchSubmit {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0 12px;
+  background: var(--bg);
+  color: var(--ink-secondary);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.publicApp .headerSearchSubmit:hover {
   background: var(--brand-soft);
   color: var(--brand);
+  border-color: var(--brand-soft);
+}
+
+@media (min-width: 1180px) {
+  .publicApp .headerSearchForm {
+    display: inline-flex;
+  }
 }
 
 .publicApp .mobileSearch {
@@ -7473,5 +7999,398 @@ h3 {
 
   .publicApp .compareTableWrap.isPending {
     opacity: 1;
+  }
+}
+
+/* —— Public charging map (/ladekart) —— */
+.chargingMapPage .lead {
+  margin-bottom: 1.25rem;
+}
+
+.chargingMapLayout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 1rem;
+  min-height: min(70vh, 720px);
+  align-items: stretch;
+}
+
+.chargingMapSidebar {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  padding: 0.85rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 8px;
+  background: #f7f8f6;
+  max-height: min(70vh, 720px);
+  overflow: auto;
+}
+
+.chargingMapPrivacy {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: #374151;
+}
+
+.chargingMapActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chargingMapFilters {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  background: #fff;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.chargingMapFilters legend {
+  padding: 0 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.chargingMapFilters label {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.chargingMapRadius {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.chargingMapMinKw {
+  display: grid !important;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
+}
+
+.chargingMapMinKw select {
+  border: 1px solid #c5cdc7;
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  background: #fff;
+}
+
+.chargingMapStationList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.chargingMapStationItem {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  background: #fff;
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.82rem;
+  color: #374151;
+}
+
+.chargingMapStationItem strong {
+  color: #111827;
+  font-size: 0.9rem;
+}
+
+.chargingMapAttribution {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.35;
+}
+
+.chargingMapError {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #fdba74;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.88rem;
+}
+
+.chargingMapCanvasWrap {
+  min-height: min(70vh, 720px);
+  border: 1px solid #d7ddd8;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e8ebe9;
+}
+
+.chargingMapCanvas {
+  width: 100%;
+  height: 100%;
+  min-height: min(70vh, 720px);
+}
+
+@media (max-width: 900px) {
+  .chargingMapLayout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .chargingMapSidebar {
+    max-height: none;
+  }
+
+  .chargingMapCanvas,
+  .chargingMapCanvasWrap {
+    min-height: 420px;
+  }
+}
+
+.adminEditorialAiDrafts {
+  margin: 1rem 0;
+  padding: 0.85rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 8px;
+  background: #f7f8f6;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.adminEditorialAiDrafts h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.adminEditorialAiNotice {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #fdba74;
+  border-radius: 6px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.88rem;
+}
+
+.adminEditorialAiCompare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .adminEditorialAiCompare {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chargingMapStationItem.isSelected {
+  border-color: #0f6b45;
+  box-shadow: inset 0 0 0 1px #0f6b45;
+}
+
+.chargingMapSelectedPanel {
+  padding: 0.75rem;
+  border: 1px solid #c5cdc7;
+  border-radius: 6px;
+  background: #fff;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.chargingMapSelectedPanel h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.chargingMapSelectedMeta {
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.chargingMapSelectedMeta div {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+}
+
+.chargingMapSelectedMeta dt {
+  margin: 0;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.chargingMapSelectedMeta dd {
+  margin: 0;
+}
+
+.chargingCalcLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.chargingCalcForm,
+.chargingCalcResults {
+  padding: 1rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 8px;
+  background: #f7f8f6;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.chargingCalcForm h2,
+.chargingCalcResults h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.chargingCalcRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.chargingCalcPresets,
+.chargingCalcActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chargingCalcResultList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.chargingCalcResultList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  border: 1px solid #d7ddd8;
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+.chargingCalcDisclaimer,
+.chargingCalcFormulas {
+  font-size: 0.88rem;
+  color: #374151;
+}
+
+.usedEvAssessment {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.usedEvAssessmentForm,
+.usedEvAssessmentPanel {
+  padding: 1rem;
+  border: 1px solid #d7ddd8;
+  border-radius: 8px;
+  background: #f7f8f6;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.usedEvChecklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.usedEvChecklist label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+}
+
+.usedEvRiskBadge {
+  display: inline-block;
+  margin: 0;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 650;
+  width: fit-content;
+}
+
+.usedEvRiskBadge--low {
+  background: #e8f2ec;
+  color: #0f6b45;
+  border: 1px solid #b7d4c4;
+}
+
+.usedEvRiskBadge--medium {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fdba74;
+}
+
+.usedEvRiskBadge--high {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.compareToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.compareDiffToggle {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.compareHeadActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  .chargingCalcLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .chargingCalcRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .usedEvPrintable {
+    break-inside: avoid;
+  }
+
+  .comparePicker {
+    display: none;
   }
 }

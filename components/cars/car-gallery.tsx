@@ -9,40 +9,45 @@ type CarGalleryProps = {
   car: Car;
 };
 
-function fallbackSrc(car: Car): string {
-  return car.imageUrl?.trim() || `/images/cars/${car.slug}.webp`;
+function resolveGallery(car: Car): CarGalleryImage[] {
+  if (car.images?.length) {
+    return car.images.filter((image) => Boolean(image.imageUrl?.trim()));
+  }
+  const hero = car.imageUrl?.trim();
+  if (!hero) return [];
+  return [
+    {
+      id: "legacy",
+      imageUrl: hero,
+      imageType: "other",
+      altText: `${car.brand} ${car.model}`,
+      sortOrder: 0,
+      isPrimary: true,
+    },
+  ];
 }
 
 export default function CarGallery({ car }: CarGalleryProps) {
-  const gallery = car.images?.length
-    ? car.images
-    : ([
-        {
-          id: "legacy",
-          imageUrl: fallbackSrc(car),
-          imageType: "other" as const,
-          altText: `${car.brand} ${car.model}`,
-          sortOrder: 0,
-          isPrimary: true,
-        },
-      ] satisfies CarGalleryImage[]);
-
+  const gallery = resolveGallery(car);
   const primaryIndex = Math.max(
     0,
     gallery.findIndex((image) => image.isPrimary),
   );
   const [activeIndex, setActiveIndex] = useState(primaryIndex >= 0 ? primaryIndex : 0);
   const [failedMain, setFailedMain] = useState(false);
+  const [failedThumbs, setFailedThumbs] = useState<Record<string, boolean>>({});
   const touchStartX = useRef<number | null>(null);
 
   const active = gallery[activeIndex] ?? gallery[0];
-  const src = active?.imageUrl?.trim() || fallbackSrc(car);
+  const src = active?.imageUrl?.trim() || "";
   const isRemote = src.startsWith("http://") || src.startsWith("https://");
   const showThumbs = gallery.length > 1;
   const canNavigate = gallery.length > 1;
+  const showLetter = !src || failedMain;
 
   const goTo = useCallback(
     (index: number) => {
+      if (gallery.length === 0) return;
       const next = ((index % gallery.length) + gallery.length) % gallery.length;
       setActiveIndex(next);
       setFailedMain(false);
@@ -86,7 +91,7 @@ export default function CarGallery({ car }: CarGalleryProps) {
         }}
       >
         <div className="detailHeroGlow" aria-hidden="true" />
-        {failedMain ? (
+        {showLetter ? (
           <span className="detailHeroLetter" aria-hidden="true">
             {car.brand.slice(0, 1)}
           </span>
@@ -131,19 +136,22 @@ export default function CarGallery({ car }: CarGalleryProps) {
         ) : null}
       </div>
 
-      <p className="visuallyHidden" aria-live="polite">
-        Bilde {activeIndex + 1} av {gallery.length}
-        {active
-          ? `: ${CAR_IMAGE_TYPE_LABELS[active.imageType]}`
-          : ""}
-      </p>
+      {gallery.length > 0 ? (
+        <p className="visuallyHidden" aria-live="polite">
+          Bilde {activeIndex + 1} av {gallery.length}
+          {active
+            ? `: ${CAR_IMAGE_TYPE_LABELS[active.imageType]}`
+            : ""}
+        </p>
+      ) : null}
 
       {showThumbs && (
         <ul className="carGalleryThumbs" aria-label="Bildegalleri miniatyrer">
           {gallery.map((image, index) => {
-            const thumbSrc = image.imageUrl?.trim() || fallbackSrc(car);
+            const thumbSrc = image.imageUrl?.trim() || "";
             const thumbRemote =
               thumbSrc.startsWith("http://") || thumbSrc.startsWith("https://");
+            const thumbFailed = failedThumbs[image.id];
             return (
               <li key={image.id}>
                 <button
@@ -157,15 +165,24 @@ export default function CarGallery({ car }: CarGalleryProps) {
                   aria-current={index === activeIndex ? "true" : undefined}
                   onClick={() => goTo(index)}
                 >
-                  <Image
-                    src={thumbSrc}
-                    alt=""
-                    fill
-                    sizes="112px"
-                    loading="lazy"
-                    unoptimized={thumbRemote}
-                    className="carGalleryThumbImg"
-                  />
+                  {!thumbSrc || thumbFailed ? (
+                    <span className="carGalleryThumbLetter" aria-hidden="true">
+                      {car.brand.slice(0, 1)}
+                    </span>
+                  ) : (
+                    <Image
+                      src={thumbSrc}
+                      alt=""
+                      fill
+                      sizes="112px"
+                      loading="lazy"
+                      unoptimized={thumbRemote}
+                      className="carGalleryThumbImg"
+                      onError={() =>
+                        setFailedThumbs((prev) => ({ ...prev, [image.id]: true }))
+                      }
+                    />
+                  )}
                 </button>
               </li>
             );

@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import LoginForm from "@/components/auth/login-form";
+
+export const metadata: Metadata = {
+  title: "Logg inn",
+  description: "Logg inn på EVFAKTA for å lagre favoritter og bruke Min side.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/login" },
+};
 
 type LoginPageProps = {
   searchParams: Promise<{ next?: string; error?: string }>;

@@ -3,6 +3,19 @@
  * Editorial recommendations and readiness labels only — never writes to the DB.
  */
 
+import {
+  AI_INTERNAL_WARNING,
+  AI_PUBLIC_LABEL,
+  AI_WARNING,
+  buildAiVisualQualityReview,
+  isAiAwaitingGeneration,
+  isAiEditorialArchive,
+  isAiIllustrationCandidate,
+  isAiVisuallyVerified,
+  parseAiGenerationPrompt,
+  parseAiUsageType,
+  type AiVisualQualityReview,
+} from "@/lib/admin/ai-image-candidates";
 import type { CarImageRow } from "@/lib/admin/car-image-types";
 import { CAR_IMAGE_TYPE_LABELS, isCarImageType } from "@/lib/admin/car-image-types";
 import {
@@ -33,7 +46,12 @@ export type ImageQualityWarning =
   | "Unclear usage rights"
   | "Needs Manual Identity Check"
   | "Unsupported file type"
-  | "Download Failed";
+  | "Download Failed"
+  | "AI-generated illustration"
+  | "Awaiting Generation"
+  | "Not official manufacturer photography"
+  | "Not visually verified"
+  | "Editorial Archive";
 
 export type ImageReviewCard = {
   id: string;
@@ -54,6 +72,15 @@ export type ImageReviewCard = {
   previewKind: "image" | "source_page";
   altText: string | null;
   notes: string | null;
+  isAiIllustration: boolean;
+  aiAwaitingGeneration: boolean;
+  aiUsageType: string | null;
+  aiGenerationPrompt: string | null;
+  aiPublicLabel: string | null;
+  aiInternalWarning: string | null;
+  aiVisuallyVerified: boolean;
+  aiEditorialArchive: boolean;
+  aiQualityReview: AiVisualQualityReview | null;
 };
 
 export type ImageReviewReadiness = {
@@ -148,9 +175,29 @@ export function collectImageQualityWarnings(
   allForCar: ResearchImageCandidate[],
 ): ImageQualityWarning[] {
   const warnings: ImageQualityWarning[] = [];
+  const ai = isAiIllustrationCandidate(image);
+
+  if (ai) {
+    warnings.push("AI-generated illustration");
+    warnings.push("Not official manufacturer photography");
+    if (isAiAwaitingGeneration(image)) {
+      warnings.push("Awaiting Generation");
+    }
+    if (isAiEditorialArchive(image)) {
+      warnings.push("Editorial Archive");
+    } else if (!isAiVisuallyVerified(image) && !isAiAwaitingGeneration(image)) {
+      warnings.push("Not visually verified");
+    }
+  }
 
   // Empty / non-http URLs are broken up front. Load failures are handled in the UI.
-  if (!hasImageCandidateUrl(image.original_url)) {
+  // AI Awaiting Generation uses a non-http provenance placeholder by design.
+  if (!ai && !hasImageCandidateUrl(image.original_url)) {
+    warnings.push("Broken URL");
+  }
+  if (ai && isAiAwaitingGeneration(image)) {
+    // not broken — intentionally awaiting editor generation/upload
+  } else if (ai && !image.storage_path?.trim() && !hasImageCandidateUrl(image.original_url)) {
     warnings.push("Broken URL");
   }
 
@@ -199,11 +246,18 @@ export { resolveImageReviewPreviewUrl } from "@/lib/admin/image-review-preview";
 export function buildImageReviewCard(
   image: ResearchImageCandidate,
   allForCar: ResearchImageCandidate[],
+  options?: { officialImageAvailable?: boolean },
 ): ImageReviewCard {
   const resolution = parseResolutionFromNotes(image.notes);
   const reviewStatus = toImageReviewStatus(image.status);
   const previewUrl = resolveImageReviewPreviewUrl(image);
   const downloadFailed = hasDownloadFailed(image.notes);
+  const ai = isAiIllustrationCandidate(image);
+  const awaiting = isAiAwaitingGeneration(image);
+  const officialImageAvailable = Boolean(options?.officialImageAvailable);
+  const qualityReview = ai
+    ? buildAiVisualQualityReview({ image, officialImageAvailable })
+    : null;
 
   return {
     id: image.id,
@@ -223,9 +277,18 @@ export function buildImageReviewCard(
     isInGallery: image.status === "applied" && Boolean(image.applied_image_id),
     appliedImageId: image.applied_image_id,
     warnings: collectImageQualityWarnings(image, allForCar),
-    previewKind: previewUrl && !downloadFailed ? "image" : "source_page",
+    previewKind: previewUrl && !downloadFailed && !awaiting ? "image" : "source_page",
     altText: image.alt_text,
     notes: image.notes,
+    isAiIllustration: ai,
+    aiAwaitingGeneration: awaiting,
+    aiUsageType: parseAiUsageType(image.notes),
+    aiGenerationPrompt: parseAiGenerationPrompt(image.notes),
+    aiPublicLabel: ai ? AI_PUBLIC_LABEL : null,
+    aiInternalWarning: ai ? AI_INTERNAL_WARNING : null,
+    aiVisuallyVerified: ai ? isAiVisuallyVerified(image) : false,
+    aiEditorialArchive: ai ? isAiEditorialArchive(image) : false,
+    aiQualityReview: qualityReview,
   };
 }
 
@@ -236,12 +299,37 @@ function candidateTypeApproved(
   return candidates.some(
     (image) =>
       APPROVED_DB.has(image.status) &&
+      !isAiIllustrationCandidate(image) &&
       (image.image_type || "").trim().toLowerCase() === type,
   );
 }
 
-function galleryTypeApproved(images: CarImageRow[], type: CarImageRow["image_type"]): boolean {
-  return images.some((image) => image.image_type === type);
+function galleryTypeApproved(
+  images: CarImageRow[],
+  type: CarImageRow["image_type"],
+  excludeIds?: Set<string>,
+): boolean {
+  return images.some(
+    (image) =>
+      image.image_type === type &&
+      (!excludeIds || !excludeIds.has(image.id)),
+  );
+}
+
+/** Gallery rows attached from AI candidates — excluded from official Image Ready. */
+export function aiAppliedGalleryIds(
+  candidates: ResearchImageCandidate[],
+): Set<string> {
+  const ids = new Set<string>();
+  for (const image of candidates) {
+    if (
+      isAiIllustrationCandidate(image) &&
+      image.applied_image_id?.trim()
+    ) {
+      ids.add(image.applied_image_id);
+    }
+  }
+  return ids;
 }
 
 export function computeImageReviewReadiness(input: {
@@ -250,20 +338,33 @@ export function computeImageReviewReadiness(input: {
   carImageUrl?: string | null;
 }): ImageReviewReadiness {
   const { gallery, candidates, carImageUrl } = input;
+  const aiGalleryIds = aiAppliedGalleryIds(candidates);
 
-  const hasApprovedHero =
-    gallery.some((image) => image.is_primary) ||
-    Boolean(carImageUrl?.trim()) ||
+  // Image Ready prefers official photography — AI illustrations never satisfy it.
+  const aiIsHero =
+    gallery.some((image) => image.is_primary && aiGalleryIds.has(image.id)) ||
     candidates.some(
-      (image) => APPROVED_DB.has(image.status) && image.is_primary_candidate,
+      (image) =>
+        APPROVED_DB.has(image.status) &&
+        image.is_primary_candidate &&
+        isAiIllustrationCandidate(image),
     );
+  const hasApprovedHero =
+    gallery.some((image) => image.is_primary && !aiGalleryIds.has(image.id)) ||
+    candidates.some(
+      (image) =>
+        APPROVED_DB.has(image.status) &&
+        image.is_primary_candidate &&
+        !isAiIllustrationCandidate(image),
+    ) ||
+    (Boolean(carImageUrl?.trim()) && !aiIsHero);
 
   const hasApprovedFront =
-    galleryTypeApproved(gallery, "front") ||
+    galleryTypeApproved(gallery, "front", aiGalleryIds) ||
     candidateTypeApproved(candidates, "front");
 
   const hasApprovedSide =
-    galleryTypeApproved(gallery, "side") ||
+    galleryTypeApproved(gallery, "side", aiGalleryIds) ||
     candidateTypeApproved(candidates, "side");
 
   const imagesReady = hasApprovedHero && hasApprovedFront && hasApprovedSide;
@@ -291,9 +392,11 @@ export function computeImageReviewReadiness(input: {
 
 export function canApproveImageCandidate(image: ResearchImageCandidate): boolean {
   if (image.status === "rejected" || image.status === "applied") return false;
+  if (isAiAwaitingGeneration(image)) return false;
   if (
-    isRejectedImageSourceUrl(image.original_url) ||
-    isRejectedImageSourceUrl(image.source_url)
+    !isAiIllustrationCandidate(image) &&
+    (isRejectedImageSourceUrl(image.original_url) ||
+      isRejectedImageSourceUrl(image.source_url))
   ) {
     return false;
   }
@@ -302,6 +405,15 @@ export function canApproveImageCandidate(image: ResearchImageCandidate): boolean
   if (!image.storage_path?.trim()) return false;
   return true;
 }
+
+/** AI approve / hero always require an explicit editor confirmation flag in the action. */
+export function requiresAiIllustrationConfirmation(
+  image: ResearchImageCandidate,
+): boolean {
+  return isAiIllustrationCandidate(image);
+}
+
+export { AI_PUBLIC_LABEL, AI_WARNING, AI_INTERNAL_WARNING };
 
 export function sortImageReviewCards(cards: ImageReviewCard[]): ImageReviewCard[] {
   const statusOrder: Record<ImageReviewStatus, number> = {

@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import RegisterForm from "@/components/auth/register-form";
+
+export const metadata: Metadata = {
+  title: "Registrer deg",
+  description: "Opprett gratis EVFAKTA-konto for å lagre favoritter.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/registrer" },
+};
 
 export default function RegisterPage() {
   return (

@@ -3,6 +3,12 @@
  * Safe for client + server — never hotlinks manufacturer CDN URLs.
  */
 
+import {
+  isAiAwaitingGeneration,
+  isAiIllustrationCandidate,
+  isVisibleAiIllustrationCandidate,
+} from "@/lib/admin/ai-image-candidates";
+
 export const IMAGE_BUCKET = "car-images";
 export const DOWNLOAD_FAILED_MARKER = "Download Failed";
 export const SUPERSEDED_MARKER = "superseded";
@@ -108,8 +114,17 @@ export function isUsableImageReviewCandidate(image: {
   status?: string | null;
   storage_path?: string | null;
   notes?: string | null;
+  source_name?: string | null;
+  original_url?: string | null;
 }): boolean {
   if (image.status === "rejected") return false;
+  // AI Awaiting Generation rows stay visible without a Storage copy.
+  if (isAiIllustrationCandidate(image) && isAiAwaitingGeneration(image)) {
+    return isVisibleAiIllustrationCandidate(image);
+  }
+  if (isAiIllustrationCandidate(image)) {
+    return isVisibleAiIllustrationCandidate(image);
+  }
   if (isPermanentlyFailedImageCandidate(image)) return false;
   if (!image.storage_path?.trim()) return false;
   return true;
@@ -120,6 +135,8 @@ export function filterDefaultImageReviewCandidates<
     status?: string | null;
     storage_path?: string | null;
     notes?: string | null;
+    source_name?: string | null;
+    original_url?: string | null;
   },
 >(candidates: T[]): T[] {
   return candidates.filter((candidate) => isUsableImageReviewCandidate(candidate));

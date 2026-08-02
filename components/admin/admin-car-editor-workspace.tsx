@@ -116,6 +116,10 @@ export default function AdminCarEditorWorkspace({
                   carId={car.id}
                   carSlug={car.slug}
                   initialImages={images}
+                  brand={car.brand}
+                  model={car.model}
+                  variant={car.variant}
+                  year={car.year}
                 />
               </section>
             ) : null}

@@ -117,16 +117,27 @@ export default function SiteHeader({ userEmail = null, isAdmin = false }: SiteHe
               </li>
             ))}
           </ul>
-          <Link
-            href="/modeller"
-            className="headerSearchLink"
-            aria-label="Søk i modeller"
+          <form
+            className="headerSearchForm"
+            action="/modeller"
+            method="get"
+            role="search"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
-            </svg>
-          </Link>
+            <label htmlFor="header-search" className="visuallyHidden">
+              Søk modell eller merke
+            </label>
+            <input
+              id="header-search"
+              type="search"
+              name="q"
+              placeholder="Søk modell…"
+              autoComplete="off"
+              enterKeyHint="search"
+            />
+            <button type="submit" className="headerSearchSubmit">
+              Søk
+            </button>
+          </form>
           {isLoggedIn ? (
             <div className="headerAuth">
               <Link

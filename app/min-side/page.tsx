@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Container from "@/components/layout/container";
@@ -9,6 +10,13 @@ import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getFavoriteCars } from "@/lib/favorites/get-favorites";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Min side",
+  description: "Dine favoritter og konto på EVFAKTA.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/min-side" },
+};
 
 export default async function AccountPage() {
   const user = await getAuthUser();

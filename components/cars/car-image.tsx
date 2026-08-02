@@ -10,24 +10,34 @@ type CarImageProps = {
   priority?: boolean;
 };
 
+function LetterFallback({
+  brand,
+  variant,
+}: {
+  brand: string;
+  variant: "card" | "hero";
+}) {
+  return (
+    <span
+      className={variant === "hero" ? "detailHeroLetter" : undefined}
+      aria-hidden="true"
+    >
+      {brand.slice(0, 1)}
+    </span>
+  );
+}
+
 export default function CarImage({
   car,
   variant = "card",
   priority = false,
 }: CarImageProps) {
   const [failed, setFailed] = useState(false);
-  const src = car.imageUrl?.trim() || `/images/cars/${car.slug}.webp`;
+  const src = car.imageUrl?.trim() || "";
   const isRemote = src.startsWith("http://") || src.startsWith("https://");
 
-  if (failed) {
-    return (
-      <span
-        className={variant === "hero" ? "detailHeroLetter" : undefined}
-        aria-hidden="true"
-      >
-        {car.brand.slice(0, 1)}
-      </span>
-    );
+  if (!src || failed) {
+    return <LetterFallback brand={car.brand} variant={variant} />;
   }
 
   return (

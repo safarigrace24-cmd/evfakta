@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import UpdatePasswordForm from "@/components/auth/update-password-form";
+
+export const metadata: Metadata = {
+  title: "Oppdater passord",
+  description: "Velg et nytt passord for EVFAKTA-kontoen din.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/oppdater-passord" },
+};
 
 export default function UpdatePasswordPage() {
   return (

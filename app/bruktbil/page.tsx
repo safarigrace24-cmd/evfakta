@@ -3,6 +3,7 @@ import Link from "next/link";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import CarGrid from "@/components/cars/car-grid";
+import UsedEvAssessment from "@/components/bruktbil/used-ev-assessment";
 import { getAuthUser } from "@/lib/auth/get-user";
 import { getPublishedCars } from "@/lib/cars/get-published-cars";
 import { getFavoriteSlugs } from "@/lib/favorites/get-favorites";
@@ -10,14 +11,14 @@ import { getFavoriteSlugs } from "@/lib/favorites/get-favorites";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Brukt elbil – kjøpsguide",
+  title: "Brukt elbil – kjøpsguide og vurderingsverktøy",
   description:
-    "Praktisk guide til kjøp av brukt elbil: sjekkliste, batterihelse (SOH) og lenker til publiserte modeller.",
+    "Vurder dokumentasjonsrisiko for brukt elbil: sjekkliste, spørsmål til selger og batterikontekst uten falsk diagnose.",
   alternates: { canonical: "/bruktbil" },
   openGraph: {
     title: "Brukt elbil – kjøpsguide | EVFAKTA",
     description:
-      "Praktisk guide til kjøp av brukt elbil: sjekkliste, batterihelse (SOH) og lenker til publiserte modeller.",
+      "Vurder dokumentasjonsrisiko for brukt elbil med sjekkliste og spørsmål til selger.",
     url: "/bruktbil",
   },
 };
@@ -70,10 +71,19 @@ export default async function UsedEvGuidePage() {
           <Eyebrow>Kjøpsguide</Eyebrow>
           <h1>Brukt elbil — kjøp med åpne øyne</h1>
           <p className="lead narrow">
-            En praktisk oversikt for bruktmarkedet. Dette er redaksjonell veiledning —
-            ikke en erstatning for tilstandsrapport eller verkstedkontroll.
+            Et vurderingsverktøy for dokumentasjon og sjekkliste. EVFAKTA har ikke
+            inspisert bilen — dette erstatter ikke verkstedkontroll eller
+            profesjonell batteritest.
           </p>
         </div>
+
+        <UsedEvAssessment
+          catalogOptions={cars.map((car) => ({
+            brand: car.brand,
+            model: car.model,
+            year: null,
+          }))}
+        />
 
         <section className="proseBlock" aria-labelledby="guide-heading">
           <h2 id="guide-heading">Kjøpsguide</h2>
@@ -89,7 +99,7 @@ export default async function UsedEvGuidePage() {
         </section>
 
         <section className="proseBlock" aria-labelledby="check-heading">
-          <h2 id="check-heading">Sjekkliste ved visning</h2>
+          <h2 id="check-heading">Hurtigsjekk ved visning</h2>
           <ul>
             {checklist.map((item) => (
               <li key={item}>{item}</li>
@@ -105,8 +115,8 @@ export default async function UsedEvGuidePage() {
             eller tredjepartslesere — ikke fra EVFAKTA-tester.
           </p>
           <p>
-            Vi tilbyr foreløpig ingen batteridegradering­skalkulator. Når en slik
-            funksjon er klar og etterprøvbar, vil den dukke opp her — ikke før.
+            EVFAKTA diagnostiserer ikke batterier. Verktøyet over hjelper deg å
+            stille riktige spørsmål og vurdere dokumentasjonsrisiko.
           </p>
         </section>
 

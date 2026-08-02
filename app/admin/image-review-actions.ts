@@ -3,6 +3,20 @@
 import { revalidatePath } from "next/cache";
 import { isAdminEmail } from "@/lib/auth/is-admin";
 import { getAuthUser } from "@/lib/auth/get-user";
+import {
+  appendAiApprovalEvent,
+  canApproveAiAfterVisualReview,
+  canSelectAiHero,
+  isAiAwaitingGeneration,
+  isAiEditorialArchive,
+  isAiIllustrationCandidate,
+  withAiVisualVerificationNotes,
+  type AiVisualChecklistKey,
+  AI_VISUAL_CHECKLIST_KEYS,
+} from "@/lib/admin/ai-image-candidates";
+import { archiveAiIllustrationsWhenOfficialAvailable } from "@/lib/admin/ai-image-candidate-service";
+import { listAdminCarImages } from "@/lib/admin/car-images";
+import { listImageCandidatesForCar } from "@/lib/admin/image-review-data";
 import { canApproveImageCandidate } from "@/lib/admin/image-review";
 import {
   ensureCandidateReviewCopy,
@@ -19,7 +33,7 @@ export type ImageReviewActionResult =
 async function assertAdmin(): Promise<ImageReviewActionResult | null> {
   const user = await getAuthUser();
   if (!user || !isAdminEmail(user.email)) {
-    return { ok: false, error: "Du har ikke tilgang til bildegjennomgang." };
+    return { ok: false, error: "403 Forbidden" };
   }
   return null;
 }
@@ -91,6 +105,12 @@ async function loadCandidateContext(imageId: string): Promise<{
 export async function approveImageCandidateAction(input: {
   imageId: string;
   attachToGallery?: boolean;
+  /** Required for AI illustrations — confirms editor accepts illustration labeling. */
+  confirmAiIllustration?: boolean;
+  /** Required for AI — editor confirms Visually verified after checklist. */
+  confirmVisuallyVerified?: boolean;
+  /** Required for AI — all visual quality checklist keys. */
+  visualChecklistKeys?: string[];
 }): Promise<ImageReviewActionResult> {
   const authError = await assertAdmin();
   if (authError) return authError;
@@ -106,9 +126,52 @@ export async function approveImageCandidateAction(input: {
     return { ok: true, message: "Bildet er allerede i galleriet." };
   }
 
+  if (isAiIllustrationCandidate(ctx.image)) {
+    if (isAiEditorialArchive(ctx.image)) {
+      return {
+        ok: false,
+        error:
+          "AI-illustrasjonen er i Editorial Archive (offisiell foto foretrukket). Kan ikke godkjennes på nytt her.",
+      };
+    }
+    if (isAiAwaitingGeneration(ctx.image)) {
+      return {
+        ok: false,
+        error:
+          "AI-kandidaten venter på generering/opplasting (Awaiting Generation). Kan ikke godkjennes ennå.",
+      };
+    }
+    if (!input.confirmAiIllustration) {
+      return {
+        ok: false,
+        error:
+          "AI-illustrasjon krever eksplisitt bekreftelse: ikke offisiell produsentfoto, krever menneskelig godkjenning.",
+      };
+    }
+    const checklistKeys = (input.visualChecklistKeys ?? []).filter((key) =>
+      AI_VISUAL_CHECKLIST_KEYS.includes(key as AiVisualChecklistKey),
+    );
+    if (
+      !canApproveAiAfterVisualReview({
+        confirmVisuallyVerified: Boolean(input.confirmVisuallyVerified),
+        checklistKeys,
+      })
+    ) {
+      return {
+        ok: false,
+        error:
+          "AI-illustrasjon kan ikke godkjennes før Visual Quality Review er komplett og «Visually verified» er bekreftet.",
+      };
+    }
+  }
+
   // Ensure a durable local review copy before approve (never re-hotlink OEM CDN).
   let image = ctx.image;
-  if (!image.storage_path?.trim() && !hasDownloadFailed(image.notes)) {
+  if (
+    !image.storage_path?.trim() &&
+    !hasDownloadFailed(image.notes) &&
+    !isAiAwaitingGeneration(image)
+  ) {
     image = await ensureCandidateReviewCopy({
       candidate: image,
       brand: ctx.brand || ctx.slug,
@@ -130,27 +193,53 @@ export async function approveImageCandidateAction(input: {
   }
 
   const supabase = createAdminClient();
+  let nextNotes = image.notes;
+  if (isAiIllustrationCandidate(image)) {
+    const checklistKeys = (input.visualChecklistKeys ?? []).filter((key) =>
+      AI_VISUAL_CHECKLIST_KEYS.includes(key as AiVisualChecklistKey),
+    ) as AiVisualChecklistKey[];
+    nextNotes = withAiVisualVerificationNotes(image.notes, checklistKeys);
+    nextNotes = appendAiApprovalEvent(
+      nextNotes,
+      "approved_as_ai_illustration_not_official",
+    );
+  }
   const { error } = await supabase
     .from("research_image_candidates")
-    .update({ status: "approved" })
+    .update({
+      status: "approved",
+      ...(nextNotes ? { notes: nextNotes } : {}),
+    })
     .eq("id", input.imageId);
 
   if (error) return { ok: false, error: "Kunne ikke godkjenne bildet." };
 
-  let message = "Bilde godkjent (Approved).";
+  let message = isAiIllustrationCandidate(image)
+    ? "AI-illustrasjon godkjent (Approved) etter Visual Quality Review. Merket Illustrative image — not official manufacturer photography. Aldri auto-publisert."
+    : "Bilde godkjent (Approved).";
   if (input.attachToGallery !== false) {
     const applied = await applySingleApprovedImage({
       carId: ctx.carId,
       slug: ctx.slug,
       brand: ctx.brand,
-      image: { ...image, status: "approved" },
+      image: { ...image, status: "approved", notes: nextNotes ?? image.notes },
     });
     if (applied.ok) {
-      message =
-        "Bilde godkjent og lagt i galleriet. Synlig på public sider først når bilen er publisert.";
+      message = isAiIllustrationCandidate(image)
+        ? "AI-illustrasjon godkjent, visuelt verifisert og lagt i galleriet. Synlig public først når bilen er publisert og ingen offisiell foto finnes. Offisielle bilder forblir foretrukket."
+        : "Bilde godkjent og lagt i galleriet. Synlig på public sider først når bilen er publisert.";
     } else {
       message = `Bilde godkjent. Galleri-festing ventet: ${applied.error}`;
     }
+  }
+
+  // Official approve → prefer official; archive any AI illustrations for this car.
+  if (!isAiIllustrationCandidate(image)) {
+    const [gallery, candidates] = await Promise.all([
+      listAdminCarImages(ctx.carId),
+      listImageCandidatesForCar(ctx.carId),
+    ]);
+    await archiveAiIllustrationsWhenOfficialAvailable({ gallery, candidates });
   }
 
   revalidateImageReviewPaths(ctx.carId, ctx.slug);
@@ -190,6 +279,8 @@ export async function rejectImageCandidateAction(input: {
 /** Mark one candidate as the only hero for the model. */
 export async function setHeroImageCandidateAction(input: {
   imageId: string;
+  /** Required for AI illustrations — never auto-select Hero. */
+  confirmAiHero?: boolean;
 }): Promise<ImageReviewActionResult> {
   const authError = await assertAdmin();
   if (authError) return authError;
@@ -202,6 +293,35 @@ export async function setHeroImageCandidateAction(input: {
     return { ok: false, error: "Kan ikke velge et avvist bilde som hero." };
   }
 
+  if (isAiIllustrationCandidate(ctx.image)) {
+    if (isAiAwaitingGeneration(ctx.image)) {
+      return {
+        ok: false,
+        error: "Kan ikke velge Hero før AI-bildet er generert/opplastet.",
+      };
+    }
+    if (isAiEditorialArchive(ctx.image)) {
+      return {
+        ok: false,
+        error: "AI i Editorial Archive kan ikke være Hero — bruk offisiell foto.",
+      };
+    }
+    if (!canSelectAiHero(ctx.image)) {
+      return {
+        ok: false,
+        error:
+          "AI-Hero krever at bildet er Approved og Visually verified først.",
+      };
+    }
+    if (!input.confirmAiHero) {
+      return {
+        ok: false,
+        error:
+          "AI-illustrasjon som Hero krever eksplisitt bekreftelse. Offisiell foto er alltid foretrukket.",
+      };
+    }
+  }
+
   const supabase = createAdminClient();
 
   if (ctx.itemIds.length > 0) {
@@ -211,9 +331,19 @@ export async function setHeroImageCandidateAction(input: {
       .in("item_id", ctx.itemIds);
   }
 
+  const heroNotes = isAiIllustrationCandidate(ctx.image)
+    ? appendAiApprovalEvent(
+        ctx.image.notes,
+        "hero_confirmed_ai_illustration_not_official",
+      )
+    : undefined;
+
   const { error } = await supabase
     .from("research_image_candidates")
-    .update({ is_primary_candidate: true })
+    .update({
+      is_primary_candidate: true,
+      ...(heroNotes ? { notes: heroNotes } : {}),
+    })
     .eq("id", input.imageId);
 
   if (error) return { ok: false, error: "Kunne ikke sette hero-bilde." };
@@ -242,9 +372,11 @@ export async function setHeroImageCandidateAction(input: {
   revalidateImageReviewPaths(ctx.carId, ctx.slug);
   return {
     ok: true,
-    message: ctx.image.is_primary_candidate
-      ? "Hero bekreftet (Replace Hero)."
-      : "Hero valgt. Kun ett hero-bilde per modell.",
+    message: isAiIllustrationCandidate(ctx.image)
+      ? "AI-illustrasjon bekreftet som Hero (eksplisitt). Ikke offisiell produsentfoto. Ingen auto-publisering."
+      : ctx.image.is_primary_candidate
+        ? "Hero bekreftet (Replace Hero)."
+        : "Hero valgt. Kun ett hero-bilde per modell.",
   };
 }
 

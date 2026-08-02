@@ -1,24 +1,31 @@
 import type { Metadata } from "next";
-import ComingSoonPage from "@/components/ui/coming-soon-page";
+import { Suspense } from "react";
+import ChargingCostCalculator from "@/components/calculator/charging-cost-calculator";
+import Container from "@/components/layout/container";
+import Eyebrow from "@/components/ui/eyebrow";
 
 export const metadata: Metadata = {
-  title: "Kalkulator",
+  title: "Ladekostnadskalkulator",
   description:
-    "EVFAKTA-kalkulatoren er under utvikling. Sammenlign modeller i kataloget i mellomtiden.",
-  robots: { index: false, follow: true },
+    "Estimer ladekostnad og månedlig strømbruk for elbil. Resultatene er estimater — ikke eksakte priser.",
+  robots: { index: true, follow: true },
+  alternates: { canonical: "/kalkulator" },
 };
 
 export default function CalculatorPage() {
   return (
-    <ComingSoonPage
-      eyebrow="Under utvikling"
-      title="Lade- og kostnads­kalkulator"
-      description="Kalkulatorlogikk er ikke klar i denne utgaven. Vi viser ikke estimater før beregningen er etterprøvbar."
-      reasons={[
-        "Ingen ferdig beregningsmotor i kodebasen ennå",
-        "Vi viser ikke estimater før beregningen er etterprøvbar",
-        "Bruk katalog og sammenligning for faktabaserte valg",
-      ]}
-    />
+    <section className="section chargingCalcPage">
+      <Container>
+        <Eyebrow>Verktøy</Eyebrow>
+        <h1>Ladekostnadskalkulator</h1>
+        <p className="lead narrow">
+          Beregn estimert energi og kostnad for en lading, og valgfritt månedlig
+          strømbruk. Du oppgir egne priser — EVFAKTA hardkoder ikke markedspriser.
+        </p>
+        <Suspense fallback={<p className="adminHint">Laster kalkulator…</p>}>
+          <ChargingCostCalculator />
+        </Suspense>
+      </Container>
+    </section>
   );
 }

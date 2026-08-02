@@ -2,32 +2,23 @@ import Link from "next/link";
 import Container from "@/components/layout/container";
 import Eyebrow from "@/components/ui/eyebrow";
 import { platformNavLinks } from "@/config/site";
-import { publicFeatures } from "@/lib/public/feature-flags";
+import { isNavRouteUnderDevelopment } from "@/lib/public/feature-flags";
 
 const descriptions: Record<string, string> = {
   "/": "Start her — søk, populære modeller og oversikt over plattformen.",
   "/modeller": "Publiserte elbiler med rekkevidde, batteri, lading og kilder.",
   "/sammenlign": "Legg modeller side om side og sammenlign nøkkeltall.",
-  "/kalkulator": "Kostnads- og ladekalkulator — under utvikling.",
+  "/kalkulator": "Estimer ladekostnad og månedlig strømbruk med egne priser.",
   "/rimeligste": "Rangering etter pris — under utvikling til priser er offentlige.",
   "/verktoy": "Rekkevidde, ladeplanlegging og totalkostnad — under utvikling.",
   "/testdata": "Uavhengige testdata med kilder — under utvikling.",
-  "/ladekart": "Ladestasjoner — under utvikling til livedata er på plass.",
+  "/ladekart": "Finn ladestasjoner i nærheten med kart og data fra NOBIL.",
   "/bruktbil": "Kjøpsguide, sjekkliste og batterihelse for brukt elbil.",
   "/info": "Hva EVFAKTA er, kildepolicy, metode og begrepsforklaringer.",
 };
 
 function statusLabel(href: string): string | null {
-  const map: Record<string, { enabled: boolean }> = {
-    "/kalkulator": publicFeatures.calculator,
-    "/rimeligste": publicFeatures.cheapest,
-    "/verktoy": publicFeatures.tools,
-    "/testdata": publicFeatures.testData,
-    "/ladekart": publicFeatures.chargingMap,
-  };
-  const feature = map[href];
-  if (!feature) return null;
-  return feature.enabled ? null : "Under utvikling";
+  return isNavRouteUnderDevelopment(href) ? "Under utvikling" : null;
 }
 
 export default function PlatformHubSection() {

@@ -14,6 +14,7 @@ import "server-only";
 
 import sharp from "sharp";
 import { randomUUID } from "node:crypto";
+import { shouldSkipRemoteHydration } from "@/lib/admin/ai-image-candidates";
 import { buildCarImageStoragePath } from "@/lib/admin/image-production";
 import {
   DOWNLOAD_FAILED_MARKER,
@@ -134,6 +135,10 @@ export async function ensureCandidateReviewCopy(input: {
   const { candidate, brand, modelSlug } = input;
 
   if (candidate.storage_path?.trim()) {
+    return candidate;
+  }
+  // Never attempt OEM download for AI Awaiting Generation placeholders.
+  if (shouldSkipRemoteHydration(candidate)) {
     return candidate;
   }
   if (hasDownloadFailed(candidate.notes)) {

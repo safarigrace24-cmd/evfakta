@@ -4,6 +4,8 @@ import type { Car } from "../data/cars";
 import {
   buildCompareHref,
   buildComparisonRows,
+  COMPARE_MISSING_LABEL,
+  filterComparisonRows,
   parseCompareSelections,
   parseCompareSlugs,
 } from "../lib/compare/comparison";
@@ -84,5 +86,44 @@ describe("buildComparisonRows", () => {
     assert.ok(score);
     assert.deepEqual(score.bestIndexes, [1]);
     assert.equal(score.group, "scores");
+  });
+
+  it("shows Ikke oppgitt for missing values and never invents zeros", () => {
+    const rows = buildComparisonRows(
+      [
+        car({ slug: "a", brand: "A", model: "One", rangeKm: 500, cargoL: null }),
+        car({ slug: "b", brand: "B", model: "Two", rangeKm: 400, cargoL: 400 }),
+      ],
+      { includeHiddenPublicFields: true },
+    );
+    const cargo = rows.find((row) => row.key === "cargo");
+    assert.ok(cargo);
+    assert.equal(cargo.values[0], COMPARE_MISSING_LABEL);
+    assert.equal(cargo.values[1], "400");
+  });
+
+  it("filters to difference-only rows", () => {
+    const rows = buildComparisonRows(
+      [
+        car({
+          slug: "a",
+          brand: "A",
+          model: "One",
+          rangeKm: 500,
+          drive: "Forhjulsdrift",
+        }),
+        car({
+          slug: "b",
+          brand: "B",
+          model: "Two",
+          rangeKm: 400,
+          drive: "Forhjulsdrift",
+        }),
+      ],
+      { includeHiddenPublicFields: true },
+    );
+    const diffs = filterComparisonRows(rows, true);
+    assert.ok(diffs.some((row) => row.key === "rangeKm"));
+    assert.ok(!diffs.some((row) => row.key === "drive"));
   });
 });

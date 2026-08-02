@@ -88,9 +88,28 @@ function bestIndexes(
   return present.filter((entry) => entry.value === target).map((entry) => entry.index);
 }
 
+export const COMPARE_MISSING_LABEL = "Ikke oppgitt";
+
 function formatValue(value: string | number | null): string {
-  if (value == null || value === "") return "—";
+  if (value == null || value === "") return COMPARE_MISSING_LABEL;
   return String(value);
+}
+
+/** True when a row has at least two different non-missing display values. */
+export function comparisonRowHasDifference(row: CompareRow): boolean {
+  const present = row.values.filter(
+    (value) => value != null && value !== "" && value !== COMPARE_MISSING_LABEL,
+  );
+  if (present.length === 0) return false;
+  return new Set(present.map(String)).size > 1;
+}
+
+export function filterComparisonRows(
+  rows: CompareRow[],
+  differencesOnly: boolean,
+): CompareRow[] {
+  if (!differencesOnly) return rows;
+  return rows.filter(comparisonRowHasDifference);
 }
 
 export function parseCompareToken(token: string): CompareSelection | null {
@@ -272,6 +291,9 @@ export function buildComparisonRows(
       };
     })
     .filter((row) =>
-      row.values.some((value) => value != null && value !== "" && value !== "—"),
+      row.values.some(
+        (value) =>
+          value != null && value !== "" && value !== COMPARE_MISSING_LABEL,
+      ),
     );
 }
