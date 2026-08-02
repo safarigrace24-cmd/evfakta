@@ -10,9 +10,11 @@ Related: `docs/AI_PROVIDER_ARCHITECTURE.md`, `docs/AI_IMAGE_CANDIDATE_WORKFLOW.m
 
 | Variable | Scope | Purpose |
 |----------|-------|---------|
-| `AI_PROVIDER=google` | Server | Select Google image adapter |
+| `AI_PROVIDER=google` | Server | Primary Google image adapter |
 | `GOOGLE_AI_API_KEY` | **Server only** | Google AI Studio / Gemini API key |
 | `GOOGLE_AI_IMAGES_ENABLED=false` | Server | Image generation flag |
+| `OPENAI_API_KEY` | **Server only** | OpenAI Images automatic fallback |
+| `OPENAI_IMAGE_MODEL` | Optional | Default `gpt-image-1` |
 | `GOOGLE_AI_TEXT_ENABLED=false` | Server | Editorial text drafts flag |
 | `GOOGLE_AI_IMAGE_MODEL` | Optional | Default `gemini-2.5-flash-image` (single config point) |
 | `GOOGLE_AI_TEXT_MODEL` | Optional | Default `gemini-2.5-flash` |
@@ -73,7 +75,9 @@ Implemented in `lib/admin/ai-providers/google-provider.ts`:
 
 ## Fallback / manual upload
 
-When generation fails or the flag is off:
+**Automatic:** When `AI_PROVIDER=google` and Google image generation fails (quota / billing / unavailable / HTTP 429, including flag off), the facade retries **once** with OpenAI Images (`OPENAI_API_KEY`). Google remains primary; editors never choose a provider. Gemini **text** is unchanged.
+
+**Manual:** When Google and OpenAI both fail (or OpenAI key missing):
 
 1. Prompt + image type preserved in Lag AI-bilde
 2. Soft-fail to **Awaiting Generation** (no fake success image)

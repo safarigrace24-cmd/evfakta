@@ -25,7 +25,7 @@ describe("AI provider abstraction", () => {
     for (const id of AI_PROVIDER_IDS) {
       assert.ok(AI_IMAGE_PROVIDERS[id], `missing provider ${id}`);
       assert.equal(AI_IMAGE_PROVIDERS[id].id, id);
-      if (id === "google") {
+      if (id === "google" || id === "openai") {
         assert.equal(AI_IMAGE_PROVIDERS[id].capabilities.remoteGenerate, true);
       } else {
         assert.equal(AI_IMAGE_PROVIDERS[id].capabilities.remoteGenerate, false);
@@ -48,7 +48,7 @@ describe("AI provider abstraction", () => {
     assert.equal(getConfiguredAiProviderId(), "stable_diffusion");
   });
 
-  it("exposes fallback list without auto-switching", () => {
+  it("exposes AI_PROVIDER_FALLBACK list for future multi-vendor use", () => {
     process.env.AI_PROVIDER = "openai";
     process.env.AI_PROVIDER_FALLBACK = "google,flux,openai";
     assert.deepEqual(getConfiguredAiProviderFallbackIds(), ["google", "flux"]);
@@ -77,9 +77,9 @@ describe("AI provider abstraction", () => {
   });
 
   it("healthCheck reports not connected for stubs", async () => {
-    process.env.AI_PROVIDER = "openai";
+    process.env.AI_PROVIDER = "flux";
     const health = await getActiveAiImageProvider().healthCheck();
-    assert.equal(health.provider, "openai");
+    assert.equal(health.provider, "flux");
     assert.equal(health.connected, false);
     assert.equal(health.healthy, false);
   });

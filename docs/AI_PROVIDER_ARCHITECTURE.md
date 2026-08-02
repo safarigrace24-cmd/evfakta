@@ -95,8 +95,8 @@ Registered in `lib/admin/ai-providers/providers.ts`:
 |----|-------|--------|
 | `none` | None (manual only) | Default — Awaiting Generation |
 | `manual` | Manual upload | Same as none (explicit) |
-| `openai` | OpenAI Images | Stub — not connected |
-| `google` | Google AI Studio / Gemini | Live adapter (`generateContent`) — **flagged off until image quota returns bytes** |
+| `openai` | OpenAI Images | Live Images API — **automatic fallback** when Google fails |
+| `google` | Google AI Studio / Gemini | Live adapter (`generateContent`) — **primary**; flagged off until image quota returns bytes |
 | `ideogram` | Ideogram | Stub — not connected |
 | `flux` | Flux | Stub — not connected |
 | `stable_diffusion` | Stable Diffusion | Stub — not connected |
@@ -121,9 +121,26 @@ Stubs return `unavailable` so the admin flow falls through to manual upload with
 - FreeTier / limit 0 → **no retry**; Norwegian admin copy + manual upload
 - Retries stay inside the adapter — **no duplicate pending candidates** from retry loops
 
+### Automatic OpenAI failover
+
+When `AI_PROVIDER=google` and Google fails for **quota / billing / unavailable / HTTP 429** (including `GOOGLE_AI_IMAGES_ENABLED=false`):
+
+1. Facade calls `generateWithAutomaticFailover()`
+2. OpenAI Images is tried **once** (`OPENAI_API_KEY` required)
+3. Success bytes go through the same Storage → Pending → Image Review path
+4. Editors never choose or see a provider picker
+
+Configured via:
+
+```bash
+AI_PROVIDER=google
+OPENAI_API_KEY=
+# OPENAI_IMAGE_MODEL=gpt-image-1
+```
+
 ### Manual upload fallback
 
-When Google is unavailable or quota is zero:
+When Google **and** OpenAI fail (or no OpenAI key):
 
 1. Lag AI-bilde keeps prompt + image type
 2. Soft-fail to Awaiting Generation

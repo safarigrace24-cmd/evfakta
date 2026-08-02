@@ -1,10 +1,12 @@
 import { createGoogleAiImageProvider } from "@/lib/admin/ai-providers/google-provider";
+import { createOpenAiImageProvider } from "@/lib/admin/ai-providers/openai-provider";
 import { createStubAiImageProvider } from "@/lib/admin/ai-providers/stub-provider";
 import type { AIImageProvider, AiProviderId } from "@/lib/admin/ai-providers/types";
 
 /**
  * Registered provider adapters.
- * Google uses a live Gemini generateContent adapter (feature-flagged).
+ * Google = primary Gemini generateContent adapter (feature-flagged).
+ * OpenAI = Images API used as automatic fallback when Google fails.
  * Other vendors remain stubs until wired.
  */
 export const AI_IMAGE_PROVIDERS: Record<AiProviderId, AIImageProvider> = {
@@ -18,11 +20,7 @@ export const AI_IMAGE_PROVIDERS: Record<AiProviderId, AIImageProvider> = {
     label: "Manual upload",
     credentialEnvKeys: [],
   }),
-  openai: createStubAiImageProvider({
-    id: "openai",
-    label: "OpenAI Images",
-    credentialEnvKeys: ["OPENAI_API_KEY", "AI_OPENAI_API_KEY"],
-  }),
+  openai: createOpenAiImageProvider(),
   google: createGoogleAiImageProvider(),
   ideogram: createStubAiImageProvider({
     id: "ideogram",

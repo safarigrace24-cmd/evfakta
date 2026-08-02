@@ -1,9 +1,10 @@
 /**
  * Resolves the active AI image provider from configuration.
  *
- * Editors never choose a provider — ops sets AI_PROVIDER (and optional
- * AI_PROVIDER_FALLBACK for future use). Failover is architectural only:
- * getFallbackProviders() exposes the list; nothing auto-switches yet.
+ * Editors never choose a provider — ops sets AI_PROVIDER.
+ * Automatic Google → OpenAI failover lives in
+ * `lib/admin/ai-providers/failover.ts` (used by the facade).
+ * AI_PROVIDER_FALLBACK remains an optional ordered list for future use.
  */
 
 import { AI_IMAGE_PROVIDERS } from "@/lib/admin/ai-providers/providers";
@@ -33,7 +34,8 @@ export function getConfiguredAiProviderId(): AiProviderId {
 
 /**
  * Optional comma-separated fallback list (AI_PROVIDER_FALLBACK).
- * Not used automatically — reserved for future failover orchestration.
+ * Google → OpenAI automatic failover is hard-wired in failover.ts when
+ * AI_PROVIDER=google; this list remains available for future multi-vendor use.
  */
 export function getConfiguredAiProviderFallbackIds(): AiProviderId[] {
   const raw = process.env.AI_PROVIDER_FALLBACK?.trim();

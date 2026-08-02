@@ -17,3 +17,7 @@ export {
   isRemoteAiProviderSelected,
 } from "@/lib/admin/ai-providers/registry";
 export { AI_IMAGE_PROVIDERS } from "@/lib/admin/ai-providers/providers";
+export {
+  generateWithAutomaticFailover,
+  shouldFailoverToOpenAi,
+} from "@/lib/admin/ai-providers/failover";

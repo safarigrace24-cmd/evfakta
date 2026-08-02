@@ -3,8 +3,7 @@
  *
  * Admin actions call these helpers; they never import a vendor SDK.
  * Active provider is selected via AI_PROVIDER (see lib/admin/ai-providers).
- *
- * No external API is connected yet — adapters are stubs that return unavailable.
+ * When AI_PROVIDER=google, OpenAI Images is tried once on eligible failures.
  * Storage always goes through existing EVFAKTA candidate/storage workflow.
  */
 
@@ -15,7 +14,9 @@ import {
   getConfiguredAiProviderId,
   type AiImageProviderResult,
 } from "@/lib/admin/ai-providers";
+import { generateWithAutomaticFailover } from "@/lib/admin/ai-providers/failover";
 import { getGoogleAiApiKey } from "@/lib/admin/ai-providers/google-ai";
+import { getOpenAiApiKey } from "@/lib/admin/ai-providers/openai-ai";
 import type { AiGeneratorAspectRatio } from "@/lib/admin/ai-image-generator";
 import { isGoogleAiImagesEnabled } from "@/lib/integrations/feature-flags";
 
@@ -37,18 +38,27 @@ export function getAiImageApiKey(): string | null {
   if (getConfiguredAiProviderId() === "google") {
     return getGoogleAiApiKey();
   }
+  if (getConfiguredAiProviderId() === "openai") {
+    return getOpenAiApiKey();
+  }
   return null;
 }
 
 /**
- * True when the active provider can produce pixels in this environment.
- * Google requires GOOGLE_AI_IMAGES_ENABLED + GOOGLE_AI_API_KEY.
+ * True when generation can produce pixels in this environment.
+ * Google primary: Google (flag+key) OR OpenAI fallback key.
  */
 export function isAiImageProviderAvailable(): boolean {
   const provider = getActiveAiImageProvider();
-  if (!provider.capabilities.remoteGenerate) return false;
   if (provider.id === "google") {
-    return isGoogleAiImagesEnabled() && Boolean(getGoogleAiApiKey());
+    const googleReady =
+      isGoogleAiImagesEnabled() && Boolean(getGoogleAiApiKey());
+    const openaiFallbackReady = Boolean(getOpenAiApiKey());
+    return googleReady || openaiFallbackReady;
+  }
+  if (!provider.capabilities.remoteGenerate) return false;
+  if (provider.id === "openai") {
+    return Boolean(getOpenAiApiKey());
   }
   return true;
 }
@@ -81,8 +91,8 @@ function mapProviderResult(result: AiImageProviderResult): AiProviderGenerateRes
 
 /**
  * Generate image bytes via the configured AIImageProvider.
- * Never invents success. Never talks to a vendor outside the adapter.
- * Callers persist bytes through the existing Storage / candidate workflow.
+ * Google primary → automatic OpenAI fallback on quota/billing/unavailable/429.
+ * Never invents success. Callers persist bytes through existing Storage workflow.
  */
 export async function generateAiImageBytes(input: {
   prompt: string;
@@ -91,8 +101,7 @@ export async function generateAiImageBytes(input: {
   style?: string | null;
   metadata?: Record<string, unknown>;
 }): Promise<AiProviderGenerateResult> {
-  const provider = getActiveAiImageProvider();
-  const result = await provider.generate({
+  const result = await generateWithAutomaticFailover({
     prompt: input.prompt,
     negativePrompt: input.negativePrompt,
     aspectRatio: input.aspectRatio,
@@ -105,7 +114,7 @@ export async function generateAiImageBytes(input: {
   return mapProviderResult(result);
 }
 
-/** Regenerate via the same active provider interface. */
+/** Regenerate via the same failover path (Google → OpenAI once). */
 export async function regenerateAiImageBytes(input: {
   prompt: string;
   negativePrompt?: string | null;
@@ -114,8 +123,7 @@ export async function regenerateAiImageBytes(input: {
   previousJobId?: string | null;
   metadata?: Record<string, unknown>;
 }): Promise<AiProviderGenerateResult> {
-  const provider = getActiveAiImageProvider();
-  const result = await provider.regenerate({
+  const result = await generateWithAutomaticFailover({
     prompt: input.prompt,
     negativePrompt: input.negativePrompt,
     aspectRatio: input.aspectRatio,
@@ -126,7 +134,7 @@ export async function regenerateAiImageBytes(input: {
   return mapProviderResult(result);
 }
 
-/** Edit via the same active provider interface. */
+/** Edit via the active primary provider (no OpenAI edit fallback yet). */
 export async function editAiImageBytes(input: {
   prompt: string;
   negativePrompt?: string | null;

@@ -24,12 +24,12 @@ function walk(dir: string, out: string[] = []): string[] {
 }
 
 describe("Secret exposure guards", () => {
-  it("does not reference NOBIL_API_KEY or GOOGLE_AI_API_KEY in client components", () => {
+  it("does not reference server AI/NOBIL keys in client components", () => {
     const clientRoots = [
       join(ROOT, "components"),
       join(ROOT, "app"),
     ];
-    const forbidden = ["NOBIL_API_KEY", "GOOGLE_AI_API_KEY"];
+    const forbidden = ["NOBIL_API_KEY", "GOOGLE_AI_API_KEY", "OPENAI_API_KEY"];
     const offenders: string[] = [];
 
     for (const root of clientRoots) {
@@ -71,6 +71,7 @@ describe("Secret exposure guards", () => {
     );
     assert.equal(mapClient.includes("NOBIL_API_KEY"), false);
     assert.equal(mapClient.includes("GOOGLE_AI_API_KEY"), false);
+    assert.equal(mapClient.includes("OPENAI_API_KEY"), false);
     assert.equal(mapClient.includes("process.env.NOBIL"), false);
   });
 
@@ -82,6 +83,7 @@ describe("Secret exposure guards", () => {
   it(".env.local.example has placeholders only", () => {
     const example = readFileSync(join(ROOT, ".env.local.example"), "utf8");
     assert.match(example, /GOOGLE_AI_API_KEY=/);
+    assert.match(example, /OPENAI_API_KEY=/);
     assert.match(example, /NOBIL_API_KEY=/);
     assert.match(example, /NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=/);
     assert.match(example, /GOOGLE_AI_IMAGES_ENABLED=false/);
