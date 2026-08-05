@@ -4,7 +4,7 @@
 **Audit date:** 2026-07-28 (initial) · **Last production update:** 2026-07-28  
 **Evidence:** `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` · Phase 1 reports below  
 **Verify this pass:** `npm run lint` ✅ · `npm test` ✅ · `npm run build` ✅  
-**Last production update:** 2026-07-30 — Toyota COMPLETE; dropdown enum repair (no «Velg type» on approved); VW + Volvo + Tesla + BMW + Audi + Kia + Hyundai locked
+**Last production update:** 2026-08-05 — Mercedes-Benz COMPLETE (9 Publish Ready; C-Klasse Electric NOT_READY); VW + Volvo + Tesla + BMW + Audi + Kia + Hyundai + Toyota + BYD locked; await Ford approval
 
 ---
 
@@ -24,12 +24,12 @@
 | Metric | Value | Target |
 |--------|------:|-------:|
 | Progress % (published launch-ready / 50) | **0%** | 100% |
-| Cars in DB | 46 | ≥50 published |
+| Cars in DB | ~64 | ≥50 published |
 | Published (public) | **0** | ≥50 |
-| `import_status = approved` | **36** | ≥50 |
+| `import_status = approved` | **51** | ≥50 |
 | Draft markers remaining | non-finishable remain | 0 |
-| Image Ready (Hero+Front+Side gallery) | **36** | ≥50 |
-| Zero `car_images` gallery | lower after Toyota | 0 |
+| Image Ready (Hero+Front+Side gallery) | **51** | ≥50 |
+| Zero `car_images` gallery | lower after Mercedes-Benz | 0 |
 | Remaining guides (priority set) | 8 | 0 |
 | Remaining launch blockers | See §9 | 0 |
 | Active brand logos | 0 / 3 | 3 / 3 |
@@ -46,6 +46,8 @@
 | Kia | **COMPLETE** (locked) | EV2/EV3/EV6/EV9 **100%**. EV4/EV5/PV5 NOT_READY (no Image Ready). Do not modify unless official data change. See `docs/KIA_BATCH_01.md` |
 | Hyundai | **COMPLETE** (locked) | Kona Electric / Ioniq 5 / Ioniq 6 / Ioniq 9 / INSTER **100%**. Ioniq 9 Varebil / Staria Electric / Ioniq 3 NOT_READY. Do not modify unless official data change. See `docs/HYUNDAI_BATCH_01.md` |
 | Toyota | **COMPLETE** (locked) | bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser **100%**. Commercial LCV/Hilux BEV not finished. Do not modify unless official data change. See `docs/TOYOTA_BATCH_01.md` |
+| BYD | **COMPLETE** (locked) | Dolphin / Atto 3 / Seal / Seal U / Sealion 7 / Tang **100%**. Han / EVO NOT_READY. Do not modify unless official data change. See `docs/BYD_BATCH_01.md` |
+| Mercedes-Benz | **COMPLETE** (locked) | CLA / CLA SB / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA **100%**. C-Klasse Electric NOT_READY (Image Ready). Do not modify unless official data change. See `docs/MERCEDES_BENZ_BATCH_01.md` |
 
 ### Production batches completed
 
@@ -57,6 +59,8 @@
 | VW ID. Buzz | `docs/PHASE1_VOLKSWAGEN_ID_BUZZ_PRODUCTION.json` | YES (+ interior) | No |
 | VW brand rollup | `docs/VOLKSWAGEN_BATCH_01.md` | 4/4 finishable | No |
 | Toyota brand rollup | `docs/TOYOTA_BATCH_01.md` | 4/4 finishable | No |
+| BYD brand rollup | `docs/BYD_BATCH_01.md` | 6/6 finishable | No |
+| Mercedes-Benz brand rollup | `docs/MERCEDES_BENZ_BATCH_01.md` | 9/9 finishable | No |
 
 ### Ops actions this pass
 
@@ -73,7 +77,7 @@
 Software (CMS, Design System 2.0, Image Review, Research, publish gates) is largely **Complete**.  
 Launch is blocked by **content, images, approvals, and catalog coverage**.
 
-**Critical truth:** Public catalog is empty (0 published). Volkswagen, Volvo, Tesla, BMW, Audi, Kia, Hyundai, and Toyota finishable models are at **100%** Review Assistant completion and Image/Launch/Publish Ready (unpublished). VW ID.5, Volvo EX60, Audi Q8, Kia EV4/EV5/PV5, and Hyundai Ioniq 9 Varebil / Staria / Ioniq 3 remain NOT_READY. Tesla energy honesty until Tesla Norge live capture. BMW used PressClub (bmw.no blocked). Audi used Norge pricelists + MediaCenter. Kia used Norge pricelists + kia.no Crystallize press assets. Hyundai used Norge tekniske ark + pricelists + DAM. Toyota used Norge forhandler prislister + Scene7.
+**Critical truth:** Public catalog is empty (0 published). Volkswagen, Volvo, Tesla, BMW, Audi, Kia, Hyundai, Toyota, BYD, and Mercedes-Benz finishable models are at **100%** Review Assistant completion and Image/Launch/Publish Ready (unpublished). VW ID.5, Volvo EX60, Audi Q8, Kia EV4/EV5/PV5, Hyundai Ioniq 9 Varebil / Staria / Ioniq 3, BYD Han / EVO, and Mercedes-Benz C-Klasse Electric remain NOT_READY. Tesla energy honesty until Tesla Norge live capture. BMW used PressClub (bmw.no blocked). Audi used Norge pricelists + MediaCenter. Kia used Norge pricelists + kia.no Crystallize press assets. Hyundai used Norge tekniske ark + pricelists + DAM. Toyota used Norge forhandler prislister + Scene7. BYD used byd.no Sanity specifications + RSA prisliste. Mercedes-Benz used mercedes-benz.no + Norge press (NTB); EQS sedan dims/cargo from official Mercedes-Benz USA tech where NO omits.
 
 ---
 
@@ -161,8 +165,8 @@ Every checklist row uses:
 | Audi | 5 | 5 | 0 | 4 | 4 | 4 | 0 | 1 | CMS 5 (Q8 NOT_READY; master plan still 2) |
 | Kia | 7 | 7 | 0 | 4 | 3 | 4 | 0 | 3 | CMS 7 (EV2/EV4/EV5/PV5 beyond master 3; EV4/EV5/PV5 NOT_READY) |
 | Hyundai | 8 | 8 | 0 | 5 | 5 | 5 | 0 | 3 | CMS 8 (INSTER/Ioniq 9/Varebil/Staria/Ioniq 3 beyond master 3; 3 NOT_READY) |
-| BYD | 3 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | Seal, Atto 3, Sealion 7 (`byd-seal-u` is non-master) |
-| Mercedes-Benz | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 3 |
+| BYD | 3 | 6 | 0 | 6 | 6 | 6 | 0 | 2 | Dolphin/Atto3/Seal/Seal U/Sealion7/Tang 100%; Han/EVO NOT_READY (beyond master 3) |
+| Mercedes-Benz | 3 | 10 | 0 | 9 | 9 | 9 | 0 | 1 | CLA/CLA SB/GLB/GLC/EQS/EQS SUV/EQE SUV/G-Klasse/EQA 100%; C-Klasse Electric NOT_READY (beyond master 3) |
 | Ford | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 2 |
 | Nissan | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 2 |
 | MG | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | all 2 |
@@ -529,11 +533,19 @@ Per model checklist:
 
 ## Phase D6 — Toyota wave
 
-**COMPLETE** (locked) — see `docs/TOYOTA_BATCH_01.md`. bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser **100%**. Commercial LCV / Hilux BEV not finished. Await human go-ahead before BYD.
+**COMPLETE** (locked) — see `docs/TOYOTA_BATCH_01.md`. bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser **100%**. Commercial LCV / Hilux BEV not finished.
+
+## Phase D7 — BYD wave
+
+**COMPLETE** (locked) — see `docs/BYD_BATCH_01.md`. Dolphin / Atto 3 / Seal / Seal U / Sealion 7 / Tang **100%**. Han / EVO NOT_READY.
+
+## Phase D8 — Mercedes-Benz wave
+
+**COMPLETE** (locked) — see `docs/MERCEDES_BENZ_BATCH_01.md`. CLA / CLA Shooting Brake / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA **100%**. C-Klasse Electric NOT_READY (Image Ready). Await human go-ahead before Ford.
 
 ## Phase E — Master catalog expansion
 
-Batch remaining brands from `MASTER_CATALOG_MODELS` **only after human go-ahead** (BYD next when approved — do not start Mercedes until prior brand complete).  
+Batch remaining brands from `MASTER_CATALOG_MODELS` **only after human go-ahead** (Ford next when Mercedes-Benz approved — do not start Polestar until prior brand complete).  
 Mini/Porsche only after explicit catalog expansion beyond the first 50.
 
 ## Phase F — Tool parity (can trail DNS if communicated)
@@ -599,4 +611,4 @@ Live DB snapshot written to `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` (read-o
 | Catalog coverage | **No** |
 | Tool parity | **No** |
 
-**Next production action:** Toyota COMPLETE (bZ4X / bZ4X Touring / C-HR+ / Urban Cruiser 100%). Volkswagen + Volvo + Tesla + BMW + Audi + Kia + Hyundai locked. Await human go-ahead before starting BYD. No commit / no push / no DNS / no auto-publish.
+**Next production action:** Mercedes-Benz COMPLETE (CLA / CLA SB / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA 100%; C-Klasse Electric NOT_READY). Volkswagen + Volvo + Tesla + BMW + Audi + Kia + Hyundai + Toyota + BYD locked. Await human go-ahead before starting Ford. No commit / no push / no DNS / no auto-publish.

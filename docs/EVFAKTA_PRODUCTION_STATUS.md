@@ -1,7 +1,7 @@
 # EVFAKTA Production Status
 
 **Role:** Editorial Production Manager  
-**Report date:** 2026-07-30  
+**Report date:** 2026-08-05  
 **Evidence:** Batch reports (`docs/*_BATCH_01.md`) · `docs/EVFAKTA_V1_LAUNCH_MASTER_CHECKLIST.md` · master catalog plan (50 models)  
 **Publish rule:** Intentional publish only — public catalog remains empty
 
@@ -21,8 +21,10 @@ These manufacturers are **COMPLETE** and **locked** (do not modify unless offici
 | 6 | Kia | `docs/KIA_BATCH_01.md` | 4 | EV4, EV5, PV5 Passenger |
 | 7 | Hyundai | `docs/HYUNDAI_BATCH_01.md` | 5 | Ioniq 9 Varebil, Staria Electric, Ioniq 3 |
 | 8 | Toyota | `docs/TOYOTA_BATCH_01.md` | 4 | — (commercial LCV/Hilux BEV not finished) |
+| 9 | BYD | `docs/BYD_BATCH_01.md` | 6 | Han, EVO |
+| 10 | Mercedes-Benz | `docs/MERCEDES_BENZ_BATCH_01.md` | 9 | C-Klasse Electric |
 
-**Manufacturers complete:** **8**
+**Manufacturers complete:** **10**
 
 ---
 
@@ -74,8 +76,23 @@ Every model below is currently:
 | Toyota | bZ4X Touring | 100% |
 | Toyota | C-HR+ | 100% |
 | Toyota | Urban Cruiser | 100% |
+| BYD | Dolphin | 100% |
+| BYD | Atto 3 | 100% |
+| BYD | Seal | 100% |
+| BYD | Seal U | 100% |
+| BYD | Sealion 7 | 100% |
+| BYD | Tang | 100% |
+| Mercedes-Benz | CLA | 100% |
+| Mercedes-Benz | CLA Shooting Brake | 100% |
+| Mercedes-Benz | GLB | 100% |
+| Mercedes-Benz | GLC | 100% |
+| Mercedes-Benz | EQS | 100% |
+| Mercedes-Benz | EQS SUV | 100% |
+| Mercedes-Benz | EQE SUV | 100% |
+| Mercedes-Benz | G-Klasse Electric | 100% |
+| Mercedes-Benz | EQA | 100% |
 
-**Models complete (Publish Ready, unpublished):** **36**
+**Models complete (Publish Ready, unpublished):** **51**
 
 ---
 
@@ -94,8 +111,11 @@ Blocked models inside completed manufacturer batches (no inventing; remain unpub
 | Hyundai | Ioniq 9 Varebil | Specs from Hyundai Norge tech; Image Ready blocked — no verified gallery |
 | Hyundai | Staria Electric | Marketing page only; NO pricelist/tech PDF not retrieved |
 | Hyundai | Ioniq 3 | Premiere/marketing only; no NO pricelist |
+| BYD | Han | No structured Sanity specifications; insufficient images |
+| BYD | EVO | USP only — structured dims/consumption table not finishable in this run |
+| Mercedes-Benz | C-Klasse Electric | Sale started / strong NO tech; Image Ready blocked — page gallery assets were wrong model (Concept CLA / E-Klasse), not verified C-Klasse Electric Hero/Front/Side |
 
-**Models NOT_READY (production batch blockers):** **9**
+**Models NOT_READY (production batch blockers):** **12**
 
 ### Related non-launch / out-of-scope notes
 
@@ -103,7 +123,11 @@ Blocked models inside completed manufacturer batches (no inventing; remain unpub
 |--------------|------|
 | Toyota Proace Electric / Proace City Electric | Commercial LCV sold in NO — not finished in passenger Toyota batch |
 | Toyota Hilux BEV | Brochure on toyota.no — not finished (incomplete for launch without full NO tech + Image Ready) |
-| `byd-seal-u` | Quarantined non-master shell — not production-batch quality |
+| BYD eTP3 | Commercial van on byd.no — excluded from passenger finish |
+| BYD Dolphin Surf / Atto 2 | Not on current official Norwegian modeller list — not created |
+| Mercedes-Benz EQB / EQE sedan | Discontinued / ikke tilgjengelig on mercedes-benz.no — no Publish Ready shells |
+| Mercedes-Benz VLE / GLA Electric | Upcoming / marketing — not created as finishable shells |
+| Mercedes-Benz commercial vans | Excluded from passenger batch |
 
 ---
 
@@ -111,15 +135,15 @@ Blocked models inside completed manufacturer batches (no inventing; remain unpub
 
 | Metric | Value |
 |--------|------:|
-| Manufacturers complete (locked) | **8** |
-| Models complete (Approved + Image + Launch + Publish Ready, unpublished) | **36** |
-| Models NOT_READY (in completed brand batches) | **9** |
-| Image Ready count | **36** |
-| Publish Ready count | **36** |
+| Manufacturers complete (locked) | **10** |
+| Models complete (Approved + Image + Launch + Publish Ready, unpublished) | **51** |
+| Models NOT_READY (in completed brand batches) | **12** |
+| Image Ready count | **51** |
+| Publish Ready count | **51** |
 | Published count (public) | **0** |
-| Draft markers remaining | **Non-finishable / quarantine remain** (finishable locked models cleared) |
+| Draft markers remaining | **Non-finishable / NOT_READY remain** (finishable locked models cleared) |
 | Launch blockers remaining | **Yes** — catalog coverage, brand logos, DNS cutover, tool parity, intentional publish wave (see master checklist §11) |
-| Cars in DB (approx.) | **46** |
+| Cars in DB (approx.) | **64** |
 | Master catalog target | **50** published |
 
 ---
@@ -128,24 +152,20 @@ Blocked models inside completed manufacturer batches (no inventing; remain unpub
 
 Ordered production queue (**await human go-ahead** before each brand):
 
-| Order | Manufacturer | Planned models (master) | Status |
-|------:|--------------|------------------------:|--------|
-| 1 | **BYD** | 3 | Next — await approval |
-| 2 | Mercedes-Benz | 3 | Not started |
-| 3 | Ford | 2 | Not started |
-| 4 | Nissan | 2 | Not started |
-| 5 | MG | 2 | Not started |
-| 6 | Polestar | 3 | Not started |
-| 7 | XPENG | 2 | Not started |
-| 8 | Zeekr | 2 | Not started |
-| 9 | Renault | 2 | Not started |
-| 10 | Peugeot | 2 | Not started |
-| 11 | Skoda | 2 | Not started |
-| 12 | Cupra | 2 | Not started |
-| 13 | Mini | — | Explicit expansion only |
-| 14 | Porsche | — | Explicit expansion only |
+| Order | Manufacturer | Status |
+|------:|--------------|--------|
+| 1 | **Ford** | Next — await approval of Mercedes-Benz |
+| 2 | Polestar | Not started |
+| 3 | MG | Not started |
+| 4 | Nissan | Not started |
+| 5 | Peugeot | Not started |
+| 6 | Skoda | Not started |
+| 7 | Cupra | Not started |
+| 8 | XPENG | Not started |
+| 9 | Zeekr | Not started |
+| 10 | Porsche | Not started |
 
-**Stop rule:** Do not start BYD until human approval. Do not modify locked manufacturers (Volkswagen, Volvo, Tesla, BMW, Audi, Kia, Hyundai, Toyota) unless official data changes.
+**Stop rule:** Do not start Ford until human approval of Mercedes-Benz. Do not modify locked manufacturers (Volkswagen, Volvo, Tesla, BMW, Audi, Kia, Hyundai, Toyota, BYD, Mercedes-Benz) unless official data changes.
 
 **Queue source of truth:** This file (`docs/EVFAKTA_PRODUCTION_STATUS.md`) is the only live “what’s next” pointer. Completed brand batch reports must not invent a parallel stop sequence.
 
@@ -155,13 +175,13 @@ Ordered production queue (**await human go-ahead** before each brand):
 
 | Lens | Estimate | Basis |
 |------|--------:|-------|
-| Content ready vs 50-model target | **72%** | 36 Publish Ready unpublished / 50 |
+| Content ready vs 50-model target | **100%+** | 51 Publish Ready unpublished / 50 |
 | Public catalog live | **0%** | 0 published |
-| Manufacturer queue progress | **~44%** | 8 complete / ~18 brands in master set |
-| **Overall estimated launch readiness** | **~50%** | Software largely complete + 36 models Publish Ready, but **0 published**, logos missing, DNS blocked, remaining brands + tool parity still required |
+| Manufacturer queue progress | **~56%** | 10 complete / ~18 brands in master set |
+| **Overall estimated launch readiness** | **~60%** | Software largely complete + 51 models Publish Ready, but **0 published**, logos missing, DNS blocked, remaining brands + tool parity still required |
 
-**Verdict:** Production core expanded to **36 Publish Ready** (unpublished). EVFAKTA is **not** ready to replace the live site until a deliberate publish wave, brand logos, broader catalog coverage, and cutover/tool-parity gates are cleared.
+**Verdict:** Production core expanded to **51 Publish Ready** (unpublished). Content volume now exceeds the 50-model Publish Ready count target, but EVFAKTA is **not** ready to replace the live site until a deliberate publish wave, brand logos, and cutover/tool-parity gates are cleared.
 
 ---
 
-**Next production action:** Await human go-ahead before **BYD**. No commit / no push / no DNS / no auto-publish.
+**Next production action:** Await human go-ahead before **Ford**. No commit / no push / no DNS / no auto-publish.
