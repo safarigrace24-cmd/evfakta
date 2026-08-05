@@ -192,6 +192,82 @@ export async function getAiImageGeneratorStatusAction(): Promise<AiImageActionRe
   };
 }
 
+export type CarImageWorkflowSummary = {
+  officialCount: number;
+  aiCandidateCount: number;
+  pendingCount: number;
+  approvedCount: number;
+  rejectedCount: number;
+  heroReady: boolean;
+  galleryCount: number;
+  reviewPath: string;
+  history: Array<{
+    id: string;
+    label: string;
+    status: string;
+    isAi: boolean;
+    updatedAt: string | null;
+  }>;
+};
+
+/** Lightweight Images-tab workflow counters (no schema / workflow changes). */
+export async function getCarImageWorkflowSummaryAction(input: {
+  carId: string;
+}): Promise<
+  | { ok: true; summary: CarImageWorkflowSummary; message: string }
+  | { ok: false; error: string }
+> {
+  const auth = await requireAdminUser();
+  if (!auth.ok) return auth;
+  if (!input.carId.trim()) {
+    return { ok: false, error: "carId er påkrevd." };
+  }
+
+  const carId = input.carId.trim();
+  const [gallery, candidates, official] = await Promise.all([
+    listAdminCarImages(carId),
+    listImageCandidatesForCar(carId),
+    buildOfficialImageFields(carId),
+  ]);
+
+  const aiCandidates = candidates.filter((c) => isAiIllustrationCandidate(c));
+  const history = [...candidates]
+    .sort((a, b) => {
+      const aTime = Date.parse(a.created_at || "") || 0;
+      const bTime = Date.parse(b.created_at || "") || 0;
+      return bTime - aTime;
+    })
+    .slice(0, 8)
+    .map((c) => ({
+      id: c.id,
+      label:
+        c.image_type?.trim() ||
+        c.alt_text?.trim() ||
+        (isAiIllustrationCandidate(c) ? "AI candidate" : "Candidate"),
+      status: c.status,
+      isAi: isAiIllustrationCandidate(c),
+      updatedAt: c.created_at || null,
+    }));
+
+  return {
+    ok: true,
+    message: "Image workflow summary loaded.",
+    summary: {
+      officialCount: official.officialImageCount,
+      aiCandidateCount: aiCandidates.length,
+      pendingCount: candidates.filter((c) => c.status === "pending").length,
+      approvedCount: candidates.filter(
+        (c) => c.status === "approved" || c.status === "applied",
+      ).length,
+      rejectedCount: candidates.filter((c) => c.status === "rejected").length,
+      heroReady: gallery.some((image) => image.is_primary),
+      galleryCount: gallery.length,
+      reviewPath: `/admin/images/${carId}`,
+      history,
+    },
+  };
+}
+
 /** Full Lag AI-bilde context: provider status + official gallery preference. */
 export async function getAiImageGeneratorContextAction(input: {
   carId: string;

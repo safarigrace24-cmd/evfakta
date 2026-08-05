@@ -1892,6 +1892,254 @@ h3 {
   font-size: 0.92rem;
 }
 
+.adminCompletionProgress {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.adminCompletionBarTrack {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.adminCompletionBarFill {
+  height: 100%;
+  border-radius: inherit;
+  background: #c45c26;
+  transition: width 0.3s ease;
+}
+
+.adminCompletionBarFill.is-mid {
+  background: #b8860b;
+}
+
+.adminCompletionBarFill.is-ready {
+  background: #2f6f4e;
+}
+
+.adminCompletionGlyphs {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.adminCompletionStatus {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.adminCompletionStatus.is-ready {
+  color: #2f6f4e;
+}
+
+.adminAiStatusPanel {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+}
+
+.adminAiStatusPanel h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.adminAiStatusList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.adminAiStatusList li {
+  font-size: 0.92rem;
+}
+
+.adminJumpLink {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.adminJumpLink:hover span,
+.adminJumpLink:focus-visible span {
+  text-decoration: underline;
+}
+
+.adminJumpLink em {
+  font-style: normal;
+  font-size: 0.8rem;
+  color: var(--brand);
+}
+
+.adminJumpList li {
+  list-style: none;
+  margin: 0 0 8px;
+}
+
+.adminImproveAllPreview {
+  margin: 14px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--line-soft);
+  background: var(--bg);
+  display: grid;
+  gap: 10px;
+}
+
+.adminImproveAllPreview h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.adminPublishBlockHint {
+  margin: 8px 0 0;
+}
+
+.adminEditorProductionSummary {
+  flex-wrap: wrap;
+}
+
+.adminFieldConfidenceMeter {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+}
+
+.adminFieldConfidenceMeter span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.adminFieldConfidenceFill {
+  height: 8px;
+  border-radius: 999px;
+  background: #b8860b;
+  transition: width 0.25s ease;
+}
+
+.adminFieldConfidenceMeter.is-low {
+  border-color: #c0392b66;
+  background: #c0392b0d;
+}
+
+.adminFieldConfidenceMeter.is-low .adminFieldConfidenceFill {
+  background: #c0392b;
+}
+
+.adminFieldConfidenceMeter.is-mid .adminFieldConfidenceFill,
+.adminFieldConfidenceMeter.is-near .adminFieldConfidenceFill {
+  background: #c45c26;
+}
+
+.adminFieldConfidenceMeter.is-high {
+  border-color: #2f6f4e66;
+  background: #2f6f4e0d;
+}
+
+.adminFieldConfidenceMeter.is-high .adminFieldConfidenceFill {
+  background: #2f6f4e;
+}
+
+.adminFieldReviewCard.is-pending {
+  border-color: #c45c2666;
+}
+
+.adminFieldReviewCard.is-confidence-low {
+  box-shadow: inset 3px 0 0 #c0392b;
+}
+
+.adminFieldReviewCard.is-confidence-high {
+  box-shadow: inset 3px 0 0 #2f6f4e;
+}
+
+.adminImageWorkflowSummary {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+  display: grid;
+  gap: 14px;
+}
+
+.adminImageWorkflowGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.adminImageWorkflowGrid div {
+  display: grid;
+  gap: 4px;
+}
+
+.adminImageWorkflowGrid span {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.adminImageWorkflowGrid strong {
+  font-size: 1.05rem;
+}
+
+.adminImageWorkflowHistoryHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.adminImageWorkflowHistoryHeader h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.adminImageWorkflowHistory ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.adminImageWorkflowHistory li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.adminImageWorkflowHistory em {
+  font-style: normal;
+  color: var(--muted);
+}
+
 .adminEditorialRing {
   position: relative;
   width: 80px;

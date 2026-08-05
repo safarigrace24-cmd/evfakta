@@ -17,8 +17,14 @@ import {
   isRewriteKind,
   type EditorialAiDraftKind,
 } from "@/lib/admin/google-ai-editorial-drafts";
+import { buildAdminAiServicesStatus } from "@/lib/admin/admin-ai-status";
 import { generateGoogleAiText } from "@/lib/admin/google-ai-text";
-import { isGoogleAiTextEnabled } from "@/lib/integrations/feature-flags";
+import { getGoogleAiApiKey } from "@/lib/admin/ai-providers/google-ai";
+import { getOpenAiApiKey } from "@/lib/admin/ai-providers/openai-ai";
+import {
+  isGoogleAiImagesEnabled,
+  isGoogleAiTextEnabled,
+} from "@/lib/integrations/feature-flags";
 
 export type EditorialAssistActionResult =
   | (AssistedEditorialResult & { ok: true })
@@ -105,10 +111,11 @@ export async function generateEditorialAiDraftAction(input: {
     return { ok: false, error: "Ugyldig utkast-type." };
   }
 
-  if (!isGoogleAiTextEnabled()) {
+  if (!isGoogleAiTextEnabled() || !getGoogleAiApiKey()) {
     return {
       ok: false,
-      error: "AI-assistenten er midlertidig utilgjengelig.",
+      error:
+        "AI Text unavailable — Gemini text is disabled or missing API key. Image generation may still work.",
     };
   }
 
@@ -136,7 +143,8 @@ export async function generateEditorialAiDraftAction(input: {
   if (!generated.ok) {
     return {
       ok: false,
-      error: "AI-assistenten er midlertidig utilgjengelig.",
+      error:
+        "AI Text temporarily failed. AI Image (OpenAI fallback) may still be available.",
     };
   }
 
@@ -184,7 +192,7 @@ export async function getEditorialAiTextStatusAction(): Promise<
   if (!auth.ok) return auth;
 
   const enabled = isGoogleAiTextEnabled();
-  const configured = Boolean(process.env.GOOGLE_AI_API_KEY?.trim());
+  const configured = Boolean(getGoogleAiApiKey());
   return {
     ok: true,
     enabled,
@@ -194,5 +202,127 @@ export async function getEditorialAiTextStatusAction(): Promise<
       : !enabled
         ? "Funksjon deaktivert (GOOGLE_AI_TEXT_ENABLED)"
         : "Tilkoblet",
+  };
+}
+
+/** Combined AI Text + AI Image status for the Review Assistant sidebar. */
+export async function getAdminAiServicesStatusAction(): Promise<
+  | {
+      ok: true;
+      textAvailable: boolean;
+      openaiImageAvailable: boolean;
+      googleImageAvailable: boolean;
+      allFailed: boolean;
+      summaryLabel: string;
+      lines: Array<{ id: string; available: boolean; label: string }>;
+    }
+  | { ok: false; error: string }
+> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const textAvailable = isGoogleAiTextEnabled() && Boolean(getGoogleAiApiKey());
+  const openaiImageAvailable = Boolean(getOpenAiApiKey());
+  const googleImageAvailable =
+    isGoogleAiImagesEnabled() && Boolean(getGoogleAiApiKey());
+
+  const status = buildAdminAiServicesStatus({
+    textAvailable,
+    openaiImageAvailable,
+    googleImageAvailable,
+  });
+
+  return {
+    ok: true,
+    textAvailable,
+    openaiImageAvailable,
+    googleImageAvailable,
+    allFailed: status.allFailed,
+    summaryLabel: status.summaryLabel,
+    lines: status.lines,
+  };
+}
+
+const IMPROVE_ALL_KINDS: EditorialAiDraftKind[] = [
+  "description",
+  "summary",
+  "faq",
+  "seo_title",
+  "meta_description",
+  "metadata",
+];
+
+/**
+ * Generate a multi-section editorial improvement preview.
+ * Never writes to the database — editor must Apply manually.
+ */
+export async function generateImproveAllEditorialDraftsAction(input: {
+  carId: string;
+  sourceText?: string;
+}): Promise<
+  | {
+      ok: true;
+      drafts: Array<{
+        kind: EditorialAiDraftKind;
+        draft: string;
+        model?: string;
+      }>;
+      message: string;
+      failedKinds: EditorialAiDraftKind[];
+    }
+  | { ok: false; error: string }
+> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  if (!input.carId?.trim()) {
+    return { ok: false, error: "Mangler bil-id." };
+  }
+
+  if (!isGoogleAiTextEnabled() || !getGoogleAiApiKey()) {
+    return {
+      ok: false,
+      error:
+        "AI Text unavailable — cannot improve editorial text. AI Image may still work.",
+    };
+  }
+
+  const drafts: Array<{
+    kind: EditorialAiDraftKind;
+    draft: string;
+    model?: string;
+  }> = [];
+  const failedKinds: EditorialAiDraftKind[] = [];
+
+  for (const kind of IMPROVE_ALL_KINDS) {
+    const result = await generateEditorialAiDraftAction({
+      carId: input.carId,
+      kind,
+      sourceText: input.sourceText,
+    });
+    if (!result.ok) {
+      failedKinds.push(kind);
+      continue;
+    }
+    drafts.push({
+      kind: result.kind,
+      draft: result.draft,
+      model: result.model,
+    });
+  }
+
+  if (drafts.length === 0) {
+    return {
+      ok: false,
+      error:
+        "AI Text temporarily failed for all improve-all sections. Nothing was saved.",
+    };
+  }
+
+  return {
+    ok: true,
+    drafts,
+    failedKinds,
+    message: `Preview ready for ${drafts.length} section(s). Nothing is saved until you Apply.`,
   };
 }

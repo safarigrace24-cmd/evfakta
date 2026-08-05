@@ -32,6 +32,37 @@ function confidenceLabel(confidence: number | null): string {
   return `${Math.round(confidence * 100)}%`;
 }
 
+function confidencePercent(confidence: number | null): number | null {
+  if (confidence == null || !Number.isFinite(confidence)) return null;
+  return Math.round(Math.max(0, Math.min(1, confidence)) * 100);
+}
+
+function confidenceBand(
+  percent: number | null,
+): "low" | "mid" | "near" | "high" | "unknown" {
+  if (percent == null) return "unknown";
+  if (percent < 70) return "low";
+  if (percent < 90) return "mid";
+  if (percent < 95) return "near";
+  return "high";
+}
+
+function confidenceBandLabel(
+  band: ReturnType<typeof confidenceBand>,
+): string {
+  if (band === "low") return "Below 70%";
+  if (band === "mid") return "Below 90%";
+  if (band === "near") return "Below 95%";
+  if (band === "high") return "95%+";
+  return "";
+}
+
+function reviewStatusLabel(status: FieldReviewCard["reviewStatus"]): string {
+  if (status === "approved") return "🟢 Approved";
+  if (status === "rejected") return "🔴 Rejected";
+  return "🟠 Pending";
+}
+
 function editSeed(card: FieldReviewCard): string {
   if (card.value == null) return "";
   if (Array.isArray(card.value)) return card.value.map(String).join("\n");
@@ -54,12 +85,16 @@ function FieldCard({
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(editSeed(card));
+  const percent = confidencePercent(card.confidence);
+  const band = confidenceBand(percent);
 
   return (
     <article
       className={`adminFieldReviewCard${card.lowConfidence ? " is-lowConfidence" : ""}${
         card.reviewStatus === "approved" ? " is-approved" : ""
-      }${card.reviewStatus === "rejected" ? " is-rejected" : ""}`}
+      }${card.reviewStatus === "rejected" ? " is-rejected" : ""}${
+        card.reviewStatus === "pending" ? " is-pending" : ""
+      } is-confidence-${band}`}
     >
       <header className="adminFieldReviewCardHeader">
         <div>
@@ -67,21 +102,32 @@ function FieldCard({
           <code>{card.fieldKey}</code>
         </div>
         <div className="adminFieldReviewBadges">
-          <span
-            className={`adminStatusBadge${
-              card.lowConfidence ? " status-conflict" : " decision-approved"
-            }`}
-          >
-            {confidenceLabel(card.confidence)}
-          </span>
           <span className={`adminStatusBadge decision-${card.reviewStatus}`}>
-            {card.reviewStatus}
+            {reviewStatusLabel(card.reviewStatus)}
           </span>
           {card.isDraft ? (
             <span className="adminStatusBadge status-needs_review">Draft</span>
           ) : null}
         </div>
       </header>
+
+      <div
+        className={`adminFieldConfidenceMeter is-${band}`}
+        role="meter"
+        aria-label="Confidence"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percent ?? 0}
+      >
+        <div
+          className="adminFieldConfidenceFill"
+          style={{ width: `${percent ?? 0}%` }}
+        />
+        <span>
+          {confidenceLabel(card.confidence)}
+          {confidenceBandLabel(band) ? ` · ${confidenceBandLabel(band)}` : ""}
+        </span>
+      </div>
 
       <dl className="adminFieldReviewMeta">
         <div>

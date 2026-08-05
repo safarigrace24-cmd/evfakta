@@ -1,8 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
+import {
+  getCarImageWorkflowSummaryAction,
+  type CarImageWorkflowSummary,
+} from "@/app/admin/ai-image-actions";
 import {
   removeGalleryImageAction,
   reorderGalleryImagesAction,
@@ -65,6 +70,7 @@ export default function AdminCarGallery({
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [workflow, setWorkflow] = useState<CarImageWorkflowSummary | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const heroImage =
@@ -75,6 +81,17 @@ export default function AdminCarGallery({
   useEffect(() => {
     setImages(initialImages);
   }, [initialImages]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void getCarImageWorkflowSummaryAction({ carId }).then((result) => {
+      if (cancelled || !result.ok) return;
+      setWorkflow(result.summary);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [carId, initialImages]);
 
   function refresh() {
     router.refresh();
@@ -201,6 +218,66 @@ export default function AdminCarGallery({
           </p>
         </div>
       </div>
+
+      {workflow ? (
+        <div className="adminImageWorkflowSummary" aria-label="Image workflow">
+          <div className="adminImageWorkflowGrid">
+            <div>
+              <span>Official images</span>
+              <strong>{workflow.officialCount}</strong>
+            </div>
+            <div>
+              <span>AI candidates</span>
+              <strong>{workflow.aiCandidateCount}</strong>
+            </div>
+            <div>
+              <span>Pending</span>
+              <strong>{workflow.pendingCount}</strong>
+            </div>
+            <div>
+              <span>Approved</span>
+              <strong>{workflow.approvedCount}</strong>
+            </div>
+            <div>
+              <span>Rejected</span>
+              <strong>{workflow.rejectedCount}</strong>
+            </div>
+            <div>
+              <span>Hero</span>
+              <strong>{workflow.heroReady ? "✓" : "—"}</strong>
+            </div>
+            <div>
+              <span>Gallery</span>
+              <strong>{workflow.galleryCount}</strong>
+            </div>
+          </div>
+          <div className="adminImageWorkflowHistory">
+            <div className="adminImageWorkflowHistoryHeader">
+              <h3>Generation history</h3>
+              <Link href={workflow.reviewPath} className="button secondary buttonSm">
+                Open Image Review
+              </Link>
+            </div>
+            {workflow.history.length === 0 ? (
+              <p className="adminHint">No candidate history yet.</p>
+            ) : (
+              <ul>
+                {workflow.history.map((entry) => (
+                  <li key={entry.id}>
+                    <span>
+                      {entry.isAi ? "AI · " : "Official/research · "}
+                      {entry.label}
+                    </span>
+                    <em>{entry.status}</em>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      ) : (
+        <p className="adminHint">Loading image workflow…</p>
+      )}
 
       <div className="adminGalleryUpload">
         <label className="authField">

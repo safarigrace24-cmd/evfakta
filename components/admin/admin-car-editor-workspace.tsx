@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import AdminCarEditorHeader from "@/components/admin/admin-car-editor-header";
 import AdminCarForm, {
   type CarEditorFormTab,
@@ -13,17 +13,11 @@ import AdminEditorialAssistant from "@/components/admin/admin-editorial-assistan
 import AdminFieldReviewCards from "@/components/admin/admin-field-review-cards";
 import type { AdminBrand } from "@/lib/admin/brand-types";
 import type { CarImageRow } from "@/lib/admin/car-image-types";
+import type { CarEditorTab } from "@/lib/admin/editor-navigation";
 import type { AdminCar } from "@/lib/admin/types";
 import type { AdminCarVariant } from "@/lib/admin/variant-types";
 
-export type CarEditorTab =
-  | "overview"
-  | "specifications"
-  | "images"
-  | "variants"
-  | "editorial"
-  | "sources"
-  | "history";
+export type { CarEditorTab };
 
 const TABS: Array<{ id: CarEditorTab; label: string }> = [
   { id: "overview", label: "Overview" },
@@ -62,6 +56,17 @@ export default function AdminCarEditorWorkspace({
 }: AdminCarEditorWorkspaceProps) {
   const [tab, setTab] = useState<CarEditorTab>("overview");
   const formTab = toFormTab(tab);
+
+  const navigateTo = useCallback((nextTab: CarEditorTab, anchorId?: string) => {
+    setTab(nextTab);
+    window.setTimeout(() => {
+      if (!anchorId) return;
+      const node = document.getElementById(anchorId);
+      if (node) {
+        node.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 60);
+  }, []);
 
   return (
     <div className="adminEditorWorkspace">
@@ -158,6 +163,7 @@ export default function AdminCarEditorWorkspace({
               images={images}
               variants={variants}
               variant="sidebar"
+              onNavigate={navigateTo}
             />
           </div>
         </aside>

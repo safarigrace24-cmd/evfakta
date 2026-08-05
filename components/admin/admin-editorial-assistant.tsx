@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
   generateEditorialAiDraftAction,
-  getEditorialAiTextStatusAction,
+  generateImproveAllEditorialDraftsAction,
+  getAdminAiServicesStatusAction,
   researchAndFillMissingFieldsAction,
 } from "@/app/admin/editorial-actions";
 import {
@@ -13,6 +14,12 @@ import {
   type EditorialCompletion,
 } from "@/lib/admin/editorial-completion";
 import type { CarImageRow } from "@/lib/admin/car-image-types";
+import {
+  completionBarGlyphs,
+  completionStatusText,
+  resolveEditorJump,
+  type CarEditorTab,
+} from "@/lib/admin/editor-navigation";
 import type { AdminCar } from "@/lib/admin/types";
 import type { AdminCarVariant } from "@/lib/admin/variant-types";
 import type { EditorialAiDraftKind } from "@/lib/admin/google-ai-editorial-drafts";
@@ -22,54 +29,114 @@ type AdminEditorialAssistantProps = {
   images: CarImageRow[];
   variants: AdminCarVariant[];
   variant?: "panel" | "sidebar";
+  onNavigate?: (tab: CarEditorTab, anchorId?: string) => void;
 };
 
-function CompletionRing({ percent }: { percent: number }) {
-  const radius = 34;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percent / 100) * circumference;
+type ImproveAllDraft = {
+  kind: EditorialAiDraftKind;
+  draft: string;
+  model?: string;
+};
+
+function CompletionProgress({
+  percent,
+  threshold,
+}: {
+  percent: number;
+  threshold: number;
+}) {
+  const status = completionStatusText(percent, threshold);
+  const ready = percent >= threshold;
+  const barClass = ready
+    ? "adminCompletionBarFill is-ready"
+    : percent >= 70
+      ? "adminCompletionBarFill is-mid"
+      : "adminCompletionBarFill is-low";
 
   return (
-    <div className="adminEditorialRing" aria-hidden="true">
-      <svg viewBox="0 0 80 80" width="80" height="80">
-        <circle className="adminEditorialRingTrack" cx="40" cy="40" r={radius} />
-        <circle
-          className="adminEditorialRingValue"
-          cx="40"
-          cy="40"
-          r={radius}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-        />
-      </svg>
-      <strong>{percent}%</strong>
+    <div className="adminCompletionProgress" role="group" aria-label="Completion">
+      <div
+        className="adminCompletionBarTrack"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percent}
+        aria-valuetext={`${percent}% — ${status}`}
+      >
+        <div className={barClass} style={{ width: `${percent}%` }} />
+      </div>
+      <p className="adminCompletionGlyphs" aria-hidden="true">
+        {completionBarGlyphs(percent)}
+      </p>
+      <p className="adminEditorialPercent">
+        <strong>{percent}%</strong>
+        <span className={ready ? "adminCompletionStatus is-ready" : "adminCompletionStatus"}>
+          {ready ? "🟢 Ready for Publish" : status}
+        </span>
+      </p>
     </div>
   );
 }
 
-function ChecklistView({ completion }: { completion: EditorialCompletion }) {
+function JumpButton({
+  label,
+  openLabel,
+  onClick,
+}: {
+  label: string;
+  openLabel: string;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" className="adminJumpLink" onClick={onClick}>
+      <span>{label}</span>
+      <em>Open {openLabel}</em>
+    </button>
+  );
+}
+
+function ChecklistView({
+  completion,
+  onNavigate,
+}: {
+  completion: EditorialCompletion;
+  onNavigate?: (tab: CarEditorTab, anchorId?: string) => void;
+}) {
   return (
     <div className="adminEditorialSections">
       {completion.sections.map((section) => (
         <section key={section.id} className="adminEditorialSection">
           <h3>{section.title}</h3>
           <ul>
-            {section.items.map((entry) => (
-              <li
-                key={entry.id}
-                className={entry.complete ? "is-complete" : "is-missing"}
-              >
-                <span className="adminEditorialCheck" aria-hidden="true">
-                  {entry.complete ? "✓" : "○"}
-                </span>
-                <span>
-                  {entry.label}
-                  {entry.requiredForPublish && !entry.complete ? (
-                    <em className="adminEditorialRequired"> påkrevd</em>
-                  ) : null}
-                </span>
-              </li>
-            ))}
+            {section.items.map((entry) => {
+              const jump = !entry.complete ? resolveEditorJump(entry.id) : null;
+              return (
+                <li
+                  key={entry.id}
+                  className={entry.complete ? "is-complete" : "is-missing"}
+                >
+                  <span className="adminEditorialCheck" aria-hidden="true">
+                    {entry.complete ? "✓" : "○"}
+                  </span>
+                  {jump && onNavigate ? (
+                    <JumpButton
+                      label={`${entry.label}${
+                        entry.requiredForPublish ? " (påkrevd)" : ""
+                      }`}
+                      openLabel={jump.openLabel}
+                      onClick={() => onNavigate(jump.tab, jump.anchorId)}
+                    />
+                  ) : (
+                    <span>
+                      {entry.label}
+                      {entry.requiredForPublish && !entry.complete ? (
+                        <em className="adminEditorialRequired"> påkrevd</em>
+                      ) : null}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </section>
       ))}
@@ -82,6 +149,7 @@ export default function AdminEditorialAssistant({
   images,
   variants,
   variant = "panel",
+  onNavigate,
 }: AdminEditorialAssistantProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -103,21 +171,39 @@ export default function AdminEditorialAssistant({
     () => car.description?.trim() || "",
   );
   const [editorBuffer, setEditorBuffer] = useState("");
-  const [aiTextStatus, setAiTextStatus] = useState<string | null>(null);
+  const [aiStatusLines, setAiStatusLines] = useState<
+    Array<{ id: string; available: boolean; label: string }>
+  >([]);
+  const [aiStatusSummary, setAiStatusSummary] = useState("AI Status");
+  const [aiAllFailed, setAiAllFailed] = useState(false);
   const [copyNote, setCopyNote] = useState<string | null>(null);
+  const [improveAllDrafts, setImproveAllDrafts] = useState<ImproveAllDraft[]>(
+    [],
+  );
+  const [improveAllFailed, setImproveAllFailed] = useState<
+    EditorialAiDraftKind[]
+  >([]);
 
   const completion = computeEditorialCompletion({ car, images, variants });
 
   useEffect(() => {
     let cancelled = false;
-    void getEditorialAiTextStatusAction().then((result) => {
+    void getAdminAiServicesStatusAction().then((result) => {
       if (cancelled || !result.ok) return;
-      setAiTextStatus(result.message);
+      setAiStatusLines(result.lines);
+      setAiStatusSummary(result.summaryLabel);
+      setAiAllFailed(result.allFailed);
     });
     return () => {
       cancelled = true;
     };
   }, []);
+
+  function jump(idOrCode: string) {
+    const target = resolveEditorJump(idOrCode);
+    if (!target || !onNavigate) return;
+    onNavigate(target.tab, target.anchorId);
+  }
 
   function runAssist() {
     setMessage(null);
@@ -168,6 +254,27 @@ export default function AdminEditorialAssistant({
     });
   }
 
+  function runImproveAll() {
+    setMessage(null);
+    setError(null);
+    setCopyNote(null);
+    setImproveAllDrafts([]);
+    setImproveAllFailed([]);
+    startTransition(async () => {
+      const result = await generateImproveAllEditorialDraftsAction({
+        carId: car.id,
+        sourceText: rewriteSource,
+      });
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setImproveAllDrafts(result.drafts);
+      setImproveAllFailed(result.failedKinds);
+      setMessage(result.message);
+    });
+  }
+
   function copyDraft() {
     if (!aiDraft) return;
     void navigator.clipboard?.writeText(aiDraft).then(
@@ -181,6 +288,17 @@ export default function AdminEditorialAssistant({
     setEditorBuffer(aiDraft);
     setCopyNote(
       "Utkast lagt i redigeringsbuffer. Eksisterende biltekst er uendret til du limer inn manuelt i skjemaet.",
+    );
+  }
+
+  function applyImproveAllToBuffer() {
+    if (improveAllDrafts.length === 0) return;
+    const combined = improveAllDrafts
+      .map((entry) => `## ${entry.kind}\n\n${entry.draft}`)
+      .join("\n\n---\n\n");
+    setEditorBuffer(combined);
+    setCopyNote(
+      "Improve-all preview applied to buffer only. Review each section, then paste into the form manually. Nothing was saved.",
     );
   }
 
@@ -199,28 +317,38 @@ export default function AdminEditorialAssistant({
           <h2 id="editorial-assistant-heading">
             {variant === "sidebar" ? "Gjennomgangsassistent" : completion.title}
           </h2>
-          <p className="adminEditorialPercent">
-            <strong>{completion.percent}% fullført</strong>
-            <span>
-              {completion.completedCount} av {completion.totalCount} sjekkpunkter
-              {" · "}mål ≥{completion.launchCompletionThreshold}%
-            </span>
+          <CompletionProgress
+            percent={completion.percent}
+            threshold={completion.launchCompletionThreshold}
+          />
+          <p className="adminHint">
+            {completion.completedCount} av {completion.totalCount} sjekkpunkter
+            {" · "}mål ≥{completion.launchCompletionThreshold}%
           </p>
-          {completion.meetsCompletionThreshold ? (
-            <p className="adminSuccess" role="status">
-              Fullføring oppfyller {completion.launchCompletionThreshold}% for
-              lanseringsklart innhold.
-            </p>
-          ) : (
-            <p className="adminNotice" role="status">
-              Under {completion.launchCompletionThreshold}% — ikke lanseringsklar /
-              publiseringsklar. Fortsett med ufullstendige felt.
-            </p>
-          )}
         </div>
-        {variant === "sidebar" ? null : (
-          <CompletionRing percent={completion.percent} />
+      </div>
+
+      <div className="adminAiStatusPanel" role="status" aria-label="AI Status">
+        <h3>{aiStatusSummary}</h3>
+        {aiStatusLines.length > 0 ? (
+          <ul className="adminAiStatusList">
+            {aiStatusLines.map((line) => (
+              <li
+                key={line.id}
+                className={line.available ? "is-available" : "is-unavailable"}
+              >
+                {line.label}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="adminHint">Loading AI status…</p>
         )}
+        {aiAllFailed ? (
+          <p className="authAlert authAlertError" role="alert">
+            All AI services are unavailable right now.
+          </p>
+        ) : null}
       </div>
 
       <div className="adminQuickActions">
@@ -248,10 +376,15 @@ export default function AdminEditorialAssistant({
           AI-forslag må kontrolleres av en redaktør før publisering. Ingenting lagres
           eller publiseres automatisk.
         </p>
-        <p className="adminHint">
-          Kun admin · Server-side · Status: {aiTextStatus || "…"}
-        </p>
         <div className="adminQuickActions">
+          <button
+            type="button"
+            className="button primary buttonSm"
+            disabled={isPending}
+            onClick={runImproveAll}
+          >
+            ✨ Improve all editorial text
+          </button>
           <button
             type="button"
             className="button secondary buttonSm"
@@ -354,6 +487,32 @@ export default function AdminEditorialAssistant({
           </button>
         </div>
 
+        {improveAllDrafts.length > 0 ? (
+          <div className="adminImproveAllPreview">
+            <h4>Improve-all preview (not saved)</h4>
+            {improveAllDrafts.map((entry) => (
+              <label key={entry.kind} className="authField">
+                <span>{entry.kind}</span>
+                <textarea rows={6} value={entry.draft} readOnly />
+              </label>
+            ))}
+            {improveAllFailed.length > 0 ? (
+              <p className="adminHint">
+                Failed sections: {improveAllFailed.join(", ")}
+              </p>
+            ) : null}
+            <div className="adminQuickActions">
+              <button
+                type="button"
+                className="button primary buttonSm"
+                onClick={applyImproveAllToBuffer}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        ) : null}
+
         {aiDraft ? (
           <>
             {aiSourceText ? (
@@ -395,7 +554,7 @@ export default function AdminEditorialAssistant({
                 className="button primary buttonSm"
                 onClick={applyDraftToBuffer}
               >
-                Legg i buffer (ikke lagre)
+                Apply
               </button>
             </div>
           </>
@@ -474,10 +633,23 @@ export default function AdminEditorialAssistant({
         ) : (
           <div className="adminNotice" role="status">
             <strong>Lansering / publisering blokkert</strong>
-            <ul className="adminEditorialMissingList">
-              {completion.publishIssues.map((issue) => (
-                <li key={issue.code}>{issue.message}</li>
-              ))}
+            <ul className="adminEditorialMissingList adminJumpList">
+              {completion.publishIssues.map((issue) => {
+                const target = resolveEditorJump(issue.code);
+                return (
+                  <li key={issue.code}>
+                    {target && onNavigate ? (
+                      <JumpButton
+                        label={issue.message}
+                        openLabel={target.openLabel}
+                        onClick={() => jump(issue.code)}
+                      />
+                    ) : (
+                      issue.message
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
@@ -486,10 +658,24 @@ export default function AdminEditorialAssistant({
       {completion.missing.length > 0 ? (
         <div className="adminEditorialMissing">
           <h3>Mangler</h3>
-          <ul className="adminEditorialMissingList">
-            {completion.missing.map((label) => (
-              <li key={label}>{label}</li>
-            ))}
+          <ul className="adminEditorialMissingList adminJumpList">
+            {completion.missingItemIds.map((itemId, index) => {
+              const label = completion.missing[index] ?? itemId;
+              const target = resolveEditorJump(itemId);
+              return (
+                <li key={itemId}>
+                  {target && onNavigate ? (
+                    <JumpButton
+                      label={label}
+                      openLabel={target.openLabel}
+                      onClick={() => jump(itemId)}
+                    />
+                  ) : (
+                    label
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : (
@@ -498,7 +684,7 @@ export default function AdminEditorialAssistant({
         </p>
       )}
 
-      <ChecklistView completion={completion} />
+      <ChecklistView completion={completion} onNavigate={onNavigate} />
     </section>
   );
 }

@@ -8,9 +8,8 @@ import {
   publishAdminCarAction,
   setAdminCarPublishedAction,
 } from "@/app/admin/actions";
-import {
-  computeEditorialCompletion,
-} from "@/lib/admin/editorial-completion";
+import { computeEditorialCompletion } from "@/lib/admin/editorial-completion";
+import { buildProductionSummary } from "@/lib/admin/editor-navigation";
 import type { CarImageRow } from "@/lib/admin/car-image-types";
 import {
   IMPORT_STATUS_LABELS,
@@ -37,6 +36,20 @@ export default function AdminCarEditorHeader({
 
   const completion = computeEditorialCompletion({ car, images, variants });
   const importStatus = (car.import_status ?? "draft") as ImportStatus;
+  const summary = buildProductionSummary({
+    percent: completion.percent,
+    canPublish: completion.canPublish,
+    sections: completion.sections,
+    publishIssueCodes: completion.publishIssues.map((issue) => issue.code),
+  });
+
+  const publishBlockedReasons = completion.publishIssues.map(
+    (issue) => issue.message,
+  );
+  const publishBlockedTitle =
+    publishBlockedReasons.length > 0
+      ? `Publishing blocked:\n${publishBlockedReasons.map((reason) => `• ${reason}`).join("\n")}`
+      : undefined;
 
   function runAction(
     action: () => Promise<{ ok: true; message: string } | { ok: false; error: string }>,
@@ -58,17 +71,19 @@ export default function AdminCarEditorHeader({
 
   return (
     <header className="adminEditorHeader" aria-label="Editorial status">
-      <div className="adminEditorHeaderStats">
+      <div className="adminEditorHeaderStats adminEditorProductionSummary">
         <div className="adminEditorStat">
           <span>Completion</span>
-          <strong>{completion.percent}%</strong>
+          <strong>{summary.completionPercent}%</strong>
         </div>
-        <div className="adminEditorStat">
-          <span>Publish readiness</span>
-          <strong className={completion.canPublish ? "is-ready" : "is-blocked"}>
-            {completion.canPublish ? "Ready" : "Blocked"}
-          </strong>
-        </div>
+        {summary.flags.map((flag) => (
+          <div key={flag.id} className="adminEditorStat">
+            <span>{flag.label}</span>
+            <strong className={flag.ok ? "is-ready" : "is-blocked"}>
+              {flag.ok ? "✓" : "—"}
+            </strong>
+          </div>
+        ))}
         <div className="adminEditorStat">
           <span>Status</span>
           <strong>{IMPORT_STATUS_LABELS[importStatus]}</strong>
@@ -109,13 +124,25 @@ export default function AdminCarEditorHeader({
           <button
             type="button"
             className="button primary buttonSm"
-            disabled={isPending}
+            disabled={isPending || !completion.canPublish}
+            title={
+              completion.canPublish
+                ? "Publish this car when ready"
+                : publishBlockedTitle
+            }
             onClick={() => runAction(() => publishAdminCarAction(car.id))}
           >
             Publish
           </button>
         )}
       </div>
+
+      {!completion.canPublish && !car.is_published ? (
+        <p className="adminHint adminPublishBlockHint" title={publishBlockedTitle}>
+          Publish disabled — hover the Publish button for exact blockers (
+          {completion.publishIssues.length}).
+        </p>
+      ) : null}
 
       {(message || error) && (
         <div className="adminEditorHeaderFeedback">

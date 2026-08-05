@@ -149,12 +149,14 @@ function BoolSelect({
 function SpecTable({
   title,
   children,
+  id,
 }: {
   title: string;
   children: ReactNode;
+  id?: string;
 }) {
   return (
-    <section className="adminSpecTableBlock">
+    <section className="adminSpecTableBlock" id={id}>
       <h3>{title}</h3>
       <table className="adminEditorTable adminSpecTable">
         <tbody>{children}</tbody>
@@ -323,7 +325,7 @@ export default function AdminCarForm({
 
           <div hidden={activeTab !== "overview"} className="adminEditorFormPanel">
             <h2 className="adminEditorPanelTitle">Overview</h2>
-            <SpecTable title="Identity">
+            <SpecTable title="Identity" id="spec-identity">
               <SpecInputRow label="Merke (katalog)">
                 <select
                   value={form.brand_id}
@@ -446,10 +448,14 @@ export default function AdminCarForm({
             </SpecTable>
           </div>
 
-          <div hidden={activeTab !== "specifications"} className="adminEditorFormPanel">
+          <div
+            hidden={activeTab !== "specifications"}
+            className="adminEditorFormPanel"
+            id="specifications-panel"
+          >
             <h2 className="adminEditorPanelTitle">Specifications</h2>
             <div className="adminSpecTables">
-              <SpecTable title="Price & range">
+              <SpecTable title="Price & range" id="spec-price-range">
                 <SpecInputRow label="Pris (NOK)">
                   <input inputMode="numeric" value={form.price_nok} onChange={(e) => updateField("price_nok", e.target.value)} disabled={isPending} />
                 </SpecInputRow>
@@ -467,7 +473,7 @@ export default function AdminCarForm({
                 </SpecInputRow>
               </SpecTable>
 
-              <SpecTable title="Battery">
+              <SpecTable title="Battery" id="spec-battery">
                 <SpecInputRow label="Batteri (kWh, legacy)">
                   <input inputMode="decimal" value={form.battery_kwh} onChange={(e) => updateField("battery_kwh", e.target.value)} disabled={isPending} />
                 </SpecInputRow>
@@ -482,7 +488,7 @@ export default function AdminCarForm({
                 </SpecInputRow>
               </SpecTable>
 
-              <SpecTable title="Charging">
+              <SpecTable title="Charging" id="spec-charging">
                 <SpecInputRow label="DC-lading (kW)">
                   <input inputMode="numeric" value={form.dc_charging_kw} onChange={(e) => updateField("dc_charging_kw", e.target.value)} disabled={isPending} />
                 </SpecInputRow>
@@ -500,7 +506,7 @@ export default function AdminCarForm({
                 </SpecInputRow>
               </SpecTable>
 
-              <SpecTable title="Performance">
+              <SpecTable title="Performance" id="spec-performance">
                 <SpecInputRow label="Drivlinje">
                   <select value={form.drivetrain} onChange={(e) => updateField("drivetrain", e.target.value)} disabled={isPending}>
                     <option value="">Velg drivlinje</option>
@@ -523,7 +529,7 @@ export default function AdminCarForm({
                 </SpecInputRow>
               </SpecTable>
 
-              <SpecTable title="Dimensions & practicality">
+              <SpecTable title="Dimensions & practicality" id="spec-dimensions">
                 <SpecInputRow label="Seter">
                   <input inputMode="numeric" value={form.seats} onChange={(e) => updateField("seats", e.target.value)} disabled={isPending} />
                 </SpecInputRow>
@@ -559,7 +565,7 @@ export default function AdminCarForm({
                 </SpecInputRow>
               </SpecTable>
 
-              <SpecTable title="Equipment">
+              <SpecTable title="Equipment" id="spec-equipment">
                 <SpecInputRow label="Varmepumpe">
                   <BoolSelectBare value={form.heat_pump} disabled={isPending} onChange={(value) => updateField("heat_pump", value)} />
                 </SpecInputRow>
@@ -588,7 +594,11 @@ export default function AdminCarForm({
             </div>
           </div>
 
-          <div hidden={activeTab !== "editorial"} className="adminEditorFormPanel">
+          <div
+            hidden={activeTab !== "editorial"}
+            className="adminEditorFormPanel"
+            id="editorial-panel"
+          >
             <h2 className="adminEditorPanelTitle">Editorial</h2>
             <div className="adminEditorEditorialFields">
               <label className="authField">
@@ -646,7 +656,11 @@ export default function AdminCarForm({
             </div>
           </div>
 
-          <div hidden={activeTab !== "sources"} className="adminEditorFormPanel">
+          <div
+            hidden={activeTab !== "sources"}
+            className="adminEditorFormPanel"
+            id="sources-panel"
+          >
             <h2 className="adminEditorPanelTitle">Sources</h2>
             <table className="adminEditorTable adminSpecTable">
               <thead>
