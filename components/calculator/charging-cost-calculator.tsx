@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   buildChargingCostSearchParams,
   calculateChargingCost,
+  chargingCostInputValue,
   CHARGING_COST_PRESETS,
   parseChargingCostSearchParams,
   type ChargingCostInput,
@@ -26,6 +27,12 @@ function toNumber(value: string): number {
   return Number.isFinite(n) ? n : NaN;
 }
 
+function parseOptionalNumber(value: string): number | null {
+  if (value.trim() === "") return null;
+  const n = toNumber(value);
+  return Number.isFinite(n) ? n : null;
+}
+
 export default function ChargingCostCalculator() {
   const router = useRouter();
   const pathname = usePathname();
@@ -44,14 +51,6 @@ export default function ChargingCostCalculator() {
     setInput((prev) => ({
       ...prev,
       ...fromUrl,
-      monthlyDistanceKm:
-        fromUrl.monthlyDistanceKm === undefined
-          ? prev.monthlyDistanceKm
-          : fromUrl.monthlyDistanceKm,
-      consumptionKwhPer100Km:
-        fromUrl.consumptionKwhPer100Km === undefined
-          ? prev.consumptionKwhPer100Km
-          : fromUrl.consumptionKwhPer100Km,
     }));
     setActivePreset(null);
     // Only hydrate once from the initial URL.
@@ -134,7 +133,7 @@ export default function ChargingCostCalculator() {
             min={1}
             max={300}
             step={0.1}
-            value={input.batteryCapacityKwh}
+            value={chargingCostInputValue(input.batteryCapacityKwh)}
             onChange={(e) =>
               setInput((prev) => ({
                 ...prev,
@@ -150,7 +149,7 @@ export default function ChargingCostCalculator() {
               type="number"
               min={0}
               max={100}
-              value={input.startPercent}
+              value={chargingCostInputValue(input.startPercent)}
               onChange={(e) =>
                 setInput((prev) => ({
                   ...prev,
@@ -165,7 +164,7 @@ export default function ChargingCostCalculator() {
               type="number"
               min={0}
               max={100}
-              value={input.targetPercent}
+              value={chargingCostInputValue(input.targetPercent)}
               onChange={(e) =>
                 setInput((prev) => ({
                   ...prev,
@@ -183,7 +182,7 @@ export default function ChargingCostCalculator() {
               inputMode="decimal"
               min={0}
               step={0.01}
-              value={input.pricePerKwh}
+              value={chargingCostInputValue(input.pricePerKwh)}
               onChange={(e) => {
                 setActivePreset(null);
                 setInput((prev) => ({
@@ -200,7 +199,7 @@ export default function ChargingCostCalculator() {
               min={0}
               max={79}
               step={1}
-              value={input.lossPercent}
+              value={chargingCostInputValue(input.lossPercent)}
               onChange={(e) => {
                 setActivePreset(null);
                 setInput((prev) => ({
@@ -217,12 +216,11 @@ export default function ChargingCostCalculator() {
             <input
               type="number"
               min={0}
-              value={input.monthlyDistanceKm ?? ""}
+              value={chargingCostInputValue(input.monthlyDistanceKm)}
               onChange={(e) =>
                 setInput((prev) => ({
                   ...prev,
-                  monthlyDistanceKm:
-                    e.target.value === "" ? null : toNumber(e.target.value),
+                  monthlyDistanceKm: parseOptionalNumber(e.target.value),
                 }))
               }
             />
@@ -233,12 +231,11 @@ export default function ChargingCostCalculator() {
               type="number"
               min={0}
               step={0.1}
-              value={input.consumptionKwhPer100Km ?? ""}
+              value={chargingCostInputValue(input.consumptionKwhPer100Km)}
               onChange={(e) =>
                 setInput((prev) => ({
                   ...prev,
-                  consumptionKwhPer100Km:
-                    e.target.value === "" ? null : toNumber(e.target.value),
+                  consumptionKwhPer100Km: parseOptionalNumber(e.target.value),
                 }))
               }
             />

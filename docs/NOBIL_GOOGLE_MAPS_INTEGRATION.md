@@ -39,12 +39,28 @@ Never put `NOBIL_API_KEY` in `NEXT_PUBLIC_*`.
 
 For `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`:
 
-1. Enable **Maps JavaScript API**  
-2. Application restriction: **HTTP referrers**  
-   - `http://localhost:3000/*`  
-   - `https://your-domain.no/*`  
-3. API restriction: Maps JavaScript API only  
-4. Do not reuse this key for AI or NOBIL  
+1. Enable **Maps JavaScript API**
+2. Application restriction: **HTTP referrers** (never leave unrestricted)
+3. API restriction: **Maps JavaScript API** only
+4. Do not reuse this key for AI or NOBIL
+5. Do not rotate or replace the key in code/docs — only update referrer allowlists in Google Cloud Console
+
+### Required HTTP referrer allowlist
+
+Add **exactly** these patterns (wildcards as shown). Missing any of them causes `RefererNotAllowedMapError` in that environment.
+
+| Environment | Allowed HTTP referrer |
+|-------------|------------------------|
+| Development | `http://localhost:3000/*` |
+| Vercel Preview | `https://*.vercel.app/*` |
+| Production | `https://evfakta.no/*` |
+| Production (www) | `https://www.evfakta.no/*` |
+
+Notes:
+
+- Keep application restriction set to **HTTP referrers** — do **not** switch to “None” / unrestricted to “fix” Maps.
+- After changing referrers in Google Cloud, wait a few minutes; no app redeploy is required for referrer-only changes.
+- Preview deployments use `*.vercel.app` hostnames — without `https://*.vercel.app/*`, Preview QA will show `RefererNotAllowedMapError` even when Production works.
 
 ---
 
@@ -69,9 +85,9 @@ NOBIL_API_KEY=
 
 1. Add `NOBIL_API_KEY` as a **server** secret  
 2. Add `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` for client Maps  
-3. Add `CHARGING_MAP_ENABLED=false` until verified  
-4. Restrict Maps key referrers to production + preview domains  
-5. Redeploy  
+3. Add `CHARGING_MAP_ENABLED=true` and `NEXT_PUBLIC_CHARGING_MAP_ENABLED=true` only after QA  
+4. Restrict Maps key HTTP referrers using the allowlist above (localhost + `*.vercel.app` + `evfakta.no` / `www.evfakta.no`)  
+5. Redeploy after any environment-variable change (referrer-only Google Cloud changes do not need a redeploy)  
 
 ---
 

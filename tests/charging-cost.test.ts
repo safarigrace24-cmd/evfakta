@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   calculateChargingCost,
+  chargingCostInputValue,
+  parseChargingCostSearchParams,
   validateChargingCostInput,
 } from "../lib/calculator/charging-cost";
 
@@ -67,5 +69,55 @@ describe("charging cost calculator", () => {
       assert.equal(zeroLoss.energyAddedKwh, 50);
       assert.equal(zeroLoss.energyFromGridKwh, 50);
     }
+  });
+
+  it("keeps controlled input values as strings (never null/undefined/NaN)", () => {
+    assert.equal(chargingCostInputValue(75), "75");
+    assert.equal(chargingCostInputValue(0), "0");
+    assert.equal(chargingCostInputValue(null), "");
+    assert.equal(chargingCostInputValue(undefined), "");
+    assert.equal(chargingCostInputValue(Number.NaN), "");
+    assert.equal(chargingCostInputValue(Number.POSITIVE_INFINITY), "");
+  });
+
+  it("parses URL params without injecting undefined keys", () => {
+    const empty = parseChargingCostSearchParams(new URLSearchParams());
+    assert.deepEqual(empty, {});
+
+    const partial = parseChargingCostSearchParams(
+      new URLSearchParams("kwh=82&start=10"),
+    );
+    assert.deepEqual(partial, {
+      batteryCapacityKwh: 82,
+      startPercent: 10,
+    });
+    assert.equal(Object.hasOwn(partial, "targetPercent"), false);
+    assert.equal(Object.hasOwn(partial, "monthlyDistanceKm"), false);
+
+    const base = {
+      batteryCapacityKwh: 75,
+      startPercent: 20,
+      targetPercent: 80,
+      pricePerKwh: 1.5,
+      lossPercent: 10,
+      monthlyDistanceKm: 1000,
+      consumptionKwhPer100Km: 18,
+    };
+    const merged = { ...base, ...partial };
+    assert.equal(merged.batteryCapacityKwh, 82);
+    assert.equal(merged.startPercent, 10);
+    assert.equal(merged.targetPercent, 80);
+    assert.equal(merged.monthlyDistanceKm, 1000);
+    for (const value of Object.values(merged)) {
+      assert.notEqual(value, undefined);
+      assert.equal(Number.isFinite(value as number), true);
+    }
+  });
+
+  it("ignores blank or non-finite URL values", () => {
+    const parsed = parseChargingCostSearchParams(
+      new URLSearchParams("kwh=&start=abc&maal=80"),
+    );
+    assert.deepEqual(parsed, { targetPercent: 80 });
   });
 });

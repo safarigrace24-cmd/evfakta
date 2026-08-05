@@ -165,24 +165,36 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+/**
+ * Safe display value for controlled number inputs.
+ * Never returns null/undefined/NaN (those flip React to uncontrolled).
+ */
+export function chargingCostInputValue(
+  value: number | null | undefined,
+): string {
+  if (value == null || !Number.isFinite(value)) return "";
+  return String(value);
+}
+
 export function parseChargingCostSearchParams(
   params: URLSearchParams,
 ): Partial<ChargingCostInput> {
-  const num = (key: string) => {
-    const raw = params.get(key);
-    if (raw == null || raw === "") return undefined;
-    const n = Number(raw);
-    return Number.isFinite(n) ? n : undefined;
+  const out: Partial<ChargingCostInput> = {};
+  const assign = (key: keyof ChargingCostInput, param: string) => {
+    const raw = params.get(param);
+    if (raw == null || raw === "") return;
+    const n = Number(raw.replace(",", "."));
+    if (!Number.isFinite(n)) return;
+    (out as Record<string, number>)[key] = n;
   };
-  return {
-    batteryCapacityKwh: num("kwh"),
-    startPercent: num("start"),
-    targetPercent: num("maal"),
-    pricePerKwh: num("pris"),
-    lossPercent: num("tap"),
-    monthlyDistanceKm: num("km"),
-    consumptionKwhPer100Km: num("forbruk"),
-  };
+  assign("batteryCapacityKwh", "kwh");
+  assign("startPercent", "start");
+  assign("targetPercent", "maal");
+  assign("pricePerKwh", "pris");
+  assign("lossPercent", "tap");
+  assign("monthlyDistanceKm", "km");
+  assign("consumptionKwhPer100Km", "forbruk");
+  return out;
 }
 
 export function buildChargingCostSearchParams(
