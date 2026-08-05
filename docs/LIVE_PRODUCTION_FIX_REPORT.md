@@ -79,15 +79,18 @@ Checklist for human verification in Vercel → Project → Settings → Environm
 
 | Item | Result |
 |------|--------|
-| Routes tested | Pending on Vercel Preview URL after push |
-| `/` `/modeller` `/sammenlign` `/kalkulator` `/ladekart` `/bruktbil` `/info` `/personvern` `/login` `/admin` | Pending human/browser QA |
+| Routes tested | Pending on Preview URL (deployment ready; browser QA not completed in this pass) |
+| `/` `/modeller` `/sammenlign` `/kalkulator` `/ladekart` `/bruktbil` `/info` `/personvern` `/login` `/admin` | Pending human/browser QA on Preview |
 | Console errors | Pending |
-| Maps | Pending (referrer allowlist + Preview URL) |
+| Maps | Pending (referrer allowlist + Preview URL; Production still shows `RefererNotAllowedMapError` until Console allowlist updated) |
 | NOBIL stations | Pending |
 | «Bruk min posisjon» only after click | Pending (code path already click-gated; verify on Preview) |
 | Calculator | Code fix + unit tests ✅; browser QA Pending |
 | Auth / login redirect | Pending |
 | Admin protected | Pending |
+
+**Preview URL:** https://evfakta-git-fix-production-stability-evfaktano.vercel.app  
+**Deployment:** https://vercel.com/evfaktano/evfakta/AYwToJGwg3rUgHtFKSzt3P5TyBgj
 
 ---
 
@@ -98,7 +101,7 @@ Checklist for human verification in Vercel → Project → Settings → Environm
 | lint | ✅ pass |
 | tests | ✅ pass (207) |
 | build | ✅ pass |
-| preview deployment | Pending after `git push -u origin fix/production-stability` |
+| preview deployment | ✅ Vercel reported success for `fix/production-stability` — [deployment dashboard](https://vercel.com/evfaktano/evfakta/AYwToJGwg3rUgHtFKSzt3P5TyBgj). Likely Preview host: `https://evfakta-git-fix-production-stability-evfaktano.vercel.app` (may require Vercel SSO). |
 | safe to promote | **NO** — wait for Preview QA + Maps referrer confirmation + Production env dashboard check |
 
 ### Safety preserved
