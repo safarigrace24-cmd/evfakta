@@ -281,6 +281,15 @@ function mapGalleryImages(rows: PublishedCarImageRow[] | null | undefined): CarG
 
   return [...rows]
     .sort((a, b) => {
+      // Public three-image standard: Front → Interior → Rear, then others.
+      const typeRank = (type: string | null | undefined) => {
+        if (type === "front") return 0;
+        if (type === "interior") return 1;
+        if (type === "rear") return 2;
+        return 50;
+      };
+      const rankDiff = typeRank(a.image_type) - typeRank(b.image_type);
+      if (rankDiff !== 0) return rankDiff;
       if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
       return a.id.localeCompare(b.id);
     })

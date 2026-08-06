@@ -120,6 +120,9 @@ export async function createAiIllustrationCandidate(input: {
   editorEmail?: string | null;
   variant?: string | null;
   year?: number | string | null;
+  bodyStyle?: string | null;
+  providerId?: string | null;
+  threeImageWorkflow?: boolean;
   generatorPrecheckComplete?: boolean;
   /** When true and buffer provided, store review copy. Otherwise Awaiting Generation. */
   imageBuffer?: Buffer | null;
@@ -138,6 +141,7 @@ export async function createAiIllustrationCandidate(input: {
         includeEvfaktaMark: input.includeEvfaktaMark,
         variant: input.variant,
         year: input.year,
+        bodyStyle: input.bodyStyle,
         style: input.style,
         aspectRatio: input.aspectRatio,
       });
@@ -167,6 +171,9 @@ export async function createAiIllustrationCandidate(input: {
       editorEmail: input.editorEmail,
       variant: input.variant,
       year: input.year,
+      bodyStyle: input.bodyStyle,
+      providerId: input.providerId,
+      threeImageWorkflow: input.threeImageWorkflow,
       generatorPrecheckComplete: input.generatorPrecheckComplete,
     });
 

@@ -25,6 +25,8 @@ import {
 import { applySingleApprovedImage } from "@/lib/admin/research/apply";
 import type { ResearchImageCandidate } from "@/lib/admin/research/types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
+import { sortOrderForThreeImageType } from "@/lib/admin/three-image-ai-workflow";
+import { isCarImageType } from "@/lib/admin/car-image-types";
 
 export type ImageReviewActionResult =
   | { ok: true; message: string }
@@ -218,11 +220,15 @@ export async function approveImageCandidateAction(input: {
     ? "AI-illustrasjon godkjent (Approved) etter Visual Quality Review. Merket Illustrative image — not official manufacturer photography. Aldri auto-publisert."
     : "Bilde godkjent (Approved).";
   if (input.attachToGallery !== false) {
+    const galleryType = isCarImageType(image.image_type ?? "")
+      ? image.image_type!
+      : "other";
     const applied = await applySingleApprovedImage({
       carId: ctx.carId,
       slug: ctx.slug,
       brand: ctx.brand,
       image: { ...image, status: "approved", notes: nextNotes ?? image.notes },
+      sortOrder: sortOrderForThreeImageType(galleryType),
     });
     if (applied.ok) {
       message = isAiIllustrationCandidate(image)

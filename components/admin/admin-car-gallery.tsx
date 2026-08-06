@@ -17,6 +17,7 @@ import {
   uploadGalleryImageAction,
 } from "@/app/admin/gallery-actions";
 import AdminAiImageGeneratorModal from "@/components/admin/admin-ai-image-generator-modal";
+import AdminThreeImageWorkflow from "@/components/admin/admin-three-image-workflow";
 import {
   CAR_IMAGE_TYPE_LABELS,
   CAR_IMAGE_TYPE_OPTIONS,
@@ -221,6 +222,18 @@ export default function AdminCarGallery({
 
       {workflow ? (
         <div className="adminImageWorkflowSummary" aria-label="Image workflow">
+          <AdminThreeImageWorkflow
+            carId={carId}
+            threeImage={workflow.threeImage}
+            reviewPath={workflow.reviewPath}
+            onMessage={setMessage}
+            onError={setError}
+            onRefresh={() => {
+              void getCarImageWorkflowSummaryAction({ carId }).then((result) => {
+                if (result.ok) setWorkflow(result.summary);
+              });
+            }}
+          />
           <div className="adminImageWorkflowGrid">
             <div>
               <span>Official images</span>
@@ -340,7 +353,7 @@ export default function AdminCarGallery({
             onClick={() => setAiModalOpen(true)}
             disabled={isPending}
           >
-            ✨ Lag AI-bilde
+            Lag AI-bilde (eksplisitt)
           </button>
         </div>
       </div>

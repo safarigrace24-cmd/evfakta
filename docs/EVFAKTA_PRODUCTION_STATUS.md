@@ -1,7 +1,7 @@
 # EVFAKTA Production Status
 
 **Role:** Editorial Production Manager  
-**Report date:** 2026-08-05  
+**Report date:** 2026-08-06  
 **Evidence:** Batch reports (`docs/*_BATCH_01.md`) · `docs/EVFAKTA_V1_LAUNCH_MASTER_CHECKLIST.md` · master catalog plan (50 models)  
 **Publish rule:** Intentional publish only — public catalog remains empty
 
@@ -113,7 +113,7 @@ Blocked models inside completed manufacturer batches (no inventing; remain unpub
 | Hyundai | Ioniq 3 | Premiere/marketing only; no NO pricelist |
 | BYD | Han | No structured Sanity specifications; insufficient images |
 | BYD | EVO | USP only — structured dims/consumption table not finishable in this run |
-| Mercedes-Benz | C-Klasse Electric | Sale started / strong NO tech; Image Ready blocked — page gallery assets were wrong model (Concept CLA / E-Klasse), not verified C-Klasse Electric Hero/Front/Side |
+| Mercedes-Benz | C-Klasse Electric | Sale started / strong NO tech (dims 4883×1892×1503 mm stored 2026-08-06); Image Ready blocked — no verified C-Class-only Hero/Front/Side (W520/Concept CLA lookalikes rejected) |
 
 **Models NOT_READY (production batch blockers):** **12**
 

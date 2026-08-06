@@ -11,23 +11,14 @@ import {
 } from "../lib/admin/ai-image-generator";
 
 describe("AI image generator helpers", () => {
-  it("exposes the required modal image types", () => {
+  it("exposes the three-image modal types by default", () => {
     const labels = AI_GENERATOR_IMAGE_TYPES.map((t) => t.label);
-    for (const required of [
-      "Hero",
-      "Front",
-      "Front Three Quarter",
-      "Side",
-      "Rear",
-      "Interior",
-      "Charging",
-      "Cargo",
-      "Article Cover",
-      "Homepage Banner",
-      "Social Media",
-    ]) {
+    for (const required of ["Front", "Interior", "Rear"]) {
       assert.ok(labels.includes(required), `missing ${required}`);
     }
+    assert.equal(labels.includes("Side"), false);
+    assert.equal(labels.includes("Charging"), false);
+    assert.equal(labels.includes("Cargo"), false);
   });
 
   it("requires all precheck boxes before accept", () => {
@@ -46,7 +37,7 @@ describe("AI image generator helpers", () => {
       model: "Seal U",
       variant: "Comfort",
       year: 2025,
-      usageType: "front_three_quarter",
+      usageType: "front_illustration",
       style: "scandinavian_studio",
       aspectRatio: "16:9",
     });

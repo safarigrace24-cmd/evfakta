@@ -799,9 +799,9 @@ Forbruk (kWh/100 km) er ikke oppgitt i hentet Mercedes-Benz Norge teknisk blokk 
     body_style: "Sedan",
     vehicle_type: "Personbil",
     seats: 5,
-    length_mm: null,
-    width_mm: null,
-    height_mm: null,
+    length_mm: 4883,
+    width_mm: 1892,
+    height_mm: 1503,
     wheelbase_mm: null,
     cargo_l: 420,
     frunk_l: 101,
@@ -818,9 +818,9 @@ Forbruk (kWh/100 km) er ikke oppgitt i hentet Mercedes-Benz Norge teknisk blokk 
     skipGallery: true,
     documentHeatPumpHonesty: true,
     description:
-      "Mercedes-Benz C-Klasse Electric (C 400 4MATIC) er til salgs i Norge (fra kr 689 900) med sterk NO teknisk blokk (WLTP 752 km, 489 hk / 800 Nm, DC 330 kW, bagasje 420 / frunk 101, tilhenger 1 800 kg). Image Ready er blokkert: hentede galleriassets på modellssiden matchet ikke verifiserbar C-Klasse-eksteriør (feilmodell Concept CLA / E-Klasse). NOT_READY til offisielle Hero/Front/Side er verifisert.",
-    pros: ["Sterk offisiell NO teknisk blokk", "Salget har startet"],
-    cons: ["Image Ready blokkert — feilmodell/assets", "NOT_READY"],
+      "Mercedes-Benz C-Klasse Electric (C 400 4MATIC) er til salgs i Norge (fra kr 689 900). Offisiell NO teknisk blokk (sjekket 2026-08-06): WLTP 752 km, 489 hk / 800 Nm, DC 330 kW, AC 11/22 kW, 10–80 22 min, bagasje 420 l / frunk 101 l, dims 4 883 / 1 892 / 1 503 mm, forbruk 14,1–18,5 kWh/100 km, tilhenger 1 800 kg, toppfart 210 km/t, 0–100 4,0 s. Image Ready blokkert: galleriassets på modellssiden mangler verifiserbar dedikert Side-profil for produksjonsbil (W520-markedsføring overlapper CLA-designspråk; ingen godkjent Hero+Front+Side). NOT_READY til Image Ready.",
+    pros: ["Sterk offisiell NO teknisk blokk inkl. dims", "Salget har startet"],
+    cons: ["Image Ready blokkert — mangler verifisert Side/Hero/Front-galleri", "NOT_READY"],
     suitable_for: ["Avvent verifisert offisiell galleri"],
     variants: [
       {
@@ -836,10 +836,11 @@ Forbruk (kWh/100 km) er ikke oppgitt i hentet Mercedes-Benz Norge teknisk blokk 
         power_hp: 489,
         torque_nm: 800,
         acceleration_0_100: 4.0,
+        top_speed_kmh: 210,
         towing_kg: 1800,
         source_name: "Mercedes-Benz Norge — C-Klasse Electric",
         source_url: SRC.cClass,
-        import_notes: "Specs from NO page; Image Ready blocked — NOT_READY.",
+        import_notes: "NO tech 2026-08-06 incl. dims; Image Ready blocked — NOT_READY.",
       },
     ],
   },
@@ -1339,6 +1340,7 @@ async function assertLockedUntouched(sb: SupabaseClient) {
     "kia",
     "hyundai",
     "toyota",
+    "byd",
   ];
   const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
   const { data, error } = await sb

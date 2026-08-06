@@ -132,6 +132,7 @@ export type AiIllustrationPromptInput = {
   includeEvfaktaMark?: boolean;
   variant?: string | null;
   year?: number | string | null;
+  bodyStyle?: string | null;
   style?: string | null;
   aspectRatio?: string | null;
 };
@@ -229,6 +230,7 @@ export function buildAiIllustrationPrompt(
 
   const variant = input.variant?.trim();
   const year = input.year != null && String(input.year).trim() ? String(input.year) : null;
+  const bodyStyle = input.bodyStyle?.trim();
   const style = input.style?.trim() || "Clean Scandinavian studio";
   const aspect = input.aspectRatio?.trim() || "16:9";
   const detailAllowed =
@@ -237,11 +239,13 @@ export function buildAiIllustrationPrompt(
 
   return [
     `Create a clean Scandinavian studio-style illustration of a ${input.brand} ${input.model}${variant ? ` ${variant}` : ""}${year ? ` (${year})` : ""} electric vehicle for EVFAKTA.`,
+    bodyStyle ? `Verified body style: ${bodyStyle}.` : null,
     `Usage: ${usageLabel}.`,
     `Style: ${style}. Aspect ratio: ${aspect}.`,
     `Composition: realistic lighting, minimal visual noise, neutral seamless backdrop near ${BACKGROUND}, subtle primary accent ${FOREST_GREEN} only if needed for atmosphere (not as branding overlays).`,
-    "This is an illustrative interpretation — not exact OEM photography. Do not invent a specific trim, model year, wheel design, badge, interior layout, or unverified technical detail.",
+    "This is an illustrative interpretation — not exact OEM photography. Do not invent unsupported trims, badges, or unverified technical details.",
     "Do not add fake manufacturer logos or fake license plates.",
+    "Label intent (internal): AI-generert illustrasjon – ikke offisielt produsentbilde.",
     detailAllowed
       ? "Editor explicitly requested this detail/interior/charging/cargo view — keep it generic and non-technical; no invented specs."
       : "Do not show dashboard, charging port, cargo, or technical cutaways unless explicitly requested.",
@@ -286,20 +290,30 @@ export function buildAiCandidateNotes(input: {
   editorEmail?: string | null;
   variant?: string | null;
   year?: number | string | null;
+  bodyStyle?: string | null;
+  providerId?: string | null;
+  threeImageWorkflow?: boolean;
   generatorPrecheckComplete?: boolean;
 }): string {
+  const providerNote = input.providerId?.trim()
+    ? `ai_provider:${input.providerId.trim().toLowerCase()}`
+    : null;
   const parts = [
     AI_NOTES_PREFIX,
     AI_SOURCE_CATEGORY_MARKER,
+    input.threeImageWorkflow ? "three-image-workflow" : null,
     `model:${input.brand} ${input.model}`.trim(),
     input.variant?.trim() ? `variant:${input.variant.trim()}` : null,
     input.year != null && String(input.year).trim()
       ? `year:${String(input.year).trim()}`
       : null,
+    input.bodyStyle?.trim() ? `body_style:${input.bodyStyle.trim()}` : null,
     `usage:${input.usageType}`,
+    providerNote,
     `warning:${AI_WARNING_EN}`,
     `label_no:${AI_ILLUSTRATIVE_BADGE}`,
     `label_no_warning:${AI_WARNING}`,
+    "label_no_full:AI-generert illustrasjon – ikke offisielt produsentbilde",
     `internal_warning:${AI_INTERNAL_WARNING}`,
     input.awaitingGeneration
       ? AI_AWAITING_GENERATION_MARKER

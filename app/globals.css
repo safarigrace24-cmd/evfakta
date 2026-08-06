@@ -2084,6 +2084,136 @@ h3 {
   gap: 14px;
 }
 
+.adminThreeImageWorkflow {
+  display: grid;
+  gap: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.adminThreeImageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.adminThreeImageHeader h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.adminThreeImageStatusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.adminThreeImageStatusGrid span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.adminThreeImageStatusGrid strong {
+  font-size: 1.05rem;
+}
+
+.adminThreeImageStatusGrid strong[data-status="Missing"] {
+  color: var(--danger, #b42318);
+}
+
+.adminThreeImageStatusGrid strong[data-status="Pending"] {
+  color: var(--warning, #b54708);
+}
+
+.adminThreeImageStatusGrid strong[data-status="Approved"] {
+  color: var(--success, #027a48);
+}
+
+.adminThreeImageGroups {
+  display: grid;
+  gap: 16px;
+}
+
+.adminThreeImageGroupHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.adminThreeImageGroupHeader h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.adminThreeImageGroupHeader em {
+  font-style: normal;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.adminThreeImageAltList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.adminThreeImageAlt {
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface, var(--bg));
+}
+
+.adminThreeImageAltPreferred {
+  border-color: var(--forest, #0f6b45);
+}
+
+.adminThreeImageAltPreview {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-sm, 6px);
+  overflow: hidden;
+  background: var(--line-soft);
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.adminThreeImageAltPreview img {
+  object-fit: cover;
+}
+
+.adminThreeImageAltBadge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.72rem;
+}
+
+.adminThreeImageAltActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 .adminImageWorkflowGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));

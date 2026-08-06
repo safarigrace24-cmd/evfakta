@@ -40,6 +40,21 @@ import { CAR_IMAGE_TYPE_LABELS } from "@/lib/admin/car-image-types";
 import { listImageCandidatesForCar } from "@/lib/admin/image-review-data";
 import type { ResearchImageCandidate } from "@/lib/admin/research/types";
 import { createAdminClient, getServiceRoleKey } from "@/lib/supabase/admin";
+import { resolveImageReviewPreviewUrl } from "@/lib/admin/image-review-preview";
+import {
+  THREE_IMAGE_ALTERNATIVES_PER_ROLE,
+  THREE_IMAGE_STANDARD_ROLES,
+  countAlternativesToCreate,
+  groupThreeImageAlternatives,
+  isPreferredThreeImageAlternative,
+  missingThreeImageRolesToGenerate,
+  parseAiProviderFromNotes,
+  summarizeThreeImageRoles,
+  threeImageEditorChangeRequest,
+  withoutPreferredThreeImageAlternativeNotes,
+  withPreferredThreeImageAlternativeNotes,
+  type ThreeImageRoleKey,
+} from "@/lib/admin/three-image-ai-workflow";
 
 export type AiOfficialGalleryThumb = {
   id: string;
@@ -119,7 +134,7 @@ async function loadCar(carId: string) {
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("cars")
-    .select("id, slug, brand, model, variant, year, image_url")
+    .select("id, slug, brand, model, variant, year, body_style, image_url")
     .eq("id", carId)
     .maybeSingle();
   return data as {
@@ -129,6 +144,7 @@ async function loadCar(carId: string) {
     model: string;
     variant: string | null;
     year: number | null;
+    body_style: string | null;
     image_url: string | null;
   } | null;
 }
@@ -201,6 +217,28 @@ export type CarImageWorkflowSummary = {
   heroReady: boolean;
   galleryCount: number;
   reviewPath: string;
+  /** Three-image AI standard summary (Front / Interior / Rear). */
+  threeImage: {
+    galleryComplete: boolean;
+    roles: Array<{
+      usageType: string;
+      imageType: string;
+      label: string;
+      status: "Missing" | "Pending" | "Approved";
+      preferredCandidateId: string | null;
+      alternativeCount: number;
+    }>;
+    alternatives: Array<{
+      id: string;
+      usageType: string;
+      label: string;
+      status: string;
+      preferred: boolean;
+      previewUrl: string | null;
+      providerId: string | null;
+      optionIndex: number;
+    }>;
+  };
   history: Array<{
     id: string;
     label: string;
@@ -231,6 +269,20 @@ export async function getCarImageWorkflowSummaryAction(input: {
   ]);
 
   const aiCandidates = candidates.filter((c) => isAiIllustrationCandidate(c));
+  const threeSummary = summarizeThreeImageRoles({ gallery, candidates });
+  const grouped = groupThreeImageAlternatives(candidates);
+  const alternatives = THREE_IMAGE_STANDARD_ROLES.flatMap((role) =>
+    grouped[role.usageType].map((candidate, index) => ({
+      id: candidate.id,
+      usageType: role.usageType,
+      label: role.label,
+      status: candidate.status,
+      preferred: isPreferredThreeImageAlternative(candidate.notes),
+      previewUrl: resolveImageReviewPreviewUrl(candidate) || null,
+      providerId: parseAiProviderFromNotes(candidate.notes),
+      optionIndex: index + 1,
+    })),
+  );
   const history = [...candidates]
     .sort((a, b) => {
       const aTime = Date.parse(a.created_at || "") || 0;
@@ -263,6 +315,18 @@ export async function getCarImageWorkflowSummaryAction(input: {
       heroReady: gallery.some((image) => image.is_primary),
       galleryCount: gallery.length,
       reviewPath: `/admin/images/${carId}`,
+      threeImage: {
+        galleryComplete: threeSummary.galleryComplete,
+        roles: threeSummary.roles.map((role) => ({
+          usageType: role.usageType,
+          imageType: role.imageType,
+          label: role.label,
+          status: role.status,
+          preferredCandidateId: role.preferredCandidateId,
+          alternativeCount: role.alternativeCount,
+        })),
+        alternatives,
+      },
       history,
     },
   };
@@ -401,6 +465,7 @@ export async function generateAiImageCandidateAction(input: {
   let imageBuffer: Buffer | null = null;
   let previewDataUrl: string | null = null;
   let providerAvailable = isAiImageProviderAvailable();
+  let providerUsed: string | null = null;
 
   if (input.imageBase64?.trim()) {
     try {
@@ -421,6 +486,7 @@ export async function generateAiImageCandidateAction(input: {
     if (generated.ok) {
       imageBuffer = generated.buffer;
       previewDataUrl = `data:image/png;base64,${generated.buffer.toString("base64")}`;
+      providerUsed = generated.provider;
     } else if (!generated.unavailable) {
       return { ok: false, error: generated.error };
     }
@@ -439,6 +505,8 @@ export async function generateAiImageCandidateAction(input: {
     editorEmail: auth.email,
     variant: car.variant,
     year: car.year,
+    bodyStyle: car.body_style,
+    providerId: providerUsed,
     changeRequest: input.changeRequest,
     generatorPrecheckComplete: true,
     usageNote:
@@ -804,7 +872,7 @@ export async function regenerateAiIllustrationCandidateAction(input: {
   const usageType =
     parseUsageType(input.usageType || "") ||
     parseAiUsageType(candidate.notes) ||
-    "front_three_quarter";
+    "front_illustration";
 
   await supabase
     .from("research_image_candidates")
@@ -838,6 +906,336 @@ export async function regenerateAiIllustrationCandidateAction(input: {
     prompt: created.prompt,
     awaitingGeneration: true,
   };
+}
+
+/**
+ * Generer 3 AI-bilder — Front / Interior / Rear.
+ * Creates up to 3 pending alternatives per missing role only.
+ * Never auto-approves, never Hero, never publishes.
+ */
+export async function generateThreeAiImagesAction(input: {
+  carId: string;
+  /** When set, only regenerate these roles (e.g. Generate again). */
+  forceRoles?: string[];
+}): Promise<
+  | {
+      ok: true;
+      message: string;
+      createdCount: number;
+      rolesGenerated: string[];
+      reviewPath: string;
+    }
+  | { ok: false; error: string }
+> {
+  const auth = await requireAdminUser();
+  if (!auth.ok) return auth;
+  if (!dbReady()) {
+    return { ok: false, error: "AI-illustrasjoner er midlertidig utilgjengelige." };
+  }
+
+  const car = await loadCar(input.carId);
+  if (!car) return { ok: false, error: "Bilen ble ikke funnet." };
+
+  const [gallery, candidates] = await Promise.all([
+    listAdminCarImages(car.id),
+    listImageCandidatesForCar(car.id),
+  ]);
+
+  const forceRoles = (input.forceRoles || [])
+    .map((value) => value.trim())
+    .filter((value): value is ThreeImageRoleKey =>
+      THREE_IMAGE_STANDARD_ROLES.some((role) => role.usageType === value),
+    );
+
+  const rolesToGenerate = missingThreeImageRolesToGenerate({
+    gallery,
+    candidates,
+    forceRoles: forceRoles.length ? forceRoles : undefined,
+  });
+
+  if (rolesToGenerate.length === 0) {
+    return {
+      ok: true,
+      message:
+        "Ingen manglende roller blant Front / Interior / Rear. Godkjente galleribilder ble ikke overskrevet.",
+      createdCount: 0,
+      rolesGenerated: [],
+      reviewPath: `/admin/images/${car.id}`,
+    };
+  }
+
+  const style: AiGeneratorStyle = "scandinavian_studio";
+  const aspectRatio: AiGeneratorAspectRatio = "16:9";
+  const negativePrompt = defaultNegativePrompt();
+  let createdCount = 0;
+  const rolesGenerated: string[] = [];
+  let latestCandidates = candidates;
+
+  for (const usageType of rolesToGenerate) {
+    const toCreate = forceRoles.includes(usageType)
+      ? THREE_IMAGE_ALTERNATIVES_PER_ROLE
+      : countAlternativesToCreate({
+          usageType,
+          candidates: latestCandidates,
+        });
+
+    if (toCreate <= 0) continue;
+
+    // Generate again: reject prior pending alternatives for this role to avoid duplicates.
+    if (forceRoles.includes(usageType)) {
+      const supabase = createAdminClient();
+      const pendingIds = groupThreeImageAlternatives(latestCandidates)[usageType]
+        .filter((candidate) => candidate.status === "pending")
+        .map((candidate) => candidate.id);
+      if (pendingIds.length) {
+        await supabase
+          .from("research_image_candidates")
+          .update({ status: "rejected" })
+          .in("id", pendingIds);
+        latestCandidates = latestCandidates.map((candidate) =>
+          pendingIds.includes(candidate.id)
+            ? { ...candidate, status: "rejected" }
+            : candidate,
+        );
+      }
+    }
+
+    for (let i = 0; i < toCreate; i += 1) {
+      const changeRequest = threeImageEditorChangeRequest(usageType);
+      const prompt = buildAdminGeneratorPrompt({
+        brand: car.brand || car.slug,
+        model: car.model || car.slug,
+        variant: car.variant,
+        year: car.year,
+        bodyStyle: car.body_style,
+        usageType,
+        style,
+        aspectRatio,
+        changeRequest,
+      });
+
+      let imageBuffer: Buffer | null = null;
+      let providerUsed: string | null = null;
+
+      if (isAiImageProviderAvailable()) {
+        const generated = await generateAiImageBytes({
+          prompt,
+          negativePrompt,
+          aspectRatio,
+        });
+        if (generated.ok) {
+          imageBuffer = generated.buffer;
+          providerUsed = generated.provider;
+        } else if (!generated.unavailable) {
+          return {
+            ok: false,
+            error: `${usageType} alternativ ${i + 1}: ${generated.error}`,
+          };
+        }
+      }
+
+      const created = await createAiIllustrationCandidate({
+        carId: car.id,
+        brand: car.brand || car.slug,
+        model: car.model || car.slug,
+        slug: car.slug,
+        usageType,
+        promptOverride: prompt,
+        negativePrompt,
+        style,
+        aspectRatio,
+        editorEmail: auth.email,
+        variant: car.variant,
+        year: car.year,
+        bodyStyle: car.body_style,
+        providerId: providerUsed,
+        threeImageWorkflow: true,
+        changeRequest,
+        generatorPrecheckComplete: false,
+        usageNote:
+          "Created via Generer 3 AI-bilder. Pending Image Review — never auto-approved. AI-generert illustrasjon – ikke offisielt produsentbilde.",
+        imageBuffer,
+      });
+
+      if (!created.ok) {
+        return { ok: false, error: created.error };
+      }
+
+      createdCount += 1;
+      latestCandidates = [...latestCandidates, created.candidate];
+    }
+
+    rolesGenerated.push(usageType);
+  }
+
+  revalidateAiPaths(car.id, car.slug);
+
+  return {
+    ok: true,
+    message:
+      createdCount > 0
+        ? `Opprettet ${createdCount} pending AI-alternativer (${rolesGenerated
+            .map(
+              (usage) =>
+                THREE_IMAGE_STANDARD_ROLES.find((role) => role.usageType === usage)
+                  ?.label || usage,
+            )
+            .join(", ")}). Velg én per rolle — godkjenning skjer manuelt i Image Review. Ingen auto-Hero / ingen auto-publisering.`
+        : "Ingen nye alternativer ble opprettet.",
+    createdCount,
+    rolesGenerated,
+    reviewPath: `/admin/images/${car.id}`,
+  };
+}
+
+/** Mark one pending alternative as the preferred selection for its role. */
+export async function selectThreeImageAlternativeAction(input: {
+  candidateId: string;
+}): Promise<AiImageActionResult> {
+  const auth = await requireAdminUser();
+  if (!auth.ok) return auth;
+  if (!dbReady()) {
+    return { ok: false, error: "AI-illustrasjoner er midlertidig utilgjengelige." };
+  }
+
+  const supabase = createAdminClient();
+  const { data: image } = await supabase
+    .from("research_image_candidates")
+    .select("*")
+    .eq("id", input.candidateId)
+    .maybeSingle();
+
+  if (!image) return { ok: false, error: "Kandidaten ble ikke funnet." };
+  const candidate = image as ResearchImageCandidate;
+  if (!isAiIllustrationCandidate(candidate)) {
+    return { ok: false, error: "Kun AI-illustrasjoner kan velges her." };
+  }
+  if (candidate.status !== "pending") {
+    return {
+      ok: false,
+      error: "Kun pending alternativer kan velges. Godkjenning skjer i Image Review.",
+    };
+  }
+
+  const usage = parseAiUsageType(candidate.notes);
+  if (!usage || !THREE_IMAGE_STANDARD_ROLES.some((role) => role.usageType === usage)) {
+    return { ok: false, error: "Kandidaten er ikke en Front/Interior/Rear-rolle." };
+  }
+
+  const { data: item } = await supabase
+    .from("research_items")
+    .select("existing_car_id")
+    .eq("id", candidate.item_id)
+    .maybeSingle();
+  if (!item?.existing_car_id) {
+    return { ok: false, error: "Mangler bilkobling." };
+  }
+
+  const carId = item.existing_car_id as string;
+  const siblings = groupThreeImageAlternatives(
+    await listImageCandidatesForCar(carId),
+  )[usage as ThreeImageRoleKey];
+
+  for (const sibling of siblings) {
+    const nextNotes =
+      sibling.id === candidate.id
+        ? withPreferredThreeImageAlternativeNotes(sibling.notes)
+        : withoutPreferredThreeImageAlternativeNotes(sibling.notes);
+    if (nextNotes !== (sibling.notes || "").trim()) {
+      await supabase
+        .from("research_image_candidates")
+        .update({ notes: nextNotes })
+        .eq("id", sibling.id);
+    }
+  }
+
+  const car = await loadCar(carId);
+  revalidateAiPaths(carId, car?.slug);
+
+  return {
+    ok: true,
+    message:
+      "Valgt som foretrukket alternativ. Forblir Pending til manuell godkjenning i Image Review. Ingen auto-Hero.",
+    candidateId: candidate.id,
+    reviewPath: `/admin/images/${carId}`,
+  };
+}
+
+/** Reject one unselected/selected pending alternative (history kept). */
+export async function rejectThreeImageAlternativeAction(input: {
+  candidateId: string;
+}): Promise<AiImageActionResult> {
+  const auth = await requireAdminUser();
+  if (!auth.ok) return auth;
+  if (!dbReady()) {
+    return { ok: false, error: "AI-illustrasjoner er midlertidig utilgjengelige." };
+  }
+
+  const supabase = createAdminClient();
+  const { data: image } = await supabase
+    .from("research_image_candidates")
+    .select("*")
+    .eq("id", input.candidateId)
+    .maybeSingle();
+
+  if (!image) return { ok: false, error: "Kandidaten ble ikke funnet." };
+  const candidate = image as ResearchImageCandidate;
+  if (!isAiIllustrationCandidate(candidate)) {
+    return { ok: false, error: "Kun AI-illustrasjoner kan avvises her." };
+  }
+  if (candidate.status === "applied") {
+    return {
+      ok: false,
+      error: "Bildet er allerede i galleriet. Fjern det manuelt om nødvendig.",
+    };
+  }
+
+  const { error } = await supabase
+    .from("research_image_candidates")
+    .update({
+      status: "rejected",
+      notes: withoutPreferredThreeImageAlternativeNotes(candidate.notes),
+    })
+    .eq("id", candidate.id);
+
+  if (error) return { ok: false, error: "Kunne ikke avvise alternativet." };
+
+  const { data: item } = await supabase
+    .from("research_items")
+    .select("existing_car_id")
+    .eq("id", candidate.item_id)
+    .maybeSingle();
+
+  if (item?.existing_car_id) {
+    const car = await loadCar(item.existing_car_id as string);
+    revalidateAiPaths(item.existing_car_id as string, car?.slug);
+  }
+
+  return {
+    ok: true,
+    message: "Alternativ avvist. Historikk beholdes. Ingen auto-publisering.",
+    candidateId: candidate.id,
+  };
+}
+
+/** Generate again for one role (rejects prior pending alts for that role first). */
+export async function regenerateThreeImageRoleAction(input: {
+  carId: string;
+  usageType: string;
+}): Promise<
+  | {
+      ok: true;
+      message: string;
+      createdCount: number;
+      rolesGenerated: string[];
+      reviewPath: string;
+    }
+  | { ok: false; error: string }
+> {
+  return generateThreeAiImagesAction({
+    carId: input.carId,
+    forceRoles: [input.usageType],
+  });
 }
 
 /** Record an editorial-use-only / history note when official photography replaces AI. */

@@ -41,31 +41,30 @@ export const AI_GENERATOR_ASPECT_RATIOS: ReadonlyArray<{
   { value: "9:16", label: "9:16 (social)" },
 ];
 
-/** Image types shown in the Lag AI-bilde modal (ordered). */
+/**
+ * Default image types for Lag AI-bilde / three-image workflow.
+ * Side, charging, cargo, banners, etc. are not offered unless an editor
+ * explicitly picks editor_requested_detail later.
+ */
 export const AI_GENERATOR_IMAGE_TYPES: ReadonlyArray<{
   value: AiIllustrationUsageType;
   label: string;
 }> = [
-  { value: "hero_illustration", label: "Hero" },
   { value: "front_illustration", label: "Front" },
-  { value: "front_three_quarter", label: "Front Three Quarter" },
-  { value: "side_illustration", label: "Side" },
-  { value: "rear_illustration", label: "Rear" },
   { value: "interior_illustration", label: "Interior" },
-  { value: "charging_illustration", label: "Charging" },
-  { value: "cargo_illustration", label: "Cargo" },
-  { value: "article_cover", label: "Article Cover" },
-  { value: "homepage_banner", label: "Homepage Banner" },
-  { value: "social_media", label: "Social Media" },
+  { value: "rear_illustration", label: "Rear" },
+  {
+    value: "editor_requested_detail",
+    label: "Editor-requested detail (explicit)",
+  },
 ];
 
 export type AiGeneratorPrecheckKey =
   | "correct_vehicle"
-  | "correct_front"
-  | "correct_headlights"
-  | "correct_proportions"
-  | "correct_wheels"
+  | "correct_front_rear"
   | "correct_body"
+  | "correct_interior"
+  | "no_incorrect_badges"
   | "no_artifacts"
   | "safe_public";
 
@@ -73,13 +72,12 @@ export const AI_GENERATOR_PRECHECK_ITEMS: ReadonlyArray<{
   key: AiGeneratorPrecheckKey;
   label: string;
 }> = [
-  { key: "correct_vehicle", label: "Correct vehicle" },
-  { key: "correct_front", label: "Correct front" },
-  { key: "correct_headlights", label: "Correct headlights" },
-  { key: "correct_proportions", label: "Correct proportions" },
-  { key: "correct_wheels", label: "Correct wheels" },
+  { key: "correct_vehicle", label: "Correct vehicle identity" },
+  { key: "correct_front_rear", label: "Correct front/rear design" },
   { key: "correct_body", label: "Correct body shape" },
-  { key: "no_artifacts", label: "No AI artifacts" },
+  { key: "correct_interior", label: "Correct interior style where visible" },
+  { key: "no_incorrect_badges", label: "No incorrect badges" },
+  { key: "no_artifacts", label: "No obvious AI artifacts" },
   { key: "safe_public", label: "Safe for public use" },
 ];
 
@@ -100,6 +98,7 @@ export function buildAdminGeneratorPrompt(input: {
   model: string;
   variant?: string | null;
   year?: number | string | null;
+  bodyStyle?: string | null;
   usageType: AiIllustrationUsageType;
   style: AiGeneratorStyle;
   aspectRatio: AiGeneratorAspectRatio;
@@ -110,6 +109,7 @@ export function buildAdminGeneratorPrompt(input: {
     model: input.model,
     variant: input.variant,
     year: input.year,
+    bodyStyle: input.bodyStyle,
     usageType: input.usageType,
     style: styleLabel(input.style),
     aspectRatio: input.aspectRatio,

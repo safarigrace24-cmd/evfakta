@@ -1,13 +1,13 @@
 # Mercedes-Benz batch 01
 
-**Date checked:** 2026-08-05  
+**Date checked:** 2026-08-06 (fresh official NO re-verify)  
 **Brand:** Mercedes-Benz  
 **Batch status:** **COMPLETE** (finishable passenger models)  
 **Quality standard:** Review Assistant completion **100%** for Launch Ready / Publish Ready  
 **Publish rule:** `is_published=false` for all — no auto-publish  
 **Images:** Official mercedes-benz.no CDN (GForces / Bertel O. Steen) → Storage gallery → visual verify  
 **Production script:** `scripts/complete-mercedes-100.ts`  
-**Sources primary:** mercedes-benz.no modell-/new-models-sider + Mercedes-Benz Norge press (NTB) + konfigurator-henvisning; dims/cargo for EQS sedan from official Mercedes-Benz USA tech where NO omits
+**Sources primary:** mercedes-benz.no modell-/new-models-sider + Mercedes-Benz Norge press (NTB); EQS sedan dims/cargo from official Mercedes-Benz USA tech where NO omits
 
 This is an editorial recommendation only. It does not change database approval or publication values.
 
@@ -15,27 +15,28 @@ This is an editorial recommendation only. It does not change database approval o
 
 # Official Norwegian lineup checked
 
-Source of truth: [mercedes-benz.no](https://www.mercedes-benz.no/) model / new-models pages (checked 2026-08-05).
+Source of truth: [mercedes-benz.no](https://www.mercedes-benz.no/) (re-checked 2026-08-06). Candidate verification used live model / new-models pages only (not prior batch reports as facts).
 
 | Candidate | Classification |
 |-----------|----------------|
-| CLA Electric | ACTIVE — **Publish Candidate** |
-| CLA Shooting Brake Electric | ACTIVE — **Publish Candidate** |
-| GLB Electric | ACTIVE — **Publish Candidate** |
-| GLC Electric | ACTIVE — **Publish Candidate** (orderable; first deliveries before summer 2026) |
-| EQS sedan | ACTIVE — **Publish Candidate** |
-| EQS SUV | ACTIVE — **Publish Candidate** |
-| EQE SUV | ACTIVE — **Publish Candidate** |
-| G-Klasse Electric (G 580 EQ) | ACTIVE — **Publish Candidate** |
-| EQA | ACTIVE — **Publish Candidate** (still priced/sold) |
-| C-Klasse Electric | ACTIVE / sale started — **NOT_READY** (Image Ready blocked) |
-| EQB | DISCONTINUED — `eqb-ikke-tilgjengelig` — no Publish Ready shell |
-| EQE sedan | DISCONTINUED — `eqe-sedan-ikke-tilgjengelig` — no Publish Ready shell |
-| VLE | UPCOMING — marketing only — not created |
-| GLA Electric | UPCOMING — premiere/marketing — not created |
-| Commercial vans / V-klasse BEV | COMMERCIAL — excluded from passenger finish |
+| EQA | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| EQB | **DISCONTINUED** — `eqb-ikke-tilgjengelig` — no Publish Ready shell |
+| EQE (sedan) | **DISCONTINUED** — `eqe-sedan-ikke-tilgjengelig` — no Publish Ready shell |
+| EQE SUV | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| EQS | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| EQS SUV | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| G-Class Electric | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| CLA Electric | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| CLA Shooting Brake Electric | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| GLC Electric | **ACTIVE** — orderable (first deliveries before summer 2026) — **Publish Candidate** |
+| C-Class Electric | **ACTIVE** / sale started — **NOT_READY** (Image Ready blocked) |
+| GLB Electric | **ACTIVE** — priced / orderable — **Publish Candidate** |
+| VLE | **UPCOMING** — marketing / insufficient finish — not created |
+| GLA Electric | **UPCOMING** — «kommer snart» — not created |
 
-# Active models
+**Note:** Phrase «ikke tilgjengelig» appears in generic options disclaimers on active pages (e.g. CLA SB, GLC). Discontinued status is only when the dedicated «ikke tilgjengelig» model page is the source of truth (EQB, EQE sedan).
+
+# ACTIVE
 
 Finishable at 100% (Approved, Image Ready, Launch Ready, Publish Ready, unpublished):
 
@@ -49,19 +50,19 @@ Finishable at 100% (Approved, Image Ready, Launch Ready, Publish Ready, unpublis
 - G-Klasse Electric
 - EQA
 
-# Upcoming models
+# UPCOMING
 
 Not created as Publish Ready:
 
 - **VLE** — `/new-models/vle-electric/` insufficient for finish
-- **GLA Electric** — premiere/marketing; not finished this run
+- **GLA Electric** — premiere/marketing («kommer snart»); not finished
 
-# Discontinued models
+# DISCONTINUED
 
 - **EQB** — not available page; no active shell finished
 - **EQE sedan** — not available page; no active shell finished
 
-# Commercial vehicles excluded or separated
+# COMMERCIAL
 
 - Mercedes-Benz nyttekjøretøy / vans — out of passenger batch scope
 
@@ -77,10 +78,14 @@ Not created as Publish Ready:
 8. G-Klasse Electric — https://www.mercedes-benz.no/models/g-class-n465-805/  
 9. EQA — https://www.mercedes-benz.no/models/eqa-806-2/  
 10. C-Klasse Electric — https://www.mercedes-benz.no/new-models/c-class-electric/  
-11. Mercedes-Benz Norge press (NTB) — GLC order/premiere, EQS order/premiere, EQS SUV order, EQE SUV order, EQA order  
-12. Mercedes-Benz USA EQS 450+ tech — exterior dims + cargo only where NO omits  
+11. EQB discontinued — https://www.mercedes-benz.no/passengercars/models/eqb-ikke-tilgjengelig.html  
+12. EQE sedan discontinued — https://www.mercedes-benz.no/passengercars/models/eqe-sedan-ikke-tilgjengelig.html  
+13. VLE upcoming — https://www.mercedes-benz.no/new-models/vle-electric/  
+14. GLA Electric upcoming — https://www.mercedes-benz.no/new-models/gla-electric/  
+15. Mercedes-Benz Norge press (NTB) — GLC / EQS / EQS SUV / EQE SUV / EQA order & premiere notes  
+16. Mercedes-Benz USA EQS 450+ tech — exterior dims + cargo only where NO omits  
 
-**Not used as facts:** EV-Database, auto-data.net, dealer blogs, AI images as official Image Ready, invented peak DC / winter range.
+**Not used as facts:** EV-Database, auto-data.net, dealer blogs, AI images as official Image Ready, invented peak DC / winter range, prior batch reports as sole evidence.
 
 # Variants
 
@@ -102,44 +107,75 @@ Not created as Publish Ready:
 Stored from official NO model pages + Mercedes-Benz Norge press. Notable honesty:
 
 - GLC: dims/forbruk from NO press; bagasje 520 l from modellside (press texts also cite 570 l — conflict documented)
-- EQS sedan: dims/cargo from official Mercedes-Benz USA tech (NO omits); power/range/charging from NO
-- EQS SUV: dims from NO press; bagasje 880 l from modellside; peak DC/battery/hk honesty
-- EQE SUV: press length cell mangled (863) — not stored; width/height + DC/batteri/varmepumpe from press
-- G 580: forbruk not on NO model tech block — documented gap; peak DC/battery honesty; tilhenger honesty
-- C-Klasse Electric: strong NO tech but Image Ready blocked
+- EQS sedan: NO omits L×W×H and bagasje; dims/cargo from official Mercedes-Benz USA EQS 450+ tech; battery 118 kWh from NO
+- EQS SUV: strong range/power/towing/seats; peak DC and battery capacity missing on current NO block — left empty
+- EQE SUV: 96 kWh from NO press; bagasje 520–580 from NO; peak DC empty
+- G 580: WLTP up to 473 km; peak DC empty on current NO page; frunk 41 documented in FAQ
+- EQA 250+: peak DC not published on current NO page — empty; 300 4MATIC DC 160 kW
+- C-Klasse Electric (2026-08-06): NO tech now publishes dims 4883 / 1892 / 1503 mm, bagasje 420 / frunk 101, forbruk 14,1–18,5, WLTP 752, DC 330 — stored; **Image Ready still blocked**
+- Chemistry / usable kWh / V2L / V2G / heat pump: never invented; only where explicit
 
 # Editorial
 
-Norwegian Bokmål packages for finishable models: description, pros, cons, suitable_for, score_notes, FAQ. Zero `Draft – Requires editor review` markers on finishable models.
+Norwegian Bokmål packages for all finishable models: description, pros, cons, suitable_for, score_notes (hvem / vinter / lading / daglig / langtur), FAQ, SEO. Zero `Draft – Requires editor review` markers on finishable models. C-Klasse remains NOT_READY with honesty notes.
 
 # Images
 
-Visual checklist applied before Storage attach (official CDN assets only):
+Visual checklist applied before Storage attach (finishable models):
 
 | Model | Front | Side | Rear | Interior |
 |-------|-------|------|------|----------|
-| CLA | ✅ | ✅ | documented / when available | documented missing |
-| CLA Shooting Brake | ✅ | ✅ | documented missing | documented missing |
-| GLB | ✅ | ✅ | documented missing | documented missing |
-| GLC | ✅ | ✅ | documented missing | documented missing |
-| EQS | ✅ | ✅ | ✅ | documented missing |
-| EQS SUV | ✅ | ✅ | documented missing | documented missing |
-| EQE SUV | ✅ | ✅ | ✅ | documented missing |
-| G-Klasse Electric | ✅ | ✅ | ✅ | documented missing |
-| EQA | ✅ | ✅ | ✅ | ✅ |
-| C-Klasse Electric | ❌ wrong-model assets rejected | ❌ | — | — |
+| CLA | ✅ | ✅ | ✅ | ✅ |
+| CLA SB | ✅ | ✅ | ✅ | ✅ |
+| GLB | ✅ | ✅ | ✅ | documented gap |
+| GLC | ✅ | ✅ | ✅ | documented gap |
+| EQS | ✅ | ✅ | ✅ | documented gap |
+| EQS SUV | ✅ | ✅ | ✅ | documented gap |
+| EQE SUV | ✅ | ✅ | ✅ | documented gap |
+| G-Klasse Electric | ✅ | ✅ | ✅ | documented gap |
+| EQA | ✅ | ✅ | ✅ | documented gap |
+| C-Klasse Electric | ❌ | ❌ | ❌ | ❌ — W520 page assets include Concept CLA / E-Klasse lookalikes; no verified C-Class Front+Side pair accepted for Image Ready |
 
 # Honest gaps
 
 - Winter range never stored as vehicle fact
-- Heat pump boolean only where explicitly confirmed (EQE SUV press: standard); others documented honesty
-- EQS SUV / G 580 peak DC and battery capacity not invented
-- C-Klasse Electric Image Ready blocked until verified Hero/Front/Side of correct body
+- Heat pump / V2L / V2G never claimed without explicit NO confirmation
+- Usable kWh and chemistry left empty unless official
+- EQS SUV / EQE SUV peak DC often empty on NO
+- EQB / EQE sedan / VLE / GLA Electric not finished as Publish Ready
+- C-Klasse Electric: specs improved from NO tech (2026-08-06) but Image Ready remains blocked
 
-# Result table
+# NOT_READY models
+
+| Model | Exact blocker |
+|-------|---------------|
+| C-Klasse Electric | Sale started + strong NO tech (incl. dims), but Image Ready blocked — no verified C-Class-only Hero/Front/Side gallery (wrong-model / ambiguous W520 assets rejected) |
+| EQB / EQE sedan | Discontinued — not finished |
+| VLE / GLA Electric | Upcoming / insufficient — not created |
+
+# EVFAKTA Editorial Decision
+
+| Model | Recommendation |
+|-------|----------------|
+| CLA | **Publish Candidate** |
+| CLA Shooting Brake | **Publish Candidate** |
+| GLB | **Publish Candidate** |
+| GLC | **Publish Candidate** |
+| EQS | **Publish Candidate** |
+| EQS SUV | **Publish Candidate** |
+| EQE SUV | **Publish Candidate** |
+| G-Klasse Electric | **Publish Candidate** |
+| EQA | **Publish Candidate** |
+| C-Klasse Electric | **Not Ready** (Image Ready) |
+| EQB / EQE sedan | **Hold** (discontinued) |
+| VLE / GLA Electric | **Await Official Documentation** |
+
+This is an editorial recommendation only. It does not change database approval or publication values.
+
+## Final status
 
 | Model | Completion | Image Ready | Launch Ready | Publish Ready | Status |
-|-------|------------|-------------|--------------|---------------|--------|
+|-------|:----------:|:-----------:|:------------:|:-------------:|--------|
 | CLA | 100% | YES | YES | YES | Approved, unpublished |
 | CLA Shooting Brake | 100% | YES | YES | YES | Approved, unpublished |
 | GLB | 100% | YES | YES | YES | Approved, unpublished |
@@ -149,15 +185,8 @@ Visual checklist applied before Storage attach (official CDN assets only):
 | EQE SUV | 100% | YES | YES | YES | Approved, unpublished |
 | G-Klasse Electric | 100% | YES | YES | YES | Approved, unpublished |
 | EQA | 100% | YES | YES | YES | Approved, unpublished |
-| C-Klasse Electric | 78% | NO | NO | NO | NOT_READY |
+| C-Klasse Electric | 81% | NO | NO | NO | NOT_READY |
 
-# Editorial recommendations (non-binding)
+## Next manufacturer
 
-1. Re-pull C-Klasse Electric gallery from official press when dedicated W206 Electric studio assets are live on mercedes-benz.no.  
-2. Confirm EQS sedan dims/cargo against Norwegian configurator/PDF when published; replace USA fallback if NO values differ.  
-3. Fill EQS SUV battery/DC/hk from konfigurator when NO marketing block stays thin.  
-4. Do not resurrect EQB / EQE sedan as active Publish Ready without renewed NO sales evidence.
-
----
-
-**Stop:** Mercedes-Benz COMPLETE / locked. Do not start Ford until human approval. No commit / no push / no DNS / no auto-publish.
+This brand batch is **COMPLETE** for finishable passenger models. Live queue: see `docs/EVFAKTA_PRODUCTION_STATUS.md` — next brand is **Ford** (await human approval of Mercedes-Benz).

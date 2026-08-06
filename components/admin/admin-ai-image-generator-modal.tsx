@@ -69,7 +69,7 @@ export default function AdminAiImageGeneratorModal({
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [usageType, setUsageType] =
-    useState<AiIllustrationUsageType>("front_three_quarter");
+    useState<AiIllustrationUsageType>("front_illustration");
   const [style, setStyle] = useState<AiGeneratorStyle>("scandinavian_studio");
   const [aspectRatio, setAspectRatio] =
     useState<AiGeneratorAspectRatio>("16:9");
@@ -565,7 +565,8 @@ export default function AdminAiImageGeneratorModal({
             </ul>
             {(usageType === "interior_illustration" ||
               usageType === "charging_illustration" ||
-              usageType === "cargo_illustration") && (
+              usageType === "cargo_illustration" ||
+              usageType === "editor_requested_detail") && (
               <label className="authField">
                 <span>Explicit editor note (required)</span>
                 <textarea

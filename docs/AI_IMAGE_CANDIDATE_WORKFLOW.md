@@ -17,7 +17,12 @@ Nothing may appear publicly before manual approval of the **car** (`is_published
 
 ---
 
-## Admin workflow (Lag AI-bilde)
+## Admin workflow (three-image standard)
+
+Primary vehicle-page AI flow: **`docs/THREE_IMAGE_AI_WORKFLOW.md`**.
+
+Default roles: **Front · Interior · Rear** (3 alternatives each).  
+Side / Charging / Cargo / banners are not generated unless explicitly requested.
 
 The AI Image Generator is **admin-only**. It must never appear on the public website.
 
@@ -28,10 +33,11 @@ The AI Image Generator is **admin-only**. It must never appear on the public web
 | Car Editor → Images tab | `/admin/biler/[carId]/rediger` |
 | Image Review (optional) | `/admin/images/[carId]` |
 
-Images tab actions (both visible):
+Images tab actions:
 
 1. **Last opp bilder**  
-2. **✨ Lag AI-bilde**
+2. **Generer 3 AI-bilder** (primary)  
+3. **Lag AI-bilde (eksplisitt)** (optional single / editor-requested detail)
 
 Non-admin callers receive **`403 Forbidden`**.
 

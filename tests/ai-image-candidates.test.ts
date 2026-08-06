@@ -75,7 +75,7 @@ describe("AI image candidate markers", () => {
     });
     assert.match(prompt, /illustrative interpretation/i);
     assert.match(prompt, /Do not add fake manufacturer logos/i);
-    assert.match(prompt, /Do not invent a specific trim/i);
+    assert.match(prompt, /Do not invent unsupported trims/i);
     assert.doesNotMatch(prompt, /official manufacturer photography/i);
   });
 

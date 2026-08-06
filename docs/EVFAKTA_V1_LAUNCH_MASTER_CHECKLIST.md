@@ -4,7 +4,7 @@
 **Audit date:** 2026-07-28 (initial) · **Last production update:** 2026-07-28  
 **Evidence:** `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` · Phase 1 reports below  
 **Verify this pass:** `npm run lint` ✅ · `npm test` ✅ · `npm run build` ✅  
-**Last production update:** 2026-08-05 — Mercedes-Benz COMPLETE (9 Publish Ready; C-Klasse Electric NOT_READY); VW + Volvo + Tesla + BMW + Audi + Kia + Hyundai + Toyota + BYD locked; await Ford approval
+**Last production update:** 2026-08-06 — Mercedes-Benz COMPLETE (re-verified official NO lineup; 9 Publish Ready; C-Klasse Electric NOT_READY Image Ready); VW + Volvo + Tesla + BMW + Audi + Kia + Hyundai + Toyota + BYD + Mercedes-Benz locked; await Ford approval
 
 ---
 
@@ -541,7 +541,7 @@ Per model checklist:
 
 ## Phase D8 — Mercedes-Benz wave
 
-**COMPLETE** (locked) — see `docs/MERCEDES_BENZ_BATCH_01.md`. CLA / CLA Shooting Brake / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA **100%**. C-Klasse Electric NOT_READY (Image Ready). Await human go-ahead before Ford.
+**COMPLETE** (locked) — see `docs/MERCEDES_BENZ_BATCH_01.md` (re-verified 2026-08-06). CLA / CLA Shooting Brake / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA **100%**. C-Klasse Electric NOT_READY (Image Ready; NO dims stored, gallery blocked). Await human go-ahead before Ford.
 
 ## Phase E — Master catalog expansion
 
@@ -611,4 +611,4 @@ Live DB snapshot written to `docs/EVFAKTA_V1_LAUNCH_AUDIT_SNAPSHOT.json` (read-o
 | Catalog coverage | **No** |
 | Tool parity | **No** |
 
-**Next production action:** Mercedes-Benz COMPLETE (CLA / CLA SB / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA 100%; C-Klasse Electric NOT_READY). Volkswagen + Volvo + Tesla + BMW + Audi + Kia + Hyundai + Toyota + BYD locked. Await human go-ahead before starting Ford. No commit / no push / no DNS / no auto-publish.
+**Next production action:** Mercedes-Benz COMPLETE (re-verified 2026-08-06 — CLA / CLA SB / GLB / GLC / EQS / EQS SUV / EQE SUV / G-Klasse Electric / EQA 100%; C-Klasse Electric NOT_READY Image Ready). Volkswagen + Volvo + Tesla + BMW + Audi + Kia + Hyundai + Toyota + BYD + Mercedes-Benz locked. Await human go-ahead before starting Ford. No commit / no push / no DNS / no auto-publish.
