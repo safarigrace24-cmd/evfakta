@@ -22,3 +22,8 @@ export function isGoogleAiTextEnabled(): boolean {
 export function isChargingMapEnabled(): boolean {
   return envEnabled("CHARGING_MAP_ENABLED");
 }
+
+/** Public EVFAKTA chatbot (/api/chat + floating widget). */
+export function isChatbotEnabled(): boolean {
+  return envEnabled("CHATBOT_ENABLED");
+}

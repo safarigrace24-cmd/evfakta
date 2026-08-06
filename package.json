@@ -12,6 +12,7 @@
     "import:cars:csv": "tsx scripts/import-cars-from-csv.ts"
   },
   "dependencies": {
+    "@google/genai": "^2.16.0",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8",
     "next": "16.2.11",

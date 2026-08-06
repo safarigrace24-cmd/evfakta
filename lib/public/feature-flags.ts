@@ -20,7 +20,17 @@ export const publicFeatures = {
   chargingMap: { enabled: true, href: "/ladekart" as const, inNav: true },
   usedEvGuide: { enabled: true, href: "/bruktbil" as const, inNav: true },
   info: { enabled: true, href: "/info" as const, inNav: true },
+  /**
+   * Floating chatbot chrome. Server still requires CHATBOT_ENABLED + OPENAI_API_KEY.
+   * Set NEXT_PUBLIC_CHATBOT_ENABLED=true so the widget can render on the client.
+   */
+  chatbot: { enabled: true, href: "/modeller" as const, inNav: false },
 } as const;
+
+/** Client-visible gate for the floating chat button. */
+export function isChatbotPubliclyEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_CHATBOT_ENABLED?.trim().toLowerCase() === "true";
+}
 
 function isChargingMapPubliclyReady(): boolean {
   const publicFlag = process.env.NEXT_PUBLIC_CHARGING_MAP_ENABLED?.trim().toLowerCase();
